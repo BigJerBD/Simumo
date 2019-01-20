@@ -1,19 +1,16 @@
-mod clock;
-
-use clock::*;
+mod simulation;
+use simulation::*;
 
 fn main() {
-    let mut simend = false;
-    let mut simclock: Clock = Clock::new(0.025);
+    let mut sim: Simulation = Simulation::new(0.025, 12.5);
     // initialiser les variables de l'état du système ici
     // créer la liste des évènements ici
-    while !simend {
-        simclock.update();
-        // faire les évènements
-        // update stats
-        println!("{}", simclock.get_time());
-        if simclock.get_time() >= 5. {
-            simend = true;
-        }
+    while !sim.has_ended() {
+        sim.update_clock();
+        sim.execute_events();
+        sim.update_objects();
+        println!("Simulation time: {}s", sim.get_time());
     }
+    println!("Showing results log...");
+    sim.get_state();
 }
