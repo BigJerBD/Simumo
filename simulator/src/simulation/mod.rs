@@ -1,8 +1,11 @@
 mod clock;
 use self::clock::*;
+mod eventsmanager;
+use self::eventsmanager::*;
 
 pub struct Simulation {
     _clock: Clock,
+    _eventsmanager: EventsManager,
     _maxtime: f64
 }
 
@@ -10,6 +13,7 @@ impl Simulation {
     pub fn new(dt: f64, maxtime: f64) -> Simulation {
         Simulation {
             _clock: Clock::new(dt),
+            _eventsmanager: EventsManager::new(),
             _maxtime: maxtime
         }
     }
@@ -19,7 +23,7 @@ impl Simulation {
         }
     }
     pub fn execute_events(&self) {
-        println!("Executing events...");
+        self._eventsmanager.execute(self.get_time());
     }
     pub fn update_objects(&self) {
         println!("Updating simulation objects...");
