@@ -1,0 +1,18 @@
+jeudi 10, 2h30 | contrat et mandat d'équipe, discussion sur le projet
+mardi 15, 2h   | discussion sur les tâches, les musts pour commencer et les gros blocs de l'application
+				 avec Jonatan, Jérémie et Karim
+mercr 16, 3h   | lecture des sections 1-5 https://doc.rust-lang.org/1.26.0/book/second-edition
+jeudi 17  3h   | réunion (avec Vincent et en équipe par la suite)
+jeudi 17  0h30 | correction contrat
+vendr 18  0h30 | correction mandat
+vendr 18  1h   | lecture des sections 6-7 https://doc.rust-lang.org/1.26.0/book/second-edition
+samed 19  4h   | design de la boucle principale (comme décrite ici: https://en.wikipedia.org/wiki/Discrete_event_simulation)
+diman 20  2h   | design sur papier des évènements (scheduler), quels types d'évènements
+				 - spawn de véhicules
+				 - changement de couleur pour les lumières
+					- à un temps précis
+					- selon une fréquence f
+					- suite à un autre évènement
+					- lorsqu'une condition est satisfaite
+lundi 21  1h30 | discussion sur la façon de représenter des voies
+				 avec Jonatan et Jérémie
