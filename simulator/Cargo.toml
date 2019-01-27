@@ -1,8 +1,15 @@
 [package]
 name = "simulator"
 version = "0.1.0"
-authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>"]
+authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>","bigj2701 <bigjerbd@gmail.com>"]
 edition = "2018"
+
+[main]
+proc-macro=true
 
 [dependencies]
 petgraph = "0.4.13"
+quote = "0.6"
+syn = "0.11.11"
+specs = "0.14.3"
+specs-derive = "0.4.0"
