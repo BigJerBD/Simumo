@@ -1,14 +1,14 @@
-//
-//use components::dynamic::*;
-//struct PrintLog;
-//impl<'a> System<'a> for SpeedUpdate {
-//    type SystemData = (ReadStorage<'a, Position>
-//    );
-//
-//    fn run(&mut self, (mut vel, acc): Self::SystemData) {
-//        for (vel, acc) in (&mut vel, &acc).join() {
-//            vel.0 +=  acc.0;
-//        }
-//    }
-//}
-//
+use crate::components::dynamic::*;
+use specs::{System, ReadStorage, Join};
+
+pub struct PrintLog;
+impl<'a> System<'a> for PrintLog {
+   type SystemData = ReadStorage<'a, Position>;
+
+   fn run(&mut self, positions: Self::SystemData) {
+       for pos in positions.join() {
+           println!("{:#?}", pos);
+       }
+   }
+}
+

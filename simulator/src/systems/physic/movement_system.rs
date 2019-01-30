@@ -1,9 +1,9 @@
 use specs::prelude::*;
 
-use components::dynamic::*;
-use components::constant::*;
+use crate::components::dynamic::*;
+use crate::components::constant::*;
 
-struct PositionUpdate;
+pub struct PositionUpdate;
 impl<'a> System<'a> for PositionUpdate {
     type SystemData = (WriteStorage<'a, Position>,
                        ReadStorage<'a, Speed>
