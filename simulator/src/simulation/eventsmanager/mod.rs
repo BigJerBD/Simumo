@@ -1,10 +1,8 @@
-pub struct EventsManager {
-}
+pub struct EventsManager {}
 
 impl EventsManager {
     pub fn new() -> EventsManager {
-        EventsManager {
-        }
+        EventsManager {}
     }
     pub fn execute(&self, time: f64) {
         println!("Executing events at time {}s...", time);
