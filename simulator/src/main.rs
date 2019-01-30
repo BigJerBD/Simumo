@@ -1,5 +1,9 @@
 mod simulation;
+mod topology;
+mod types;
+
 use simulation::*;
+use topology::Topology;
 
 fn main() {
     let mut sim: Simulation = Simulation::new(0.025, 12.5);
@@ -11,4 +15,6 @@ fn main() {
     }
     println!("Showing results log...");
     sim.get_state();
+    let topology = Topology::new();
+    println!("{:#?}", topology);
 }

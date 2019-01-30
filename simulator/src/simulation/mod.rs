@@ -6,7 +6,7 @@ use self::eventsmanager::*;
 pub struct Simulation {
     _clock: Clock,
     _eventsmanager: EventsManager,
-    _maxtime: f64
+    _maxtime: f64,
 }
 
 impl Simulation {
@@ -14,7 +14,7 @@ impl Simulation {
         Simulation {
             _clock: Clock::new(dt),
             _eventsmanager: EventsManager::new(),
-            _maxtime: maxtime
+            _maxtime: maxtime,
         }
     }
     pub fn update_clock(&mut self) {

@@ -1,6 +1,8 @@
 [package]
 name = "simulator"
 version = "0.1.0"
-authors = ["whis2401 <samleafs@protonmail.com>"]
+authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>"]
+edition = "2018"
 
 [dependencies]
+petgraph = "0.4.13"
