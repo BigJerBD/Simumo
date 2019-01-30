@@ -1,3 +1,4 @@
-pub mod systems;
-pub mod generics;
-pub mod agents;
+pub mod dynamic;
+pub mod interactive;
+pub mod visual;
+pub mod constant;
