@@ -1,4 +1,4 @@
-use specs::prelude::{Component,VecStorage};
+use specs::prelude::{Component, VecStorage};
 
 #[derive(Component, Debug)]
 #[storage(VecStorage)]

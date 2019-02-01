@@ -1,3 +1,4 @@
+use super::spline::Spline;
 use super::RoadId;
 use crate::types::{Kilometer, KilometerPerHour, Meter};
 
@@ -10,8 +11,7 @@ pub struct Road {
     lane_width: Meter,
     length: Kilometer,
     max_speed: KilometerPerHour,
-    // A Bezier curve representation for the shape of the road?
-    // Orientation?
+    spline: Spline,
 }
 
 impl Road {
@@ -24,6 +24,7 @@ impl Road {
             lane_width: Meter(5.0),
             length: Kilometer(1.0),
             max_speed: KilometerPerHour(50.0),
+            spline: Spline::new(&[]),
         }
     }
 }

@@ -1,10 +1,11 @@
-mod road_connector;
 mod road;
+mod road_connector;
+mod spline;
 
-pub use road_connector::RoadConnector;
 use petgraph::graph::{EdgeIndex, NodeIndex};
 use petgraph::Graph;
 pub use road::Road;
+pub use road_connector::RoadConnector;
 
 pub type RoadId = EdgeIndex;
 pub type RoadConnectorId = NodeIndex;

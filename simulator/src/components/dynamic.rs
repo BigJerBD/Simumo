@@ -7,22 +7,14 @@ pub struct Position {
     pub y: f32,
 }
 
-
 #[derive(Component, Debug)]
 #[storage(VecStorage)]
 pub struct Angle(pub f32);
-
 
 #[derive(Component, Debug)]
 #[storage(VecStorage)]
 pub struct Speed(pub f32);
 
-
 #[derive(Component, Debug)]
 #[storage(VecStorage)]
 pub struct Acceleration(pub f32);
-
-
-
-
-
