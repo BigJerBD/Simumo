@@ -42,9 +42,9 @@ fn main() {
         .build();
 
     let mut dispatcher = DispatcherBuilder::new()
-        .with(systems::physic::print_system::PrintLog, "print", &[])
+        .with(systems::logging::print::PrintLog, "print", &[])
         .with(
-            systems::physic::movement_system::PositionUpdate,
+            systems::physic::mobility::PositionUpdate,
             "pos_update",
             &["print"],
         )
