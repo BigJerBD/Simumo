@@ -4,12 +4,20 @@ version = "0.1.0"
 authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>","bigj2701 <bigjerbd@gmail.com>"]
 edition = "2018"
 
-[main]
-proc-macro=true
-
 [dependencies]
+#data structure
 petgraph = "0.4.13"
-quote = "0.6"
-syn = "0.11.11"
+#ecs
 specs = "0.14.3"
 specs-derive = "0.4.0"
+#serialization
+csv = "1"
+serde = "1.0.86"
+serde_derive = "1.0.86"
+#meta-programming
+syn = "0.15.26"
+proc-macro2 = "0.4.27"
+quote = "0.6.11"
+#externals
+typeinfo = {path = "extern/typeinfo"}
+typeinfo_derive = {path = "extern/typeinfo_derive"}
