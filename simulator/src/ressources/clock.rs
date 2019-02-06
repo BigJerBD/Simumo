@@ -1,3 +1,4 @@
+#[derive(Default)]
 pub struct Clock {
     _dt: f64,
     _tick: i32,
