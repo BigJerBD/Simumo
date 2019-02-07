@@ -4,11 +4,13 @@ use specs::{Join, Read, ReadStorage, System};
 
 use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
-use crate::components::log_record::CarPositionLog;
+
 use crate::components::log_record::LogRecord;
+use crate::components::log_record::LogWritable;
 use crate::ressources::{clock, generals};
 use specs::LazyUpdate;
 use specs::WriteStorage;
+use typeinfo::TypeInfo;
 
 pub struct CarPosRec {
     capture_freq: f64,
@@ -36,12 +38,15 @@ impl<'a> System<'a> for CarPosRec {
 
         for (entity, _, position) in (&entities, &cars, &positions).join() {
             let log_info = entities.create();
-            let log_data = Box::new(CarPositionLog {
-                id: entity.id(),
-                y: position.y,
-                x: position.x,
-            });
-            updater.insert(log_info, LogRecord::new(log_data))
+            updater.insert(
+                log_info,
+                LogRecord::new(
+                    clock.get_time(),
+                    entity.id(),
+                    String::from("CarPosition"),
+                    Box::new(position.clone()),
+                ),
+            );
         }
     }
 }

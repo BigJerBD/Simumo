@@ -1,13 +1,13 @@
 use crate::components::dynamic::*;
 use crate::components::log_record::{LogRecord, LogWritable};
 use crate::ressources::{clock, generals};
-use crate::systems::logging::logger::LoggerImpl;
 
 use specs::prelude::*;
 
 use std::collections::HashMap;
 use std::fs::File;
 
+use crate::systems::logging::loggers::logger_impl::LoggerImpl;
 use csv::Writer;
 use std::path::Path;
 
@@ -49,12 +49,9 @@ impl<'a, L: LoggerImpl> System<'a> for LoggerSys<L> {
     /// records
     fn run(&mut self, (clock, mut records): Self::SystemData) {
         for record in records.join() {
-            let logkey = record.get_logtype();
+            let logkey = record.get_type();
             match self.log_writers.get_mut(&logkey) {
-                Some(writer) => {
-                    let data = record.get_data();
-                    writer.write(data)
-                }
+                Some(writer) => writer.write(record),
                 None => panic!("Invalid log type {}", logkey),
             }
         }

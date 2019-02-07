@@ -31,7 +31,7 @@ use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::systems::clock::ClockSys;
 use crate::systems::logging::log_sys::LoggerSys;
-use crate::systems::logging::logger::CsvLogger;
+use crate::systems::logging::loggers::csv_logger::CsvLogger;
 
 fn main() {
     let mut world = World::new();
@@ -81,7 +81,6 @@ fn main() {
             &["print"],
         )
         // NOTE uncomment this also
-
         //.with(
         //    systems::recording::car_pos_recorder::CarPosRec::new(0.5),
         //    "log_car",

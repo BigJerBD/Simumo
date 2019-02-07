@@ -1,3 +1,3 @@
 pub mod log_sys;
-pub mod logger;
+pub mod loggers;
 pub mod print_sys;
