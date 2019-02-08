@@ -4,6 +4,8 @@ extern crate specs_derive;
 extern crate serde_derive;
 #[macro_use]
 extern crate erased_serde;
+#[macro_use]
+extern crate simumo_derive;
 
 extern crate serde;
 
@@ -15,11 +17,13 @@ mod topology;
 
 mod types;
 
+
 mod components;
 mod metrics;
 mod ressources;
 mod systems;
 mod util;
+mod simulation;
 
 use ressources::*;
 use topology::Topology;
