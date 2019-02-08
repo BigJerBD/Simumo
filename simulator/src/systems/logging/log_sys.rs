@@ -50,7 +50,7 @@ impl<'a, L: LoggerImpl> System<'a> for LoggerSys<L> {
     fn run(&mut self, (clock, mut records): Self::SystemData) {
         for record in records.join() {
             let logkey = record.get_type();
-            match self.log_writers.get_mut(&logkey) {
+            match self.log_writers.get_mut(logkey) {
                 Some(writer) => writer.write(record),
                 None => panic!("Invalid log type {}", logkey),
             }

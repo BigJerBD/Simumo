@@ -35,8 +35,8 @@ impl LogRecord {
             log_data,
         }
     }
-    pub fn get_type(&self) -> String {
-        self.record_type.clone()
+    pub fn get_type(&self) -> &String {
+        &self.record_type
     }
 }
 
