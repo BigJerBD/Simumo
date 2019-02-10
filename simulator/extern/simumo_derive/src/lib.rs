@@ -36,7 +36,7 @@ pub fn simucomponent_tag(_metadata: proc_macro::TokenStream, input: proc_macro::
             TypeInfo,
             Debug,
             Clone,
-            Serialize,
+            //Serialize,
             )]
         #input
     };
@@ -55,7 +55,7 @@ pub fn simucomponent_data(_metadata: proc_macro::TokenStream, input: proc_macro:
             TypeInfo,
             Debug,
             Clone,
-            Serialize
+            //Serialize
             )]
         #input
     };

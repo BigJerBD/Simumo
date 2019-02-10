@@ -38,15 +38,16 @@ impl<'a> System<'a> for CarPosRec {
 
         for (entity, _, position) in (&entities, &cars, &positions).join() {
             let log_info = entities.create();
-            updater.insert(
-                log_info,
-                LogRecord::new(
-                    clock.get_time(),
-                    entity.id(),
-                    String::from("CarPosition"),
-                    Box::new(position.clone()),
-                ),
-            );
+            // todo :: currently doesnt serialize until we fix metric problems
+            //updater.insert(
+            //    log_info,
+            //    LogRecord::new(
+            //        clock.get_time(),
+            //        entity.id(),
+            //        String::from("CarPosition"),
+            //        Box::new(position.clone()),
+            //    ),
+            //);
         }
     }
 }
