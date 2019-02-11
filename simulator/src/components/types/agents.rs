@@ -1,8 +1,9 @@
+use crate::components::simumo_component::*;
+use serde::ser::{Serialize, SerializeStruct, Serializer};
+use simumo_derive::*;
 use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
-use crate::components::simumo_component::SimumoComponent;
-use simumo_derive::simucomponent_data;
 
 #[simucomponent_data]
 #[storage(VecStorage)]

@@ -1,19 +1,15 @@
-use specs::prelude::{Component, VecStorage,World};
+use crate::components::simumo_component::SimumoComponent;
+use simumo_derive::simucomponent_base;
+use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
-use simumo_derive::simucomponent_base;
-use crate::components::simumo_component::SimumoComponent;
 
-
-use serde::{Deserialize, Serialize};
 use serde::ser::SerializeStruct;
 use serde::Serializer;
+use serde::{Deserialize, Serialize};
 use specs::DenseVecStorage;
 use specs::Entity;
 use std::fmt::Debug;
-
-
-
 
 #[simucomponent_base]
 #[derive(Serialize)]
@@ -25,7 +21,6 @@ pub struct LogRecord {
     #[serde(flatten)]
     log_data: Box<LogWritable>,
 }
-
 
 impl LogRecord {
     pub fn new(

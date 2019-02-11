@@ -1,13 +1,12 @@
-use specs::prelude::*;
-use specs::Dispatcher;
 use crate::ressources::clock;
 use crate::ressources::generals;
+use specs::prelude::*;
+use specs::Dispatcher;
 
 pub struct Simulation<'a, 'b> {
     world: World,
     dispatcher: Dispatcher<'a, 'b>,
 }
-
 
 impl<'a, 'b> Simulation<'a, 'b> {
     pub fn run_simulation(&mut self) {
@@ -16,11 +15,12 @@ impl<'a, 'b> Simulation<'a, 'b> {
             // Maintain dynamically add and remove entities in dispatch.
             self.world.maintain();
 
-            if has_ended(&self.world) { break; }
+            if has_ended(&self.world) {
+                break;
+            }
         }
     }
 }
-
 
 fn has_ended(ressources: &World) -> bool {
     let clock = ressources.read_resource::<clock::Clock>();

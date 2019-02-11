@@ -17,13 +17,12 @@ mod topology;
 
 mod types;
 
-
 mod components;
 mod metrics;
 mod ressources;
+mod simulation;
 mod systems;
 mod util;
-mod simulation;
 
 use ressources::*;
 use topology::Topology;

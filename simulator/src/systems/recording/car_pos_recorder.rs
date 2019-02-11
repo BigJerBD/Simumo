@@ -7,6 +7,7 @@ use crate::components::dynamic::Position;
 
 use crate::components::log_record::LogRecord;
 use crate::components::log_record::LogWritable;
+use crate::components::simumo_component::SimumoLoggable;
 use crate::ressources::{clock, generals};
 use specs::LazyUpdate;
 use specs::WriteStorage;
@@ -39,15 +40,15 @@ impl<'a> System<'a> for CarPosRec {
         for (entity, _, position) in (&entities, &cars, &positions).join() {
             let log_info = entities.create();
             // todo :: currently doesnt serialize until we fix metric problems
-            //updater.insert(
-            //    log_info,
-            //    LogRecord::new(
-            //        clock.get_time(),
-            //        entity.id(),
-            //        String::from("CarPosition"),
-            //        Box::new(position.clone()),
-            //    ),
-            //);
+            updater.insert(
+                log_info,
+                LogRecord::new(
+                    clock.get_time(),
+                    entity.id(),
+                    String::from("CarPosition"),
+                    Box::new(position.clone()),
+                ),
+            );
         }
     }
 }
