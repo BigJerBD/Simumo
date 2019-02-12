@@ -4,12 +4,10 @@ use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
 
-use serde::ser::SerializeStruct;
-use serde::Serializer;
-use serde::{Deserialize, Serialize};
-use specs::DenseVecStorage;
-use specs::Entity;
-use std::fmt::Debug;
+use serde::{Serialize};
+
+
+
 
 #[simucomponent_base]
 #[derive(Serialize)]
@@ -19,7 +17,7 @@ pub struct LogRecord {
     record_id: u32,
     record_type: String,
     #[serde(flatten)]
-    log_data: Box<LogWritable>,
+    log_data: Box<dyn LogWritable>,
 }
 
 impl LogRecord {
@@ -27,7 +25,7 @@ impl LogRecord {
         timestamp: f64,
         record_id: u32,
         record_type: String,
-        log_data: Box<LogWritable>,
+        log_data: Box<dyn LogWritable>,
     ) -> Self {
         LogRecord {
             timestamp,
@@ -42,5 +40,6 @@ impl LogRecord {
 }
 
 pub trait LogWritable: Send + Sync + erased_serde::Serialize {}
+
 impl<T: Send + Sync + Serialize> LogWritable for T {}
 serialize_trait_object!(LogWritable);

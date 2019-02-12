@@ -1,3 +1,5 @@
+//todo:: remove this when program will be complete
+#![allow(dead_code)]
 #[macro_use]
 extern crate specs_derive;
 #[macro_use]
@@ -7,11 +9,6 @@ extern crate erased_serde;
 #[macro_use]
 extern crate simumo_derive;
 
-extern crate serde;
-
-extern crate csv;
-extern crate proc_macro2;
-extern crate specs;
 
 mod topology;
 
@@ -25,7 +22,6 @@ mod systems;
 mod util;
 
 use ressources::*;
-use topology::Topology;
 
 use components::dynamic::{Position, Speed};
 use specs::prelude::*;
@@ -33,8 +29,8 @@ use specs::prelude::*;
 use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::systems::clock::ClockSys;
-use crate::systems::logging::log_sys::LoggerSys;
-use crate::systems::logging::loggers::csv_logger::CsvLogger;
+
+
 
 fn main() {
     let mut world = World::new();

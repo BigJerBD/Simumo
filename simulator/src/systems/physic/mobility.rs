@@ -1,6 +1,5 @@
 use specs::prelude::*;
 
-use crate::components::constant::*;
 use crate::components::dynamic::*;
 
 pub struct PositionUpdate;

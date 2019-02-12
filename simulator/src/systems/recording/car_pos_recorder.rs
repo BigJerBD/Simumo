@@ -1,17 +1,13 @@
 use specs::Entities;
-use specs::Resources;
+
 use specs::{Join, Read, ReadStorage, System};
 
 use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
 
 use crate::components::log_record::LogRecord;
-use crate::components::log_record::LogWritable;
-use crate::components::simumo_component::SimumoLoggable;
-use crate::ressources::{clock, generals};
+use crate::ressources::{clock};
 use specs::LazyUpdate;
-use specs::WriteStorage;
-use typeinfo::TypeInfo;
 
 pub struct CarPosRec {
     capture_freq: f64,
