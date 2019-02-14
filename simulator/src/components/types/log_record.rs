@@ -17,7 +17,7 @@ pub struct LogRecord {
     record_id: u32,
     record_type: String,
     #[serde(flatten)]
-    log_data: Box<dyn LogWritable>,
+    log_data: Box<LogWritable>,
 }
 
 impl LogRecord {
@@ -25,7 +25,7 @@ impl LogRecord {
         timestamp: f64,
         record_id: u32,
         record_type: String,
-        log_data: Box<dyn LogWritable>,
+        log_data: Box<LogWritable>,
     ) -> Self {
         LogRecord {
             timestamp,

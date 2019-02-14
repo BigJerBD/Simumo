@@ -30,7 +30,8 @@ use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::systems::clock::ClockSys;
 
-
+//use crate::systems::logging::log_sys::*;
+//use crate::systems::logging::loggers::ndjson_logger::NdJsonLogger;
 
 fn main() {
     let mut world = World::new();
@@ -68,9 +69,9 @@ fn main() {
 
     //NOTE :: uncomment and add a personal path to try to use the logs
 
-    //let logger: LoggerSys<CsvLogger> = systems::logging::log_sys::LoggerSys::new(
+    //let logger: LoggerSys<NdJsonLogger> = systems::logging::log_sys::LoggerSys::new(
     //    String::from("/home/bigjerbd/Workspace/gitlab/simumo/simulator/test"),
-    //    &["CarPositionLog"],
+    //    &["CarPosition"],
     //);
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::logging::print_sys::PrintLog, "print", &[])
@@ -85,7 +86,6 @@ fn main() {
         //    "log_car",
         //    &["pos_update"],
         //)
-        //
         //.with(logger, "logger_sys", &["log_car"])
         //.with_barrier()
         .with(ClockSys, "clock_sys", &[])
