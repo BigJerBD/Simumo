@@ -5,6 +5,7 @@ authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@proton
 edition = "2018"
 
 [dependencies]
+dimensioned = "0.7.0"
 #data structure
 petgraph = "0.4.13"
 #ecs
@@ -24,3 +25,4 @@ quote = "0.6.11"
 #externals
 typeinfo = {path = "extern/typeinfo"}
 typeinfo_derive = {path = "extern/typeinfo_derive"}
+simumo_derive = {path = "extern/simumo_derive"}

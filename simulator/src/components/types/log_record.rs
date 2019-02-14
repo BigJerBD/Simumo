@@ -1,17 +1,12 @@
-use serde::{Deserialize, Serialize};
-use specs::prelude::{Component, VecStorage};
-
-use serde::ser::SerializeStruct;
-use serde::Serializer;
-use specs::DenseVecStorage;
-use specs::Entity;
-use std::fmt::Debug;
-
-use crate::components::dynamic::Position;
+use crate::components::simumo_component::SimumoComponent;
+use simumo_derive::simucomponent_base;
+use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
+use serde::{Serialize};
 
-#[derive(Component, Serialize)]
+#[simucomponent_base]
+#[derive(Serialize)]
 #[storage(VecStorage)]
 pub struct LogRecord {
     timestamp: f64,
@@ -41,5 +36,6 @@ impl LogRecord {
 }
 
 pub trait LogWritable: Send + Sync + erased_serde::Serialize {}
+
 impl<T: Send + Sync + Serialize> LogWritable for T {}
 serialize_trait_object!(LogWritable);
