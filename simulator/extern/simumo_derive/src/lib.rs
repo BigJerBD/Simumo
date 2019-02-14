@@ -40,7 +40,6 @@ pub fn simumo_component(input: proc_macro::TokenStream) -> proc_macro::TokenStre
 /// can handle custom field name for field having the "simumo_metric" tag
 #[proc_macro_derive(SimumoSerialize, attributes(simumo_metric))]
 pub fn simumo_serialize(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    //let ast2: Pat = syn::parse(input.clone()).unwrap();
     let ast: DeriveInput = syn::parse(input).unwrap();
 
     let name = &ast.ident;
