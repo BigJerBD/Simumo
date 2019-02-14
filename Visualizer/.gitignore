@@ -110,9 +110,19 @@ venv.bak/
 /site
 
 # mypy
-.mypy_cache/
+.mypy_cache/var vector = new HeatmapLayer({
+        source: new VectorSource({
+          url: 'data/kml/2012_Earthquakes_Mag5.kml',
+          format: new KML({
+            extractStyles: false
+          })
+        }),
+        blur: parseInt(blur.value, 10),
+        radius: parseInt(radius.value, 10)
+      });
 .dmypy.json
 dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea
