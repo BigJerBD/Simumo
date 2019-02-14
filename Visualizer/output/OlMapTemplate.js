@@ -18,7 +18,7 @@
 
   //Instantiate with some options and add the Control
   var geocoder = new Geocoder('nominatim', {
-    provider: 'photon',
+    provider: 'osm',
     targetType: 'glass-button',
     lang: 'en',
     placeholder: 'Search for ...',
@@ -29,14 +29,5 @@
 
   map.addControl(geocoder);
   map.addOverlay(popup);
-
-  geocoder.on('addresschosen', function(evt) {
-    // hack: unzoom after location selection as it is too much zoomed
-    setTimeout(function () {
-      map.getView().setZoom(map.getView().getZoom() - 1);
-    }, 1000);
-  });
-
-
 
 })(window, document);

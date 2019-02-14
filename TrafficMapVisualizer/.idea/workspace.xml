@@ -1,7 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="be573ed1-951b-4156-bf74-7c6356ddd15b" name="Default Changelist" comment="" />
+    <list default="true" id="be573ed1-951b-4156-bf74-7c6356ddd15b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/TrafficMapVisualizer.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OsmCityFetching.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OsmMap.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/OsmOpenLayers.j2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RenderOsmMap.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/.eslintrc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/.npmignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/examples/control-glass.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/examples/control-glass.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/examples/control-nominatim.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/examples/control-nominatim.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/examples/custom-provider.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/examples/custom-provider.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/konstants/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/konstants/vars.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/base.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/helpers/ajax.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/helpers/dom.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/helpers/mix.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/html.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/nominatim.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/providers/bing.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/providers/mapquest.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/providers/opencage.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/providers/osm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/providers/pelias.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/providers/photon.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/sass/common.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/sass/glass.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/sass/input-text.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/sass/main.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/sass/partials/_functions.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/src/sass/partials/_mixins.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/template/OlMapTemplate.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/template/OlMapTemplate.j2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/template/ol-geocoder.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/template/ol-geocoder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/template/ol-geocoder.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/.eslintrc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/controls/glass.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/controls/page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/controls/text-input.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/pages/control-glass.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/pages/control-glass.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/pages/control-input.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/pages/control-input.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/pages/providers.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/pages/providers.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/bing.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/mapquest.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/mapzen.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/opencage.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/osm.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/e2e/providers/photon.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/env-setup.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/env.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/helpers/mix.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/unit/.eslintrc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ol-geocoder/test/unit/instance.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/OlMapTemplate.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/OlMapTemplate.js" beforeDir="false" afterPath="$PROJECT_DIR$/output/OlMapTemplate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/ol-geocoder.js" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -9,46 +85,10 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/TrafficMapVisualizer$Run.coverage" NAME="Run Coverage Results" MODIFIED="1548871234997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TrafficMapVisualizer$Run.coverage" NAME="Run Coverage Results" MODIFIED="1548878266642" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OsmCityFetching.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="95" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="95" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OsmOpenLayers.j2">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="69" column="7" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/RenderOsmMap.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="24" selection-start-line="28" selection-start-column="24" selection-end-line="28" selection-end-column="24" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/OsmMap.html">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -72,6 +112,9 @@
       <find>OSM XML</find>
     </findStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -89,6 +132,7 @@
     <option name="width" value="1084" />
     <option name="height" value="886" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -110,7 +154,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/RenderOsmMap.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Visualizer" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -163,22 +207,22 @@
       <workItem from="1547847810246" duration="6739000" />
       <workItem from="1547955794946" duration="11381000" />
       <workItem from="1548451318195" duration="9548000" />
+      <workItem from="1548873422073" duration="3272000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29512000" />
+    <option name="totallyTimeSpent" value="32784000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1987" y="25" width="1213" height="999" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2622108" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2673522" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32912844" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32912844" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32873562" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39908257" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -207,12 +251,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/OsmMap.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vector-osm.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/vector-osm.html" />
     <entry file="file://$PROJECT_DIR$/OsmCityFetching.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -222,15 +261,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OsmOpenLayers.j2">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
+        <state relative-caret-position="502">
           <caret line="69" column="7" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="7" />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/OsmMap.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/RenderOsmMap.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="24" selection-start-line="28" selection-start-column="24" selection-end-line="28" selection-end-column="24" />
+        <state relative-caret-position="150">
+          <caret line="10" column="36" selection-start-line="10" selection-start-column="36" selection-end-line="10" selection-end-column="36" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

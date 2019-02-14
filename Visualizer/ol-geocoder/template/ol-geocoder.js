@@ -1004,7 +1004,7 @@
       if (bbox) {
         map.getView().fit(bbox, { duration: 500 });
       } else {
-        flyTo(map, coord, 6 , 0);
+        flyTo(map, coord, 0, 6);
       }
       const feature = this.createFeature(coord, address);
 
@@ -1015,7 +1015,6 @@
         coordinate: coord,
         bbox: bbox
       });
-
 
     }
   };
@@ -1148,6 +1147,8 @@
           break;
       }
       if (res_) {
+        //this$1.createList(res_);
+        //this$1.listenMapClick();
         let addressHtml;
         switch (this$1.options.provider) {
           case PROVIDERS.OSM:
