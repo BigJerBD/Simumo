@@ -1,31 +1,34 @@
 #[macro_use]
-extern crate specs_derive;
+extern crate erased_serde;
+#[macro_use]
+extern crate lazy_static;
+extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
-extern crate erased_serde;
-
-extern crate serde;
+extern crate specs_derive;
 
 extern crate csv;
 extern crate proc_macro2;
+extern crate rand;
 extern crate specs;
+extern crate uuid;
 
-mod topology;
-
-mod types;
 
 mod components;
 mod metrics;
 mod ressources;
+mod rng;
 mod systems;
+mod topology;
+mod types;
 mod util;
 
-use ressources::*;
-use topology::Topology;
-
 use components::dynamic::{Position, Speed};
+use ressources::*;
+use rng::seed;
 use specs::prelude::*;
+use topology::Topology;
 
 use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
@@ -33,13 +36,13 @@ use crate::systems::clock::ClockSys;
 use crate::systems::logging::log_sys::LoggerSys;
 use crate::systems::logging::loggers::csv_logger::CsvLogger;
 
+
 fn main() {
     let mut world = World::new();
-
     //Ressources registering
+    // world.add_resource(seed);
     world.add_resource(clock::Clock::new(0.25));
     world.add_resource(generals::EndTime(12.5));
-    world.add_resource(generals::LogDirectory(String::from("testpath")));
 
     // Component registering
     world.register::<Position>();
