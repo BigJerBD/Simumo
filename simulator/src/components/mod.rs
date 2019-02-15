@@ -1,6 +1,3 @@
-pub mod agents;
-pub mod constant;
-pub mod controls;
-pub mod dynamic;
-pub mod log_record;
-pub mod visual;
+pub mod simumo_component;
+pub mod types;
+pub use self::types::*;

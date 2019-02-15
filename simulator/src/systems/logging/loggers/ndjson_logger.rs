@@ -19,6 +19,6 @@ impl LoggerImpl for NdJsonLogger {
     fn write<S: Serialize>(&mut self, record: S) {
         let mut json = serde_json::to_string(&record).unwrap();
         json.push('\n');
-        self.file_writer.write(json.as_bytes());
+        self.file_writer.write(json.as_bytes()).unwrap();
     }
 }

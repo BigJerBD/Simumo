@@ -1,8 +1,6 @@
 use crate::systems::logging::loggers::logger_impl::LoggerImpl;
 use serde::Serialize;
-use serde::Serializer;
 use std::fs::File;
-use std::result::Result;
 
 /// Logger that writes data in a csv format in a specified file
 pub struct CsvLogger {
@@ -20,6 +18,6 @@ impl LoggerImpl for CsvLogger {
     }
 
     fn write<S: Serialize>(&mut self, record: S) {
-        self.csv_write.serialize(record);
+        self.csv_write.serialize(record).unwrap();
     }
 }
