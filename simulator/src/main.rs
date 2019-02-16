@@ -1,32 +1,39 @@
 //todo:: remove this when program will be complete
 #![allow(dead_code)]
 #[macro_use]
-extern crate specs_derive;
+extern crate erased_serde;
+#[macro_use]
+extern crate lazy_static;
+extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
-extern crate erased_serde;
-#[macro_use]
 extern crate simumo_derive;
+#[macro_use]
+extern crate specs_derive;
 
+
+extern crate csv;
+extern crate proc_macro2;
+extern crate rand;
+extern crate specs;
 extern crate uuid;
 
-mod topology;
-
-mod types;
 
 mod components;
 mod configurations;
 mod metrics;
 mod ressources;
+mod rng;
 mod simulation;
 mod systems;
+mod topology;
+mod types;
 mod util;
-
-use ressources::*;
 
 use components::dynamic::{Position, Speed};
 use configurations::configuration;
+use ressources::*;
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
@@ -40,9 +47,9 @@ fn main() {
     configuration::set_configs(&mut world);
 
     //Ressources registering
+    // world.add_resource(seed);
     world.add_resource(clock::Clock::new(0.25));
     world.add_resource(generals::EndTime(12.5));
-    world.add_resource(generals::LogDirectory(String::from("testpath")));
 
     // Component registering
     world.register::<Position>();

@@ -6,7 +6,9 @@ edition = "2018"
 
 [dependencies]
 dimensioned = "0.7.0"
-uuid = { version = "0.7", features = ["v4"] }
+lazy_static = "1.2.0"
+simumo_derive = {path = "extern/simumo_derive"}
+uuid = {version = "0.7", features = ["v4"]}
 #data structure
 petgraph = "0.4.13"
 #ecs
@@ -23,7 +25,10 @@ erased-serde = "0.3"
 syn = "0.15.26"
 proc-macro2 = "0.4.27"
 quote = "0.6.11"
+
 #externals
 typeinfo = {path = "extern/typeinfo"}
 typeinfo_derive = {path = "extern/typeinfo_derive"}
-simumo_derive = {path = "extern/simumo_derive"}
+
+#rng
+rand = "0.6"
