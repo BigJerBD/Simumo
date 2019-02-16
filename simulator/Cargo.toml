@@ -1,11 +1,12 @@
 [package]
 name = "simulator"
 version = "0.1.0"
-authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>","bigj2701 <bigjerbd@gmail.com>"]
+authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>","bigj2701 <bigjerbd@gmail.com>", "nadj2316 <jonatan.nadeau@usherbrooke.ca>" ]
 edition = "2018"
 
 [dependencies]
 dimensioned = "0.7.0"
+uuid = { version = "0.7", features = ["v4"] }
 #data structure
 petgraph = "0.4.13"
 #ecs

@@ -1,4 +1,3 @@
-
 use specs::Component;
 use specs::World;
 use std::collections::HashMap;

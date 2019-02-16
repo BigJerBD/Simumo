@@ -9,12 +9,14 @@ extern crate erased_serde;
 #[macro_use]
 extern crate simumo_derive;
 
+extern crate uuid;
 
 mod topology;
 
 mod types;
 
 mod components;
+mod configurations;
 mod metrics;
 mod ressources;
 mod simulation;
@@ -24,17 +26,18 @@ mod util;
 use ressources::*;
 
 use components::dynamic::{Position, Speed};
+use configurations::configuration;
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::systems::clock::ClockSys;
-
 //use crate::systems::logging::log_sys::*;
 //use crate::systems::logging::loggers::ndjson_logger::NdJsonLogger;
 
 fn main() {
     let mut world = World::new();
+    configuration::set_configs(&mut world);
 
     //Ressources registering
     world.add_resource(clock::Clock::new(0.25));
