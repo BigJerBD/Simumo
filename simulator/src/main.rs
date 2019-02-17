@@ -25,6 +25,7 @@ use ressources::*;
 use topology::Topology;
 
 use components::dynamic::{Position, Speed};
+use components::statics::{Color, ColorUpdate, TrafficLightColor, GreenTime, GreenTimeUpdate, MaxGreenTime};
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
@@ -45,6 +46,9 @@ fn main() {
     world.register::<Position>();
     world.register::<Speed>();
     world.register::<CarType>();
+    world.register::<Color>();
+    world.register::<GreenTime>();
+    world.register::<MaxGreenTime>();
     world.register::<LogRecord>();
     world
         .create_entity()
@@ -64,6 +68,18 @@ fn main() {
         .with(Position { x: 0.0, y: 0.0 })
         .with(CarType)
         .build();
+    world
+        .create_entity()
+        .with(Color(TrafficLightColor::GREEN))
+        .with(MaxGreenTime(5.0))
+        .with(GreenTime(3.5))
+        .build();
+    world
+        .create_entity()
+        .with(Color(TrafficLightColor::RED))
+        .with(MaxGreenTime(3.0))
+        .with(GreenTime(0.0))
+        .build();
 
     // System registering
 
@@ -75,6 +91,16 @@ fn main() {
     //);
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::logging::print_sys::PrintLog, "print", &[])
+        .with(
+            GreenTimeUpdate,
+            "greentime_update",
+            &["print"],
+        )
+        .with(
+            ColorUpdate,
+            "color_update",
+            &["print"],
+        )
         .with(
             systems::physic::mobility::PositionUpdate,
             "pos_update",
@@ -98,7 +124,7 @@ fn main() {
         dispatcher.dispatch(&mut world.res);
         // Maintain dynamically add and remove entities in dispatch.
         world.maintain();
-        // verify if the simulation is overs
+        // verify if the simulation is over
         let clock = world.read_resource::<clock::Clock>();
         let end_time = world.read_resource::<generals::EndTime>();
         if clock.get_time() >= end_time.0 {
