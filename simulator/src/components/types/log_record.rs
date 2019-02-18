@@ -1,15 +1,19 @@
-use crate::components::simumo_component::SimumoComponent;
+use dim::si::Second;
+use serde::{Serialize, Serializer};
 use simumo_derive::simucomponent_base;
 use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
-use serde::{Serialize};
+
+use crate::components::simumo_component::SimumoComponent;
+use crate::metrics::Fdim;
 
 #[simucomponent_base]
 #[derive(Serialize)]
 #[storage(VecStorage)]
 pub struct LogRecord {
-    timestamp: f64,
+    #[serde(serialize_with="timestamp_serialize")]
+    timestamp: Second<Fdim>,
     record_id: u32,
     record_type: String,
     #[serde(flatten)]
@@ -18,7 +22,7 @@ pub struct LogRecord {
 
 impl LogRecord {
     pub fn new(
-        timestamp: f64,
+        timestamp: Second<Fdim>,
         record_id: u32,
         record_type: String,
         log_data: Box<LogWritable>,
@@ -33,6 +37,13 @@ impl LogRecord {
     pub fn get_type(&self) -> &String {
         &self.record_type
     }
+}
+
+fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+{
+    s.serialize_f64(x.value_unsafe)
 }
 
 pub trait LogWritable: Send + Sync + erased_serde::Serialize {}

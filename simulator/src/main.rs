@@ -8,6 +8,7 @@ extern crate serde_derive;
 extern crate erased_serde;
 #[macro_use]
 extern crate simumo_derive;
+extern crate dimensioned as dim;
 
 
 mod topology;
@@ -24,6 +25,7 @@ mod util;
 use ressources::*;
 
 use components::dynamic::{Position, Speed};
+use dim::si::{M, MPS, S};
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
@@ -37,9 +39,9 @@ fn main() {
     let mut world = World::new();
 
     //Ressources registering
-    world.add_resource(clock::Clock::new(0.25));
-    world.add_resource(generals::EndTime(12.5));
-    world.add_resource(generals::LogDirectory(String::from("testpath")));
+    world.add_resource(clock::Clock::new(0.25 * S));
+    world.add_resource(generals::EndTime { val: 12.5 * S });
+    world.add_resource(generals::LogDirectory { val: String::from("testpath") });
 
     // Component registering
     world.register::<Position>();
@@ -48,20 +50,20 @@ fn main() {
     world.register::<LogRecord>();
     world
         .create_entity()
-        .with(Speed(2.0))
-        .with(Position { x: 0.0, y: 0.0 })
+        .with(Speed { val: 2.0 * MPS })
+        .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
     world
         .create_entity()
-        .with(Speed(4.0))
-        .with(Position { x: 0.0, y: 0.0 })
+        .with(Speed { val: 4.0 * MPS })
+        .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
     world
         .create_entity()
-        .with(Speed(1.5))
-        .with(Position { x: 0.0, y: 0.0 })
+        .with(Speed { val: 1.5 * MPS })
+        .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
 
@@ -100,7 +102,7 @@ fn main() {
         // verify if the simulation is overs
         let clock = world.read_resource::<clock::Clock>();
         let end_time = world.read_resource::<generals::EndTime>();
-        if clock.get_time() >= end_time.0 {
+        if clock.get_time() >= end_time.val {
             break;
         }
     }

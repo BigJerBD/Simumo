@@ -25,5 +25,5 @@ impl<'a, 'b> Simulation<'a, 'b> {
 fn has_ended(ressources: &World) -> bool {
     let clock = ressources.read_resource::<clock::Clock>();
     let end_time = ressources.read_resource::<generals::EndTime>();
-    return clock.get_time() >= end_time.0;
+    return clock.get_time() >= end_time.val;
 }
