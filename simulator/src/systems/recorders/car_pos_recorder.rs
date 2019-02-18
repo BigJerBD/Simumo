@@ -1,13 +1,10 @@
-use specs::Entities;
-
-use specs::{Join, Read, ReadStorage, System};
+use crate::systems::sys_prelude::*;
 
 use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
-
 use crate::components::log_record::LogRecord;
 use crate::ressources::{clock};
-use specs::LazyUpdate;
+
 
 pub struct CarPosRec {
     capture_freq: f64,

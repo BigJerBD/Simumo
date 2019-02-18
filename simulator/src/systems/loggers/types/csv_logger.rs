@@ -1,13 +1,17 @@
-use crate::systems::logging::loggers::logger_impl::LoggerImpl;
-use serde::Serialize;
 use std::fs::File;
 
+use serde::Serialize;
+
+use crate::systems::loggers::LoggerType;
+use crate::systems::sys_prelude::*;
+
 /// Logger that writes data in a csv format in a specified file
+#[simusystem]
 pub struct CsvLogger {
     csv_write: csv::Writer<File>,
 }
 
-impl LoggerImpl for CsvLogger {
+impl LoggerType for CsvLogger {
     fn open(filename: &str) -> Self {
         let filename = [filename, ".csv"].concat();
 

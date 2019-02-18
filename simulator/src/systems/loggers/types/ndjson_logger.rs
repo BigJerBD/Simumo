@@ -1,14 +1,18 @@
-use crate::systems::logging::loggers::logger_impl::LoggerImpl;
-use serde::Serialize;
 use std::fs::File;
 use std::io::Write;
 
+use serde::Serialize;
+
+use crate::systems::loggers::LoggerType;
+use crate::systems::sys_prelude::*;
+
 /// Logger that writes data in a json format in a specified file
+#[simusystem]
 pub struct NdJsonLogger {
     file_writer: File,
 }
 
-impl LoggerImpl for NdJsonLogger {
+impl LoggerType for NdJsonLogger {
     fn open(filename: &str) -> Self {
         let filename = [filename, ".ndjson"].concat();
         Self {

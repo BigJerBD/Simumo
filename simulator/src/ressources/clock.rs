@@ -1,4 +1,6 @@
-#[derive(Default)]
+use crate::ressources::res_prelude::*;
+
+#[simuresource]
 pub struct Clock {
     _dt: f64,
     _tick: i32,

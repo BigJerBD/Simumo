@@ -1,8 +1,12 @@
-use crate::components::agents::*;
-use crate::components::controls::*;
-use specs::prelude::*;
+use crate::components::agents::AcceleratingAgent;
+use crate::components::controls::EnergyControl;
 
+use crate::systems::agents::AgentSys;
+use crate::systems::sys_prelude::*;
+
+#[simusystem]
 pub struct AcceleratingAgentSys;
+impl AgentSys for AcceleratingAgentSys{}
 
 impl<'a> System<'a> for AcceleratingAgentSys {
     type SystemData = (

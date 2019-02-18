@@ -1,24 +1,26 @@
-use crate::components::log_record::{LogRecord};
+use crate::components::log_record::LogRecord;
 use crate::ressources::clock;
+use crate::systems::loggers::LoggerType;
 
-use specs::prelude::*;
+use crate::systems::sys_prelude::*;
+
+
+
 use std::collections::HashMap;
-
-
-use crate::systems::logging::loggers::logger_impl::LoggerImpl;
 use std::path::Path;
 
 /// LoggerSys that can be specialised with a
 /// specific Logger
 ///
 /// example :: CsvLogging, PrintLogging, JsonLogging, etc.
-///
-pub struct LoggerSys<L: LoggerImpl> {
+pub struct LoggerSys<L: LoggerType> {
     dir_path: String,
     log_writers: HashMap<String, L>,
 }
 
-impl<L: LoggerImpl> LoggerSys<L> {
+
+
+impl<L: LoggerType> LoggerSys<L> {
     /// Init by opening a logger for every log
     /// data type input for the function
     pub fn new(dir_path: String, logtypes: &[&str]) -> LoggerSys<L> {
@@ -39,7 +41,7 @@ impl<L: LoggerImpl> LoggerSys<L> {
     }
 }
 
-impl<'a, L: LoggerImpl> System<'a> for LoggerSys<L> {
+impl<'a, L: LoggerType> System<'a> for LoggerSys<L> {
     type SystemData = (Read<'a, clock::Clock>, WriteStorage<'a, LogRecord>);
 
     /// the run process select the right logger for every

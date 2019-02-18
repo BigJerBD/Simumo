@@ -1,9 +1,4 @@
-use crate::components::simumo_component::SimumoComponent;
-use simumo_derive::simucomponent_base;
-use specs::prelude::{Component, VecStorage, World};
-use typeinfo::TypeInfo;
-use typeinfo_derive::*;
-use serde::{Serialize};
+use crate::components::type_prelude::*;
 
 #[simucomponent_base]
 #[derive(Serialize)]
@@ -34,6 +29,7 @@ impl LogRecord {
         &self.record_type
     }
 }
+
 
 pub trait LogWritable: Send + Sync + erased_serde::Serialize {}
 

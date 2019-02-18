@@ -1,4 +1,6 @@
-#[derive(Default)]
+use crate::ressources::res_prelude::*;
+
+#[simuresource]
 pub struct LogDirectory(pub String);
-#[derive(Default)]
+#[simuresource]
 pub struct EndTime(pub f64);
