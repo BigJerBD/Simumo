@@ -25,7 +25,7 @@ use ressources::*;
 use topology::Topology;
 
 use components::dynamic::{Position, Speed};
-use components::statics::{Color, ColorUpdate, TrafficLightColor, GreenTime, GreenTimeUpdate, MaxGreenTime};
+use components::statics::*;
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
@@ -47,8 +47,9 @@ fn main() {
     world.register::<Speed>();
     world.register::<CarType>();
     world.register::<Color>();
-    world.register::<GreenTime>();
+    world.register::<Time>();
     world.register::<MaxGreenTime>();
+    world.register::<MaxYellowTime>();
     world.register::<LogRecord>();
     world
         .create_entity()
@@ -72,13 +73,15 @@ fn main() {
         .create_entity()
         .with(Color(TrafficLightColor::GREEN))
         .with(MaxGreenTime(5.0))
-        .with(GreenTime(3.5))
+        .with(MaxYellowTime(1.5))
+        .with(Time(3.5))
         .build();
     world
         .create_entity()
         .with(Color(TrafficLightColor::RED))
         .with(MaxGreenTime(3.0))
-        .with(GreenTime(0.0))
+        .with(MaxYellowTime(1.0))
+        .with(Time(0.0))
         .build();
 
     // System registering
@@ -91,16 +94,10 @@ fn main() {
     //);
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::logging::print_sys::PrintLog, "print", &[])
-        .with(
-            GreenTimeUpdate,
-            "greentime_update",
-            &["print"],
-        )
-        .with(
-            ColorUpdate,
-            "color_update",
-            &["print"],
-        )
+        //.with(GreenTimeUpdate, "greentime_update", &["print"])
+        .with(ColorUpdate, "color_update", &["print"])
+        //.with(YellowTimeUpdate, "yellowtime_update", &["print"])
+        //.with(ColorUpdate, "color_update", &["print"]
         .with(
             systems::physic::mobility::PositionUpdate,
             "pos_update",

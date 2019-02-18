@@ -1,7 +1,7 @@
 use crate::ressources::{clock};
 use crate::components::dynamic::*;
 use crate::components::statics::*;
-use specs::{Join, Read, ReadStorage, System};
+use specs::{Entities, Join, Read, ReadStorage, System};
 
 pub struct PrintLog;
 impl<'a> System<'a> for PrintLog {
@@ -9,17 +9,17 @@ impl<'a> System<'a> for PrintLog {
         Read<'a, clock::Clock>,
         ReadStorage<'a, Position>,
         ReadStorage<'a, Color>,
-        ReadStorage<'a, GreenTime>
+        ReadStorage<'a, Time>
     );
 
-    fn run(&mut self, (clock, positions, colors, green_times): Self::SystemData) {
+    fn run(&mut self, (clock, positions, colors, times): Self::SystemData) {
         println!("Simulation state at {:#?}s", clock.get_time());
         println!("-----------------------------------");
         for pos in positions.join() {
             println!("{:#?}", pos);
         }
-        for (color, green_time) in (&colors, &green_times).join() {
-            println!("{:#?} {:#?}", color, green_time);
+        for (color, time) in (&colors, &times).join() {
+            println!("{:#?} {:#?}", color, time);
         }
     }
 }
