@@ -25,7 +25,8 @@ use ressources::*;
 use topology::Topology;
 
 use components::dynamic::{Position, Speed};
-use components::statics::*;
+use components::statics::trafficlight::{Light, TrafficLightColor, LightUpdate, IObservable, IObserver};
+use eventsmanager::EventsManager;
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
@@ -41,15 +42,13 @@ fn main() {
     world.add_resource(clock::Clock::new(0.25));
     world.add_resource(generals::EndTime(12.5));
     world.add_resource(generals::LogDirectory(String::from("testpath")));
+    world.add_resource(EventsManager::new());
 
     // Component registering
     world.register::<Position>();
     world.register::<Speed>();
     world.register::<CarType>();
-    world.register::<Color>();
-    world.register::<Time>();
-    world.register::<MaxGreenTime>();
-    world.register::<MaxYellowTime>();
+    world.register::<Light>();
     world.register::<LogRecord>();
     world
         .create_entity()
@@ -69,20 +68,21 @@ fn main() {
         .with(Position { x: 0.0, y: 0.0 })
         .with(CarType)
         .build();
-    world
+    let green = Light::new(TrafficLightColor::GREEN, 5.0, 1.5, 3.5);
+    let red = Light::new(TrafficLightColor::RED, 3.0, 1.0, 0.0);
+    let x = world
         .create_entity()
-        .with(Color(TrafficLightColor::GREEN))
-        .with(MaxGreenTime(5.0))
-        .with(MaxYellowTime(1.5))
-        .with(Time(3.5))
+        .with(green)
         .build();
-    world
+    let y = world
         .create_entity()
-        .with(Color(TrafficLightColor::RED))
-        .with(MaxGreenTime(3.0))
-        .with(MaxYellowTime(1.0))
-        .with(Time(0.0))
+        .with(red)
         .build();
+
+    //let eventsManager = world.read_resource::<EventsManager>();
+    //eventsManager.connect(green, TrafficLightColorChange(), red, );
+    y.subscribe(&x);
+    //red.subscribe(&green);
 
     // System registering
 
@@ -95,7 +95,7 @@ fn main() {
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::logging::print_sys::PrintLog, "print", &[])
         //.with(GreenTimeUpdate, "greentime_update", &["print"])
-        .with(ColorUpdate, "color_update", &["print"])
+        .with(LightUpdate, "color_update", &["print"])
         //.with(YellowTimeUpdate, "yellowtime_update", &["print"])
         //.with(ColorUpdate, "color_update", &["print"]
         .with(
