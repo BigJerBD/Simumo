@@ -13,3 +13,5 @@
 
 # Remove IDEA specific directory
 **/.idea
+
+**/.vscode

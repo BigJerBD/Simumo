@@ -19,7 +19,6 @@ extern crate rand;
 extern crate specs;
 extern crate uuid;
 
-
 mod components;
 mod configurations;
 mod metrics;
@@ -31,20 +30,20 @@ mod topology;
 mod types;
 mod util;
 
+use components::constant::CarType;
 use components::dynamic::{Position, Speed};
+use components::log_record::LogRecord;
 use configurations::configuration;
 use ressources::*;
 use specs::prelude::*;
+use systems::clock::ClockSys;
 
-use crate::components::constant::CarType;
-use crate::components::log_record::LogRecord;
-use crate::systems::clock::ClockSys;
-//use crate::systems::logging::log_sys::*;
-//use crate::systems::logging::loggers::ndjson_logger::NdJsonLogger;
+//use systems::logging::log_sys::*;
+//use systems::logging::loggers::ndjson_logger::NdJsonLogger;
 
 fn main() {
     let mut world = World::new();
-    configuration::set_configs(&mut world);
+    configuration::set_internals_configs();
 
     //Ressources registering
     // world.add_resource(seed);
