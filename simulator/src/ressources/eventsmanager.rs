@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+use specs::prelude::*;
+use crate::{IObservable, IObserver, Light, Index};
+
 pub enum Event {
     TrafficLightColorChangeYellow,
     TrafficLightColorChangeRed
@@ -5,23 +9,35 @@ pub enum Event {
 
 #[derive(Default)]
 pub struct EventsManager {
-    queue: Vec<Event>
+    queue: HashMap<u64, Vec<u64>>
 }
 
 impl EventsManager {
     pub fn new() -> Self {
         Self {
-            queue: Vec::new()
+            queue: HashMap::new()
         }
     }
-
-    /*pub fn update(&mut self) {
-        self._tick += 1;
+    pub fn connect(&mut self, observable: u64, observer: u64) {
+        self.queue.entry(observable).or_insert(Vec::new()).push(observer);
     }
-    pub fn get_dt(&self) -> f64 {
-        self._dt
-    }
-    pub fn get_time(&self) -> f64 {
-        self._dt * f64::from(self._tick)
+    /*pub fn connect<T: >(&mut self, observable: &mut IObservable<Light>, observer: ) {
+        *observer.subscribe(observable);
     }*/
+}
+
+pub struct EventsUpdate;
+impl<'a> System<'a> for EventsUpdate {
+    type SystemData = (
+        Read<'a, EventsManager>,
+        Entities<'a>,
+        ReadStorage<'a, Index>,
+        WriteStorage<'a, Light>
+    );
+
+    fn run(&mut self, (eventsmanager, entities, indexes, mut lights): Self::SystemData) {
+        for (entity, index, light) in (&entities, &indexes, &mut lights).join() {
+            println!("{:#?} {:#?} {:#?}", entity, index, light);
+        }
+    }
 }

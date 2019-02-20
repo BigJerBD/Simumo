@@ -25,8 +25,8 @@ use ressources::*;
 use topology::Topology;
 
 use components::dynamic::{Position, Speed};
-use components::statics::trafficlight::{Light, TrafficLightColor, LightUpdate, IObservable, IObserver};
-use eventsmanager::EventsManager;
+use components::statics::trafficlight::{Light, TrafficLightColor, LightUpdate, IObservable, IObserver, Index};
+use eventsmanager::{EventsManager, EventsUpdate, Event};
 use specs::prelude::*;
 
 use crate::components::constant::CarType;
@@ -49,6 +49,7 @@ fn main() {
     world.register::<Speed>();
     world.register::<CarType>();
     world.register::<Light>();
+    world.register::<Index>();
     world.register::<LogRecord>();
     world
         .create_entity()
@@ -70,18 +71,23 @@ fn main() {
         .build();
     let green = Light::new(TrafficLightColor::GREEN, 5.0, 1.5, 3.5);
     let red = Light::new(TrafficLightColor::RED, 3.0, 1.0, 0.0);
-    let x = world
+    world
         .create_entity()
+        .with(Index(0))
         .with(green)
         .build();
-    let y = world
+    world
         .create_entity()
+        .with(Index(1))
         .with(red)
         .build();
 
-    //let eventsManager = world.read_resource::<EventsManager>();
-    //eventsManager.connect(green, TrafficLightColorChange(), red, );
-    y.subscribe(&x);
+    {
+        let mut eventsManager = world.write_resource::<EventsManager>();
+        //eventsManager.connect(&mut green, &red);
+        eventsManager.connect(0, 1);
+    }
+    
     //red.subscribe(&green);
 
     // System registering
@@ -94,10 +100,8 @@ fn main() {
     //);
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::logging::print_sys::PrintLog, "print", &[])
-        //.with(GreenTimeUpdate, "greentime_update", &["print"])
+        .with(EventsUpdate, "events_update", &["print"])
         .with(LightUpdate, "color_update", &["print"])
-        //.with(YellowTimeUpdate, "yellowtime_update", &["print"])
-        //.with(ColorUpdate, "color_update", &["print"]
         .with(
             systems::physic::mobility::PositionUpdate,
             "pos_update",

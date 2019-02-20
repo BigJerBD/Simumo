@@ -1,5 +1,5 @@
 use crate::ressources::{clock};
-use crate::eventsmanager::{Event};
+use crate::eventsmanager::{Event, EventsUpdate};
 
 use specs::prelude::*;
 
@@ -8,6 +8,10 @@ use typeinfo_derive::*;
 
 #[derive(Copy, Clone, Debug, Serialize)]
 pub enum TrafficLightColor { RED, YELLOW, GREEN }
+
+#[derive(Component, TypeInfo, Clone, Debug, Serialize)]
+#[storage(VecStorage)]
+pub struct Index(pub u64);
 
 #[derive(Component, TypeInfo, Clone, Debug, Serialize)]
 #[storage(VecStorage)]
@@ -40,61 +44,33 @@ pub enum LightObserver {
 }
 
 pub trait IObservable<T> {
-    fn add_observer(&mut self, observer: &T);
-    fn notify(&self, event: Event);
+    fn add_observer(&mut self, observer: T);
+    fn notify(&self, event: &Event);
 }
 pub trait IObserver<T> {
-    fn subscribe(&self, observable: &T);
-    fn update(&mut self, observable: T, event: Event);
+    fn subscribe(self, observable: &mut T);
+    fn update(&mut self, observable: &T, event: &Event);
 }
 
 impl IObservable<Light> for Light {
-    fn add_observer(&mut self, observer: &Light) {
-        self.observers.push(LightObserver::Light(*observer));
+    fn add_observer(&mut self, observer: Light) {
+        self.observers.push(LightObserver::Light(observer));
     }
-    fn notify(&self, event: Event) {
-        for observer in self.observers {
-            match observer {
-                LightObserver::Light(light) => light.update(*self, event)
+    fn notify(&self, event: &Event) {
+        for observer in self.observers.iter() {
+            match observer.clone() {
+                LightObserver::Light(mut light) => light.update(self, event),
+                _ => println!("XXX")
             }
         }
     }
 }
 
 impl IObserver<Light> for Light {
-    fn subscribe(&self, observable: &Light) {
+    fn subscribe(self, observable: &mut Light) {
         observable.add_observer(self);
     }
-    fn update(&mut self, observable: Light, event: Event) {
-        match event {
-            TrafficLightColorChangeYellow => {
-                println!("JAUNE");
-            },
-            TrafficLightColorChangeRed => {
-                println!("ROUGE");
-            }
-        }
-    }
-}
-
-impl IObservable<Light> for Entity {
-    fn add_observer(&mut self, observer: &Light) {
-        self.observers.push(LightObserver::Light(*observer));
-    }
-    fn notify(&self, event: Event) {
-        for observer in self.observers {
-            match observer {
-                LightObserver::Light(light) => light.update(*self, event)
-            }
-        }
-    }
-}
-
-impl IObserver<Light> for Entity {
-    fn subscribe(&self, observable: &Light) {
-        observable.add_observer(self);
-    }
-    fn update(&mut self, observable: Light, event: Event) {
+    fn update(&mut self, observable: &Light, event: &Event) {
         match event {
             TrafficLightColorChangeYellow => {
                 println!("JAUNE");
