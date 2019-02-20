@@ -6,12 +6,8 @@ use specs::prelude::*;
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
 
-#[derive(Copy, Clone, Debug, Serialize)]
+#[derive(Copy, Clone, Debug, Serialize, PartialEq)]
 pub enum TrafficLightColor { RED, YELLOW, GREEN }
-
-#[derive(Component, TypeInfo, Clone, Debug, Serialize)]
-#[storage(VecStorage)]
-pub struct Index(pub u64);
 
 #[derive(Component, TypeInfo, Clone, Debug, Serialize)]
 #[storage(VecStorage)]
@@ -33,8 +29,17 @@ impl Light {
             observers: Vec::new()
         }
     }
-    pub fn changeColor(&mut self, color: TrafficLightColor) {
-        self.color = color;
+    fn resetToGreen(&mut self) {
+        self.color = TrafficLightColor::GREEN;
+        self.time = self.max_green_time;
+    }
+    fn resetToYellow(&mut self) {
+        self.color = TrafficLightColor::YELLOW;
+        self.time = self.max_yellow_time;
+    }
+    fn resetToRed(&mut self) {
+        self.color = TrafficLightColor::RED;
+        self.time = 0.0;
     }
 }
 
@@ -44,39 +49,37 @@ pub enum LightObserver {
 }
 
 pub trait IObservable<T> {
-    fn add_observer(&mut self, observer: T);
+    fn add_observer(&mut self, observer: &T);
     fn notify(&self, event: &Event);
 }
 pub trait IObserver<T> {
-    fn subscribe(self, observable: &mut T);
+    fn subscribe(&self, observable: &mut T);
     fn update(&mut self, observable: &T, event: &Event);
 }
 
 impl IObservable<Light> for Light {
-    fn add_observer(&mut self, observer: Light) {
-        self.observers.push(LightObserver::Light(observer));
+    fn add_observer(&mut self, observer: &Light) {
+        self.observers.push(LightObserver::Light(observer.clone()));
     }
     fn notify(&self, event: &Event) {
         for observer in self.observers.iter() {
             match observer.clone() {
-                LightObserver::Light(mut light) => light.update(self, event),
-                _ => println!("XXX")
+                LightObserver::Light(mut light) => light.update(self, event)
             }
         }
     }
 }
 
 impl IObserver<Light> for Light {
-    fn subscribe(self, observable: &mut Light) {
+    fn subscribe(&self, observable: &mut Light) {
         observable.add_observer(self);
     }
     fn update(&mut self, observable: &Light, event: &Event) {
         match event {
-            TrafficLightColorChangeYellow => {
-                println!("JAUNE");
-            },
-            TrafficLightColorChangeRed => {
-                println!("ROUGE");
+            Event::TrafficLightColorChange(color) => {
+                if color == &TrafficLightColor::RED {
+                    self.resetToGreen();
+                }
             }
         }
     }
@@ -95,15 +98,15 @@ impl<'a> System<'a> for LightUpdate {
                 TrafficLightColor::GREEN => {
                     light.time = light.time - clock.get_dt();
                     if light.time <= core::f64::EPSILON {
-                        light.time = light.max_yellow_time;
-                        light.color = TrafficLightColor::YELLOW;
+                        light.resetToYellow();
+                        light.notify(&Event::TrafficLightColorChange(TrafficLightColor::YELLOW));
                     }
                 },
                 TrafficLightColor::YELLOW => {
                     light.time = light.time - clock.get_dt();
                     if light.time <= core::f64::EPSILON {
-                        light.time = 0.0;
-                        light.color = TrafficLightColor::RED;
+                        light.resetToRed();
+                        light.notify(&Event::TrafficLightColorChange(TrafficLightColor::RED));
                     }
                 },
                 TrafficLightColor::RED => {
