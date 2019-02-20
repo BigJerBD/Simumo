@@ -1,33 +1,147 @@
-(function (win, doc) {
+let olMap;
+let olVisualizationLayer;
 
-  var olview = new ol.View({
-        center: [0, 0],
-        zoom: 3,
-        minZoom: 13,
-        maxZoom: 20
-      }),
-      baseLayer = new ol.layer.Tile({
-        source: new ol.source.OSM()
-      }),
-      map = new ol.Map({
-        target: doc.getElementById('map'),
-        view: olview,
-        layers: [baseLayer]
-      }),
-      popup = new ol.Overlay.Popup();
+(function(win, doc) {
+
+  let olview = new ol.View({
+      center: [0, 0],
+      zoom: 3,
+      minZoom: 13,
+      maxZoom: 20
+    }),
+    baseLayer = new ol.layer.Tile({
+      source: new ol.source.OSM()
+    }),
+    map = new ol.Map({
+      target: doc.getElementById('map'),
+      view: olview,
+      layers: [baseLayer]
+    }),
+    popup = new ol.Overlay.Popup();
+
+  olMap = map; //keep access to map variable
 
   //Instantiate with some options and add the Control
-  var geocoder = new Geocoder('nominatim', {
+  let geocoder = new Geocoder('nominatim', {
     provider: 'osm',
     targetType: 'glass-button',
     lang: 'en',
     placeholder: 'Search for ...',
     limit: 5,
     keepOpen: false,
-    initialLocation: {{ initialLocation }}
+    initialLocation: {{initialLocation}}
   });
 
   map.addControl(geocoder);
   map.addOverlay(popup);
 
+  //Reveal text label specifying the exact value of circle features when the mouse is on it
+  map.on('pointermove', function(e) {
+    //Remove the text label of the circle features that were clicked on before
+    if(olVisualizationLayer)
+    {
+      let features = olVisualizationLayer.getSource().getFeatures();
+      features.forEach(function(entry) { entry.getStyle().setText(new ol.style.Text({}));});
+
+      //Add text label style for the feature where the mouse is to add the exact value
+      map.forEachFeatureAtPixel(e.pixel, function(feature) {
+        let t = feature.get("value");
+        feature.getStyle().setText(new ol.style.Text({
+          font: 'bold 14px Arial',
+          text: feature.get("value").toString(),
+          fill: new ol.style.Fill({color: 'black'}),
+          offsetY: -15
+        }));
+      });
+      olVisualizationLayer.getSource().refresh({force:true}); //refresh the layer for the new styles
+    }
+  });
 })(window, document);
+
+
+function getColor(color1, color2, interpolation)
+{
+  let diffR = Math.max(color2.r,color1.r) - Math.min(color2.r,color1.r);
+  let diffG = Math.max(color2.g,color1.g) - Math.min(color2.g,color1.g);
+  let diffB = Math.max(color2.b,color1.b) - Math.min(color2.b,color1.b);
+  return {
+    r:  Math.min(color2.r,color1.r) + interpolation * diffR,
+    g: Math.min(color2.g,color1.g) + interpolation * diffG,
+    b: Math.min(color2.b,color1.b) + interpolation * diffB
+  };
+}
+
+function getColorFromGradient(gradient, interpolation)
+{
+  if(interpolation == 0)
+  {
+    return gradient[0];
+  }
+  else if(interpolation == 1)
+  {
+    return gradient[gradient.length - 1];
+  }
+  else {
+    //find the two colors to interpolate
+    let gradientInterpolation = interpolation * gradient.length;
+    let indexFirstColor = Math.floor(gradientInterpolation);
+    let step = 1.0 / gradient.length;
+    let interpolationBetweenTwoColors = (interpolation - (indexFirstColor * step))  /  step;
+    return getColor(gradient[indexFirstColor], gradient[indexFirstColor+1], interpolationBetweenTwoColors)
+  }
+}
+
+function getPoint(lon,lat, colorInterpolation)
+{
+  function lonlatToPoint(x,y) {
+    let pointCoordonates = ol.proj.transform([x, y], 'EPSG:4326','EPSG:900913');
+    return new ol.geom.Point([pointCoordonates[0], pointCoordonates[1]]);
+  }
+
+  let gradient= [
+    {r: 255  ,g:0 , b: 0  },
+    {r: 255  ,g:128 , b: 0  },
+    {r: 255  ,g:255 , b: 0  }
+  ];
+
+  let circleColor = getColorFromGradient(gradient,colorInterpolation);
+
+  let circleStyle = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({
+            color: `rgba(${circleColor.r},${circleColor.g},${circleColor.b},0.9)`
+        })
+  })});
+
+  let p = new ol.Feature({
+    'geometry': lonlatToPoint(lon,lat),
+    'value' : colorInterpolation
+  });
+  p.setStyle(circleStyle);
+  return p;
+}
+
+function updateVisualizationLayer(pathMetricsFile)
+{
+  if(olVisualizationLayer)
+  {
+    olMap.removeLayer(olVisualizationLayer);
+  }
+
+  let features = new Array(3);
+  features[0] = getPoint(-71.885823,45.405010, 0);
+  features[1] = getPoint(-71.881602, 45.401411, 0.5);
+  features[2] = getPoint(-71.890711,45.400165, 1);
+
+  let pointsSource = new ol.source.Vector({
+    features: features,
+  });
+
+  let visualizationLayer = new ol.layer.Vector({
+    source: pointsSource
+  });
+  olVisualizationLayer = visualizationLayer; //keep access to map variable
+  olMap.addLayer(olVisualizationLayer);
+
+}

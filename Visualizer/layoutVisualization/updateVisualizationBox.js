@@ -10,6 +10,7 @@ function updateVisualizationBox() {
   if (mapTab.className == "selected") {
     visualizationBox.children[0].style.visibility = 'visible';
     visualizationBox.children[1].style.visibility = 'hidden';
+		updateVisualizationLayer("");
   }
 	else if (otherTab.className == "selected") {
     visualizationBox.children[0].style.visibility = 'hidden';
