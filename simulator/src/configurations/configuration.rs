@@ -29,7 +29,7 @@ pub fn set_internals_configs() {
 }
 
 //Todo: Handle properly if can't find path.
-/// Create a Configs object from the configurations file.
+/// Create a Configs data from the configurations file.
 fn fetch_configs_from_json_file() -> Result<Configs, Box<Error>> {
     let args_path = env::args().nth(1).unwrap();
     let config_path = Path::new(&args_path); //we assume the first argument is always going to be the configuration path.
