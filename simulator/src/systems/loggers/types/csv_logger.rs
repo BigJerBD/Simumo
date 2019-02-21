@@ -5,7 +5,6 @@ use serde::Deserializer;
 use serde::Serialize;
 
 use crate::systems::loggers::LoggerType;
-use crate::systems::sys_prelude::*;
 
 /// Logger that writes data in a csv format in a specified file
 #[derive(Deserialize)]
@@ -30,8 +29,8 @@ impl LoggerType for CsvLogger {
 
 /// Function to open file instead of serializing it
 fn deser_open<'de, D>(deserializer: D) -> Result<csv::Writer<File>, D::Error>
-    where
-        D: Deserializer<'de>,
+where
+    D: Deserializer<'de>,
 {
     let file = File::create(String::deserialize(deserializer)?).unwrap();
     Ok(csv::Writer::from_writer(file))

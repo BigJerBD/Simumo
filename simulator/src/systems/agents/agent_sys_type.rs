@@ -1,10 +1,9 @@
-use crate::systems::sys_prelude::*;
 use crate::systems::agents::AcceleratingAgentSystem;
-
+use crate::systems::sys_prelude::*;
 
 pub trait AgentSystemType {}
 impl SystemTypeDefinition for AgentSystemType {
-    type SubSystems = AcceleratingAgentSystem;
+    type SubSystems = AgentSystems;
 
     fn set_dependencies(name: String, dependencies: &mut SystemDependencies) {
         dependencies.agents.push(name);
@@ -15,7 +14,6 @@ impl SystemTypeDefinition for AgentSystemType {
     }
 }
 
-
-enum AgentSystems{
-    AcceleratingAgentSys(AcceleratingAgentSystem)
+pub enum AgentSystems {
+    AcceleratingAgentSys(AcceleratingAgentSystem),
 }

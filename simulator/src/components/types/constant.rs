@@ -1,12 +1,21 @@
 use crate::components::type_prelude::*;
 
-#[simucomponent_data]
-#[storage(VecStorage)]
-pub struct Length(pub f32);
+use crate::metrics::Fdim;
+use dim::si::{Kilogram, Meter};
 
 #[simucomponent_data]
 #[storage(VecStorage)]
-pub struct Mass(pub f32);
+pub struct Length {
+    #[simumo_metric]
+    pub val: Meter<Fdim>,
+}
+
+#[simucomponent_data]
+#[storage(VecStorage)]
+pub struct Mass {
+    #[simumo_metric]
+    pub val: Kilogram<Fdim>,
+}
 
 #[simucomponent_data]
 #[storage(VecStorage)]

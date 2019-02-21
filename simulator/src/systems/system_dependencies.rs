@@ -26,7 +26,9 @@ impl SystemDependencies {
 }
 
 /// Helper for convenience
-trait StringRef { fn string_ref(&self) -> Vec<&str>; }
+trait StringRef {
+    fn string_ref(&self) -> Vec<&str>;
+}
 
 impl StringRef for Vec<String> {
     fn string_ref(&self) -> Vec<&str> {

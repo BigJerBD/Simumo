@@ -12,10 +12,8 @@ impl SystemTypeDefinition for ClockSystemType {
     fn get_dependencies(_dependencies: &SystemDependencies) -> Vec<String> {
         vec![]
     }
-
 }
 
-
 pub enum ClockSystems {
-    StandardClockSys(StandardClockSystem)
+    StandardClockSys(StandardClockSystem),
 }

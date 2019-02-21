@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
 use crate::components::log_record::LogRecord;

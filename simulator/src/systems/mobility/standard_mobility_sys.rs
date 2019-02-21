@@ -1,5 +1,6 @@
 use crate::components::dynamic::Position;
 use crate::components::types::dynamic::Speed;
+use crate::ressources::Clock;
 use crate::systems::mobility::MobilitySystemType;
 use crate::systems::sys_prelude::*;
 
@@ -7,12 +8,16 @@ use crate::systems::sys_prelude::*;
 pub struct StandardMobilitySystem;
 impl MobilitySystemType for StandardMobilitySystem {}
 impl<'a> System<'a> for StandardMobilitySystem {
-    type SystemData = (WriteStorage<'a, Position>, ReadStorage<'a, Speed>);
+    type SystemData = (
+        WriteStorage<'a, Position>,
+        ReadStorage<'a, Speed>,
+        Read<'a, Clock>,
+    );
 
-    fn run(&mut self, (mut pos, vel): Self::SystemData) {
+    fn run(&mut self, (mut pos, vel, clock): Self::SystemData) {
         for (pos, vel) in (&mut pos, &vel).join() {
-            pos.x += vel.0;
-            pos.y += vel.0;
+            pos.x += vel.val * clock.dt;
+            pos.y += vel.val * clock.dt;
         }
     }
 }

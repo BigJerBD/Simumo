@@ -14,14 +14,9 @@ impl SystemTypeDefinition for RecorderSystemType {
     fn get_dependencies(dependencies: &SystemDependencies) -> Vec<String> {
         vec![dependencies.mobility.clone()]
     }
-
 }
-
 
 #[derive(Deserialize)]
 pub enum RecorderSystems {
-    CarPosRecSystem(CarPosRecSystem)
+    CarPosRecSystem(CarPosRecSystem),
 }
-
-
-

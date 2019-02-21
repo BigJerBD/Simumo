@@ -6,7 +6,6 @@ use serde::Deserializer;
 use serde::Serialize;
 
 use crate::systems::loggers::LoggerType;
-use crate::systems::sys_prelude::*;
 
 /// Logger that writes data in a json format in a specified file
 #[derive(Deserialize)]
@@ -32,12 +31,8 @@ impl LoggerType for NdJsonLogger {
 
 /// Function to open file instead of serializing it
 fn deser_open<'de, D>(deserializer: D) -> Result<File, D::Error>
-    where
-        D: Deserializer<'de>,
+where
+    D: Deserializer<'de>,
 {
-    Ok(
-        File::create(String::deserialize(deserializer)?)
-            .unwrap()
-    )
+    Ok(File::create(String::deserialize(deserializer)?).unwrap())
 }
-

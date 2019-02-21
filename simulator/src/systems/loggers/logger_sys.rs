@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::path::Path;
 
 use crate::components::log_record::LogRecord;
 use crate::ressources::clock;
@@ -10,7 +9,7 @@ use crate::systems::sys_prelude::*;
 /// specific Logger
 ///
 /// example :: CsvLogging, PrintLogging, JsonLogging, etc.
-#[derive(Default,Deserialize)]
+#[derive(Default, Deserialize)]
 pub struct LoggerSystem<L: LoggerType> {
     log_directory: String,
     log_writers: HashMap<String, L>,
@@ -49,9 +48,6 @@ pub struct LoggerSystem<L: LoggerType> {
 //        Ok(())
 //    }
 //}
-
-
-
 
 impl<'a, L: LoggerType> System<'a> for LoggerSystem<L> {
     type SystemData = (Read<'a, clock::Clock>, WriteStorage<'a, LogRecord>);

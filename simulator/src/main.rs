@@ -6,35 +6,32 @@ extern crate erased_serde;
 extern crate serde_derive;
 #[macro_use]
 extern crate specs_derive;
-extern crate typeinfo_derive;
 extern crate typeinfo;
+extern crate typeinfo_derive;
 
+extern crate dimensioned as dim;
 
 use std::any::Any;
 
-use typeinfo::*;
-use typeinfo_derive::*;
 use specs::prelude::*;
 
 use ressources::*;
 
 use crate::systems::clock::StandardClockSystem;
 use crate::systems::recorders::car_pos_rec_sys::CarPosRecSystem;
-use crate::components::controls::EnergyControl;
 
-mod topology;
-mod types;
+use dim::si::S;
+
 mod components;
+mod errors;
+mod internal_prelude;
 mod metrics;
 mod ressources;
 mod simulator;
 mod systems;
+mod topology;
+mod types;
 mod util;
-mod internal_prelude;
-mod errors;
-
-
-
 
 fn main() {
     let mut world = World::new();
@@ -67,10 +64,11 @@ fn main() {
         .build();
     dispatcher.setup(&mut world.res);
 
-
-    world.add_resource(clock::Clock::new(0.25));
-    world.add_resource(generals::EndTime(12.5));
-    world.add_resource(generals::LogDirectory(String::from("testpath")));
+    world.add_resource(clock::Clock::new(0.25 * S));
+    world.add_resource(generals::EndTime { val: 12.5 * S });
+    world.add_resource(generals::LogDirectory {
+        val: String::from("testpath"),
+    });
 
     world
         .create_entity()
@@ -93,20 +91,9 @@ fn main() {
 
     //let test = &StandardClockSys as &Test;
     //let test2 = test.downcast_ref::<&StandardClockSys>();
-    let mut data : Vec<Box<&Any>> = Vec::new();
-    data.push(
-        Box::from(
-            &StandardClockSystem as &Any
-        )
-    );
-    data.push(
-        Box::from(
-            &CarPosRecSystem::default() as &Any
-        )
-    );
-
-
-
+    let mut data: Vec<Box<&Any>> = Vec::new();
+    data.push(Box::from(&StandardClockSystem as &Any));
+    data.push(Box::from(&CarPosRecSystem::default() as &Any));
 
     // Game Loop
     loop {
@@ -116,7 +103,7 @@ fn main() {
         // verify if the simulator is overs
         let clock = world.read_resource::<clock::Clock>();
         let end_time = world.read_resource::<generals::EndTime>();
-        if clock.get_time() >= end_time.0 {
+        if clock.get_time() >= end_time.val {
             break;
         }
     }

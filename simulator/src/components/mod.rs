@@ -1,5 +1,5 @@
 pub mod simumo_component;
-pub mod types;
 mod type_prelude;
+pub mod types;
 
 pub use self::types::*;

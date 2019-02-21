@@ -13,5 +13,3 @@ impl<'a> System<'a> for StandardClockSystem {
         clock.update();
     }
 }
-
-
