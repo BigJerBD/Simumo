@@ -1,20 +1,29 @@
-#[derive(Default)]
+use dim::si::{S, Second};
+
+use crate::metrics::Fdim;
+
 pub struct Clock {
-    _dt: f64,
-    _tick: i32,
+    pub dt: Second<Fdim>,
+    tick: i32,
 }
 
 impl Clock {
-    pub fn new(dt: f64) -> Clock {
-        Clock { _dt: dt, _tick: 0 }
+    pub fn new(dt: Second<Fdim>) -> Clock {
+        Clock { dt, tick: 0 }
     }
     pub fn update(&mut self) {
-        self._tick += 1;
+        self.tick += 1;
     }
-    pub fn get_dt(&self) -> f64 {
-        self._dt
+    pub fn get_time(&self) -> Second<Fdim> {
+        self.dt * f64::from(self.tick)
     }
-    pub fn get_time(&self) -> f64 {
-        self._dt * f64::from(self._tick)
+    pub fn get_dt(&self) -> Second<Fdim> {
+        self.dt
+    }
+}
+
+impl Default for Clock {
+    fn default() -> Self {
+        Self{ dt: 1.0 * S, tick: 0 }
     }
 }

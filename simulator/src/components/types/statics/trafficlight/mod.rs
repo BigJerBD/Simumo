@@ -1,26 +1,31 @@
 use crate::ressources::{clock};
 use crate::eventsmanager::{Event, EventsUpdate};
 
-use specs::prelude::*;
-
+use dim::si::{S, Second};
+use serde::ser::{Serialize, Serializer};
+use simumo_derive::*;
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
+use crate::components::simumo_component::*;
+use crate::metrics::Fdim;
+
+use specs::prelude::*;
 
 #[derive(Copy, Clone, Debug, Serialize, PartialEq)]
 pub enum TrafficLightColor { RED, YELLOW, GREEN }
 
-#[derive(Component, TypeInfo, Clone, Debug, Serialize)]
+#[derive(Component, TypeInfo, Debug)]
 #[storage(VecStorage)]
 pub struct Light {
     pub color: TrafficLightColor,
-    pub max_green_time: f64,
-    pub max_yellow_time: f64,
-    pub time: f64,
+    pub max_green_time: Second<Fdim>,
+    pub max_yellow_time: Second<Fdim>,
+    pub time: Second<Fdim>,
     pub observers: Vec<LightObserver>
 }
 
 impl Light {
-    pub fn new(color: TrafficLightColor, max_green_time: f64, max_yellow_time: f64, time: f64) -> Self {
+    pub fn new(color: TrafficLightColor, max_green_time: Second<Fdim>, max_yellow_time: Second<Fdim>, time: Second<Fdim>) -> Self {
         Self {
             color,
             max_green_time,
@@ -39,11 +44,11 @@ impl Light {
     }
     fn resetToRed(&mut self) {
         self.color = TrafficLightColor::RED;
-        self.time = 0.0;
+        self.time = 0.0 * S;
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub enum LightObserver {
     Light(Light)
 }
@@ -59,11 +64,11 @@ pub trait IObserver<T> {
 
 impl IObservable<Light> for Light {
     fn add_observer(&mut self, observer: &Light) {
-        self.observers.push(LightObserver::Light(observer.clone()));
+        self.observers.push(LightObserver::Light(*observer));
     }
     fn notify(&self, event: &Event) {
         for observer in self.observers.iter() {
-            match observer.clone() {
+            match observer {
                 LightObserver::Light(mut light) => light.update(self, event)
             }
         }
@@ -97,14 +102,14 @@ impl<'a> System<'a> for LightUpdate {
             match light.color {
                 TrafficLightColor::GREEN => {
                     light.time = light.time - clock.get_dt();
-                    if light.time <= core::f64::EPSILON {
+                    if light.time <= (core::f64::EPSILON * S) {
                         light.resetToYellow();
                         light.notify(&Event::TrafficLightColorChange(TrafficLightColor::YELLOW));
                     }
                 },
                 TrafficLightColor::YELLOW => {
                     light.time = light.time - clock.get_dt();
-                    if light.time <= core::f64::EPSILON {
+                    if light.time <= (core::f64::EPSILON * S) {
                         light.resetToRed();
                         light.notify(&Event::TrafficLightColorChange(TrafficLightColor::RED));
                     }
