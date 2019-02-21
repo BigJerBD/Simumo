@@ -11,11 +11,9 @@ extern crate simumo_derive;
 extern crate dimensioned as dim;
 
 // Débugger graphique
+use std::process::Command;
 mod vdebugger;
-use vdebugger::{graphics_00, input};
-use graphics_00::{ DrawClear, DrawRectangles, ApplySpin, register_spin_rect };
-use input::ArrowKeysPressed;
-use input::KeyboardSystem;
+use vdebugger::graphics::{ DrawClear, DrawRectangles, Rectangle };
 extern crate piston_window;
 extern crate piston;
 extern crate graphics;
@@ -70,18 +68,21 @@ fn main() {
         .create_entity()
         .with(Speed { val: 2.0 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
+        .with(Rectangle { width: 5.0, height: 5.0 })
         .with(CarType)
         .build();
     world
         .create_entity()
         .with(Speed { val: 4.0 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
+        .with(Rectangle { width: 5.0, height: 5.0 })
         .with(CarType)
         .build();
     world
         .create_entity()
         .with(Speed { val: 1.5 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
+        .with(Rectangle { width: 5.0, height: 5.0 })
         .with(CarType)
         .build();
 
@@ -103,17 +104,10 @@ fn main() {
         .build();
     dispatcher.setup(&mut world.res);
 
-    let mut update_dispatcher = DispatcherBuilder::new()
-        .with(ApplySpin, "apply_spin", &[])
-        .with(KeyboardSystem, "keyboard_system", &[])
-        .build();
-    update_dispatcher.setup(&mut world.res);
-    register_spin_rect(&mut world);
     let mut events = Events::new(EventSettings::new());
-
     while let Some(e) = events.next(&mut window) {
-        let mut clock_time;
-        let mut max_time;
+        let clock_time;
+        let max_time;
         {
             let clock = world.read_resource::<clock::Clock>();
             clock_time = clock.get_time();
@@ -125,22 +119,23 @@ fn main() {
             dispatcher.dispatch(&mut world.res);
             world.maintain();
         }
-
-        let mut arrow_keys = ArrowKeysPressed { up: false, left: false, right: false, down: false };
         if let Some(r) = e.render_args() {
             world.add_resource(r);
             render_dispatcher.dispatch(&mut world.res);
             world.maintain();
         }
+
+        // Wait 0.2s so we can see the changes on the visual debugger
+        let mut child = Command::new("sleep").arg("0.05").spawn().unwrap();
+        let _result = child.wait().unwrap();
     }
     println!("Showing results log...");
 }
 
 fn setup_graphics(world: &mut World) -> (Dispatcher<'static, 'static>, Window) {
     let opengl = OpenGL::V3_2;
-
     let window: Window = WindowSettings::new(
-            "spinning-square",
+            "Simumo - Visual debugger",
             [1440, 2800]
         )
         .opengl(opengl)

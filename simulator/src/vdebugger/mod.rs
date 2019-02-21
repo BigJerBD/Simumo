@@ -1,2 +1,1 @@
-pub mod graphics_00;
-pub mod input;
+pub mod graphics;
