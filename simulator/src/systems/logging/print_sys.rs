@@ -12,7 +12,7 @@ impl<'a> System<'a> for PrintLog {
     );
 
     fn run(&mut self, (clock, positions, lights): Self::SystemData) {
-        println!("Simulation state at {:#?}s", clock.get_time());
+        println!("Simulation state at {:#?}", clock.get_time());
         println!("-----------------------------------");
         for pos in positions.join() {
             println!("{:#?}", pos);

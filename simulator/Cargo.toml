@@ -11,6 +11,8 @@ petgraph = "0.4.13"
 #ecs
 specs = "0.14.3"
 specs-derive = "0.4.0"
+hibitset = "0.1"
+shrev = "*"
 #serialization
 csv = "1"
 serde = "1.0.87"
