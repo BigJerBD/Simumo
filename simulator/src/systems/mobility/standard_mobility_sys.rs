@@ -1,11 +1,12 @@
 use crate::components::dynamic::Position;
 use crate::components::types::dynamic::Speed;
-use crate::systems::mobility::MobilitySys;
+use crate::systems::mobility::MobilitySysType;
 use crate::systems::sys_prelude::*;
 
 #[simusystem]
 pub struct StandardMobilitySys;
-impl  MobilitySys for StandardMobilitySys{}
+impl MobilitySysType for StandardMobilitySys{}
+impl SystemDefinition for StandardMobilitySys{}
 impl<'a> System<'a> for StandardMobilitySys {
     type SystemData = (WriteStorage<'a, Position>, ReadStorage<'a, Speed>);
 

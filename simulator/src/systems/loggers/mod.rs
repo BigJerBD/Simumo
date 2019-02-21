@@ -1,6 +1,7 @@
-pub mod log_sys;
-pub mod types;
-pub mod print_sys;
+pub use self::logger_sys::LoggerSys;
+pub use self::types::*;
 
-pub use log_sys::LoggerSys;
-pub use types::*;
+pub mod logger_sys;
+pub mod types;
+pub mod logger_sys_type;
+

@@ -1,3 +1,3 @@
-mod control_sys;
+mod control_sys_type;
 
-pub use control_sys::ControlSys;
+pub use self::control_sys_type::ControlSysType;

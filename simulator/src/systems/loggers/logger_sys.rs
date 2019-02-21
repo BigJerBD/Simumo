@@ -1,45 +1,58 @@
+use std::collections::HashMap;
+use std::path::Path;
+
 use crate::components::log_record::LogRecord;
 use crate::ressources::clock;
 use crate::systems::loggers::LoggerType;
-
 use crate::systems::sys_prelude::*;
-
-
-
-use std::collections::HashMap;
-use std::path::Path;
+use crate::systems::system_definition::invalid_field;
 
 /// LoggerSys that can be specialised with a
 /// specific Logger
 ///
 /// example :: CsvLogging, PrintLogging, JsonLogging, etc.
+#[derive(Default)]
 pub struct LoggerSys<L: LoggerType> {
-    dir_path: String,
+    log_directory: String,
     log_writers: HashMap<String, L>,
 }
 
+impl<L: LoggerType> SystemDefinition for LoggerSys<L> {
+    fn initialize(
+        &mut self, config: HashMap<String, FieldValue>,
+        general_config: HashMap<String, String>) -> Result<(), InvalidNameError>
+    {
+        self.log_directory = general_config
+            .get("log_directory")
+            .ok_or(invalid_field("log_directory"))?.clone();
 
 
-impl<L: LoggerType> LoggerSys<L> {
-    /// Init by opening a logger for every log
-    /// data type input for the function
-    pub fn new(dir_path: String, logtypes: &[&str]) -> LoggerSys<L> {
-        let log_writers: HashMap<_, _> = logtypes
+        let paths = match config.get("log_writers")
+            .ok_or(invalid_field("log_writers"))? {
+            FieldValue::ArrayVal(val) => val,
+            FieldValue::StringVal(_) => panic!("error")
+        };
+        self.log_writers =  paths
             .iter()
-            .map(|s| s.to_string())
+            .map(|s| match s {
+                FieldValue::StringVal(val) => val,
+                FieldValue::ArrayVal(_) => panic!("error"),
+            })
             .map(|fname| {
-                let full_path = Path::new(&dir_path).join(&fname);
+                let full_path = Path::new(&self.log_directory).join(&fname);
                 let full_path = full_path.to_str().unwrap();
                 (fname.clone(), L::open(full_path))
             })
             .collect();
 
-        LoggerSys {
-            dir_path,
-            log_writers,
-        }
+
+
+        Ok(())
     }
 }
+
+
+
 
 impl<'a, L: LoggerType> System<'a> for LoggerSys<L> {
     type SystemData = (Read<'a, clock::Clock>, WriteStorage<'a, LogRecord>);

@@ -1,12 +1,15 @@
 use crate::components::agents::AcceleratingAgent;
 use crate::components::controls::EnergyControl;
 
-use crate::systems::agents::AgentSys;
+use crate::systems::agents::AgentSysType;
 use crate::systems::sys_prelude::*;
+use crate::systems::system_definition::SystemDefinition;
 
 #[simusystem]
 pub struct AcceleratingAgentSys;
-impl AgentSys for AcceleratingAgentSys{}
+impl SystemDefinition for AcceleratingAgent{}
+impl AgentSysType for AcceleratingAgentSys{}
+
 
 impl<'a> System<'a> for AcceleratingAgentSys {
     type SystemData = (

@@ -8,3 +8,5 @@ pub use specs::prelude::*;
 pub use typeinfo::TypeInfo;
 pub use typeinfo_derive::*;
 pub use simumo_derive::*;
+
+pub use crate::components::simumo_component::*;
