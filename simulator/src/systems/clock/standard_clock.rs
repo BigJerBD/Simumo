@@ -1,13 +1,12 @@
 use crate::ressources::clock;
-use crate::systems::clock::ClockSysType;
+use crate::systems::clock::ClockSystemType;
 use crate::systems::sys_prelude::*;
 
 #[simusystem]
-pub struct StandardClockSys;
+pub struct StandardClockSystem;
 
-impl ClockSysType for StandardClockSys {}
-impl SystemDefinition for StandardClockSys{}
-impl<'a> System<'a> for StandardClockSys {
+impl ClockSystemType for StandardClockSystem {}
+impl<'a> System<'a> for StandardClockSystem {
     type SystemData = Write<'a, clock::Clock>;
 
     fn run(&mut self, mut clock: Self::SystemData) {

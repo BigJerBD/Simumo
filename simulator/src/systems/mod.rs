@@ -9,4 +9,3 @@ pub mod controls;
 mod sys_prelude;
 mod system_type_definition;
 mod system_dependencies;
-mod system_definition;

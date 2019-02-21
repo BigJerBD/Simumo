@@ -1,8 +1,10 @@
-use crate::systems::clock::standard_clock::StandardClockSys;
+use crate::systems::clock::standard_clock::StandardClockSystem;
 use crate::systems::sys_prelude::*;
 
-pub trait ClockSysType {}
-impl SystemTypeDefinition for ClockSysType {
+pub trait ClockSystemType {}
+impl SystemTypeDefinition for ClockSystemType {
+    type SubSystems = ClockSystems;
+
     fn set_dependencies(name: String, dependencies: &mut SystemDependencies) {
         dependencies.clock = name;
     }
@@ -11,10 +13,9 @@ impl SystemTypeDefinition for ClockSysType {
         vec![]
     }
 
-    fn build_subsystem(name: String) -> Result<Box<Any>, InvalidNameError> {
-        match name.as_str() {
-            StandardClockSys::typename => Ok(StandardClockSys.in_anybox()),
-            _ => Err(invalid_system(&name))
-        }
-    }
+}
+
+
+pub enum ClockSystems {
+    StandardClockSys(StandardClockSystem)
 }

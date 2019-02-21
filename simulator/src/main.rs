@@ -18,8 +18,8 @@ use specs::prelude::*;
 
 use ressources::*;
 
-use crate::systems::clock::StandardClockSys;
-use crate::systems::recorders::car_pos_recorder::CarPosRec;
+use crate::systems::clock::StandardClockSystem;
+use crate::systems::recorders::car_pos_rec_sys::CarPosRecSystem;
 use crate::components::controls::EnergyControl;
 
 mod topology;
@@ -63,7 +63,7 @@ fn main() {
         //)
         //.with(logger, "logger_sys", &["log_car"])
         //.with_barrier()
-        .with(StandardClockSys, "clock_sys", &[])
+        .with(StandardClockSystem, "clock_sys", &[])
         .build();
     dispatcher.setup(&mut world.res);
 
@@ -96,12 +96,12 @@ fn main() {
     let mut data : Vec<Box<&Any>> = Vec::new();
     data.push(
         Box::from(
-            &StandardClockSys as &Any
+            &StandardClockSystem as &Any
         )
     );
     data.push(
         Box::from(
-            &CarPosRec::default() as &Any
+            &CarPosRecSystem::default() as &Any
         )
     );
 

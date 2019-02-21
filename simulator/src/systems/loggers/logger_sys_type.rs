@@ -1,10 +1,15 @@
 use crate::systems::sys_prelude::*;
+use crate::systems::loggers::LoggerSystem;
+use crate::systems::loggers::types::CsvLogger;
+use crate::systems::loggers::types::NdJsonLogger;
 
-pub trait LoggerSysType {
+pub trait LoggerSystemType {
 
 
 }
-impl SystemTypeDefinition for LoggerSysType {
+impl SystemTypeDefinition for LoggerSystemType {
+    type SubSystems = LoggerSystems;
+
     fn set_dependencies(name: String, dependencies: &mut SystemDependencies) {
         dependencies.logger = name;
     }
@@ -12,11 +17,11 @@ impl SystemTypeDefinition for LoggerSysType {
     fn get_dependencies(dependencies: &SystemDependencies) -> Vec<String> {
         dependencies.controls.clone()
     }
+}
 
-    fn build_subsystem(name: String) -> Result<Box<Any>, InvalidNameError> {
-        match name.as_str() {
-            //todo
-            _ => Err(invalid_system(&name))
-        }
-    }
+#[derive(Deserialize)]
+pub enum LoggerSystems{
+    CsvLogger(LoggerSystem<CsvLogger>),
+    NdJsonLogger(LoggerSystem<NdJsonLogger>),
+    PrintLogger(LoggerSystem<NdJsonLogger>)
 }

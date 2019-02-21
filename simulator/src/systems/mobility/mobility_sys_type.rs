@@ -1,8 +1,8 @@
 use crate::systems::sys_prelude::*;
-use crate::systems::mobility::StandardMobilitySys;
+use crate::systems::mobility::StandardMobilitySystem;
 
-pub trait MobilitySysType {}
-impl SystemTypeDefinition for MobilitySysType {
+pub trait MobilitySystemType {}
+impl SystemTypeDefinition for MobilitySystemType {
 
     fn set_dependencies(name:String,dependencies: &mut SystemDependencies) {
         dependencies.mobility = name;
@@ -12,12 +12,14 @@ impl SystemTypeDefinition for MobilitySysType {
         vec![dependencies.physic.clone()]
     }
 
-    fn build_subsystem(name: String) -> Result<Box<Any>,InvalidNameError> {
-        match name.as_str() {
-            StandardMobilitySys::typename => Ok(StandardMobilitySys.in_anybox()),
-            _ => Err(invalid_system(&name))
-        }
-    }
+
+
+    type SubSystems = ();
 }
 
 
+
+
+enum MobilitySystems {
+    StandardMobilitySys(StandardMobilitySystem)
+}

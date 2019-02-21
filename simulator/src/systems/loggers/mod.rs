@@ -1,4 +1,4 @@
-pub use self::logger_sys::LoggerSys;
+pub use self::logger_sys::LoggerSystem;
 pub use self::types::*;
 
 pub mod logger_sys;

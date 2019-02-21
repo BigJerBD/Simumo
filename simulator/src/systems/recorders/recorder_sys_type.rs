@@ -1,10 +1,12 @@
-use crate::systems::recorders::CarPosRec;
+use crate::systems::recorders::CarPosRecSystem;
 use crate::systems::sys_prelude::*;
 use crate::systems::system_type_definition::SystemTypeDefinition;
 
-pub trait RecorderSysType {}
+pub trait RecorderSystemType {}
 
-impl SystemTypeDefinition for RecorderSysType {
+impl SystemTypeDefinition for RecorderSystemType {
+    type SubSystems = RecorderSystems;
+
     fn set_dependencies(name: String, dependencies: &mut SystemDependencies) {
         dependencies.recorders.push(name);
     }
@@ -13,12 +15,13 @@ impl SystemTypeDefinition for RecorderSysType {
         vec![dependencies.mobility.clone()]
     }
 
-    fn build_subsystem(name: String) -> Result<Box<Any>, InvalidNameError> {
-        match name.as_str() {
-            CarPosRec::typename => Ok(CarPosRec::default().in_anybox()),
-            _ => Err(invalid_system(&name))
-        }
-    }
 }
+
+
+#[derive(Deserialize)]
+pub enum RecorderSystems {
+    CarPosRecSystem(CarPosRecSystem)
+}
+
 
 

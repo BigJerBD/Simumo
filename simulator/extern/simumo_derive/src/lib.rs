@@ -112,7 +112,8 @@ pub fn simusystem(_metadata: proc_macro::TokenStream, input: proc_macro::TokenSt
     let input: TokenStream = input.into();
     let output = quote! {
         #[derive(
-            TypeInfo
+            TypeInfo,
+            Deserialize
             )]
         #input
     };
