@@ -3,6 +3,8 @@ use crate::systems::sys_prelude::*;
 
 pub trait MobilitySystemType {}
 impl SystemTypeDefinition for MobilitySystemType {
+    type SubSystems = MobilitySystems;
+
     fn set_dependencies(name: String, dependencies: &mut SystemDependencies) {
         dependencies.mobility = name;
     }
@@ -11,9 +13,10 @@ impl SystemTypeDefinition for MobilitySystemType {
         vec![dependencies.physic.clone()]
     }
 
-    type SubSystems = ();
+
 }
 
-enum MobilitySystems {
+#[derive(Deserialize)]
+pub enum MobilitySystems {
     StandardMobilitySys(StandardMobilitySystem),
 }

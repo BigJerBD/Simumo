@@ -14,6 +14,7 @@ impl SystemTypeDefinition for ClockSystemType {
     }
 }
 
+#[derive(Deserialize)]
 pub enum ClockSystems {
     StandardClockSys(StandardClockSystem),
 }

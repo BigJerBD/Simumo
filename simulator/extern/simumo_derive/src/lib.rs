@@ -59,8 +59,7 @@ pub fn simucomponent_tag(_metadata: proc_macro::TokenStream, input: proc_macro::
             TypeInfo,
             Debug,
             Clone,
-            // note :: we should not serialzie tag. it is technically useless, but maybe not
-            //Serialize,
+            Deserialize
             )]
         #input
 
@@ -81,7 +80,8 @@ pub fn simucomponent_data(_metadata: proc_macro::TokenStream, input: proc_macro:
             TypeInfo,
             Debug,
             Clone,
-            SimumoSerialize
+            SimumoSerialize,
+            Deserialize
             )]
         #input
     };

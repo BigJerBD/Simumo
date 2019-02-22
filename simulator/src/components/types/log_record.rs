@@ -37,6 +37,7 @@ fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
+    //todo make timestamp into a 00:00:00 format
     s.serialize_f64(x.value_unsafe)
 }
 

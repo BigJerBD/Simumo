@@ -14,6 +14,7 @@ impl SystemTypeDefinition for AgentSystemType {
     }
 }
 
+#[derive(Deserialize)]
 pub enum AgentSystems {
     AcceleratingAgentSys(AcceleratingAgentSystem),
 }

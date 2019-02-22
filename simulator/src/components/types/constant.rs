@@ -7,6 +7,7 @@ use dim::si::{Kilogram, Meter};
 #[storage(VecStorage)]
 pub struct Length {
     #[simumo_metric]
+    #[serde(deserialize_with="meter_deserialize")]
     pub val: Meter<Fdim>,
 }
 
@@ -14,6 +15,7 @@ pub struct Length {
 #[storage(VecStorage)]
 pub struct Mass {
     #[simumo_metric]
+    #[serde(deserialize_with="kilogram_deserialize")]
     pub val: Kilogram<Fdim>,
 }
 
