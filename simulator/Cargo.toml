@@ -5,6 +5,7 @@ authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@proton
 edition = "2018"
 
 [dependencies]
+argparse  = "0.2.2"
 dimensioned = "0.7.0"
 lazy_static = "1.2.0"
 simumo_derive = {path = "extern/simumo_derive"}

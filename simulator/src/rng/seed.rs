@@ -1,6 +1,6 @@
-use uuid::Uuid;
-use std::sync::Mutex;
 use std::cell::Cell;
+use std::sync::Mutex;
+use uuid::Uuid;
 
 //This enable no-mutability and static.
 lazy_static! {

@@ -1,5 +1,6 @@
 //todo:: remove this when program will be complete
 #![allow(dead_code)]
+extern crate argparse;
 #[macro_use]
 extern crate erased_serde;
 #[macro_use]
@@ -12,13 +13,13 @@ extern crate simumo_derive;
 #[macro_use]
 extern crate specs_derive;
 
-
 extern crate csv;
 extern crate proc_macro2;
 extern crate rand;
 extern crate specs;
 extern crate uuid;
 
+mod command_line;
 mod components;
 mod configurations;
 mod metrics;
@@ -43,7 +44,7 @@ use systems::clock::ClockSys;
 
 fn main() {
     let mut world = World::new();
-    configuration::set_internals_configs();
+    command_line::arguments::execute_arguments(); //Find better function name.
 
     //Ressources registering
     // world.add_resource(seed);
