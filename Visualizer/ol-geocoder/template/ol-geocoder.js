@@ -1004,7 +1004,7 @@
       if (bbox) {
         map.getView().fit(bbox, { duration: 500 });
       } else {
-        flyTo(map, coord);
+        flyTo(map, coord, 0, 6);
       }
       const feature = this.createFeature(coord, address);
 
@@ -1015,6 +1015,7 @@
         coordinate: coord,
         bbox: bbox
       });
+
     }
   };
 
