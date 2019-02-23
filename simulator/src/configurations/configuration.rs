@@ -1,58 +1,57 @@
-use crate::command_line::arguments;
-use crate::rng::seed;
 use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-use uuid::Uuid;
 
-/// This `struct` should have the same structure as a configs.json files.
-#[derive(Deserialize)]
-struct Configs {
-    seed: String, // Todo: add other type of json config file.
+use super::generals::Generals;
+
+/// Represent the root level configuration.
+///
+/// Todo: Can't handle empty field in serialization.
+#[derive(Deserialize, Default)]
+pub struct Configuration {
+    pub generals: Generals,
 }
 
-//Todo: Handle properly if some errors happen.
-// Of course, there are going to be more configs.
-/// Set the configurations as internal state.
-pub fn set_internals_configs(options: &arguments::CommandLineArguments) {
-    let configs: Configs;
-    let mut seed: Uuid = Uuid::new_v4();
-
-    if !options.configuration_path.is_empty() {
-        configs = fetch_configs_from_json_file(&options.configuration_path).unwrap();
-        if !configs.seed.is_empty() {
-            seed = Uuid::parse_str(&configs.seed).unwrap();
-        }
+impl Configuration {
+    pub fn setup(&self) {
+        self.generals.setup();
     }
-    seed::M_SEED.lock().unwrap().set(seed);
-
-    if options.verbose
-    //Todo: Change println to write in log file.
-    {
-        println!("Seed use: {}", seed); // One day, we will preint all configs.
+    pub fn from_path(args_path: &String) -> Result<Self, Box<Error>> {
+        let config_path = Path::new(&args_path);
+        let file = File::open(config_path)?;
+        let reader = BufReader::new(file);
+        let configs = serde_json::from_reader(reader)?;
+        Ok(configs)
     }
-}
-
-//Todo: Handle error properly if can't find path.
-/// Create a Configs data from the configurations file.
-fn fetch_configs_from_json_file(args_path: &String) -> Result<Configs, Box<Error>> {
-    let config_path = Path::new(&args_path);
-    let file = File::open(config_path)?;
-    let reader = BufReader::new(file);
-    let configs = serde_json::from_reader(reader)?;
-    Ok(configs)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::rng::seed;
 
     #[test]
-    fn set_seed_from_mutex() {
-        let command_line_arguments: arguments::CommandLineArguments = Default::default();
-        set_internals_configs(&command_line_arguments);
+    #[ignore] // Todo: unignore when lazy_static no more. Baby don't hurt me no more...
+    fn null_seed_is_set() {
+        let config = Configuration {
+            generals: Generals {
+                log_directory: "".to_string(),
+                seed: "".to_string(),
+            },
+        };
+        assert!(seed::SEED.is_nil());
+    }
 
-        assert!(!seed::SEED.is_nil());
+    #[test]
+    fn setted_seed_is_set() {
+        let config = Configuration {
+            generals: Generals {
+                log_directory: "".to_string(),
+                seed: "2d524fe8-55f2-4406-bbf2-8b6568871aa2".to_string(),
+            },
+        };
+        config.setup();
+        assert_eq!(seed::SEED.to_string(), config.generals.seed);
     }
 }

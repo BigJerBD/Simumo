@@ -6,6 +6,7 @@ use dim::si::{Second, MIN};
 use std::cell::RefCell;
 use std::sync::Mutex;
 
+// Same thing as seed. Get the fuck out this shit.
 lazy_static! {
     pub static ref M_LOG_DIRECTORY: Mutex<RefCell<String>> =
         Mutex::new(RefCell::new(String::new()));

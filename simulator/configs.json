@@ -1,10 +1,26 @@
 {
-    "seed": "7d4f23d5-3355-4a0f-b879-a8070173fa73",
-    "agents":[{},{}],
-    "clock":{},
-    "controls":[{},{}],
-    "logger":{},
-    "mobility":{},
-    "physic":{},
-    "recorders":[{},{}]
+    "generals": {
+        "log_directory": "TestPath",
+        "seed": ""
+    },
+    "world": {},
+    "sytems": {
+        "agents": [
+            {},
+            {}
+        ],
+        "clock": {},
+        "controls": [
+            {},
+            {}
+        ],
+        "logger": {},
+        "mobility": {},
+        "physic": {},
+        "recorders": [
+            {},
+            {}
+        ]
+    },
+    "entities": {}
 }

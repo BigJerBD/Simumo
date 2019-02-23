@@ -1,5 +1,5 @@
-use crate::metrics::Fdim;
 use crate::components::type_prelude::*;
+use crate::metrics::Fdim;
 
 use dim::si::{Meter, MeterPerSecond, MeterPerSecond2};
 
@@ -7,10 +7,10 @@ use dim::si::{Meter, MeterPerSecond, MeterPerSecond2};
 #[storage(VecStorage)]
 pub struct Position {
     #[simumo_metric]
-    #[serde(deserialize_with="meter_deserialize")]
+    #[serde(deserialize_with = "meter_deserialize")]
     pub x: Meter<Fdim>,
     #[simumo_metric]
-    #[serde(deserialize_with="meter_deserialize")]
+    #[serde(deserialize_with = "meter_deserialize")]
     pub y: Meter<Fdim>,
 }
 
@@ -24,7 +24,7 @@ pub struct Angle {
 #[storage(VecStorage)]
 pub struct Speed {
     #[simumo_metric]
-    #[serde(deserialize_with="meterpersecond_deserialize")]
+    #[serde(deserialize_with = "meterpersecond_deserialize")]
     pub val: MeterPerSecond<Fdim>,
 }
 
@@ -32,6 +32,6 @@ pub struct Speed {
 #[storage(VecStorage)]
 pub struct Acceleration {
     #[simumo_metric]
-    #[serde(deserialize_with="meterpersecond2_deserialize")]
+    #[serde(deserialize_with = "meterpersecond2_deserialize")]
     pub val: MeterPerSecond2<Fdim>,
 }
