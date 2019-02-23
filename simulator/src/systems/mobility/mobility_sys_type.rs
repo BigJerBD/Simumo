@@ -12,8 +12,6 @@ impl SystemTypeDefinition for MobilitySystemType {
     fn get_dependencies(dependencies: &SystemDependencies) -> Vec<String> {
         vec![dependencies.physic.clone()]
     }
-
-
 }
 
 #[derive(Deserialize)]

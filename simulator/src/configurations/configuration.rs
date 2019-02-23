@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn set_seed_from_mutex() {
-        let mut command_line_arguments: arguments::CommandLineArguments = Default::default();
+        let command_line_arguments: arguments::CommandLineArguments = Default::default();
         set_internals_configs(&command_line_arguments);
 
         assert!(!seed::SEED.is_nil());

@@ -8,8 +8,6 @@ extern crate lazy_static;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
-extern crate simumo_derive;
-#[macro_use]
 extern crate specs_derive;
 
 extern crate csv;
@@ -18,34 +16,28 @@ extern crate proc_macro2;
 extern crate rand;
 extern crate serde;
 extern crate specs;
+extern crate simumo_derive;
 extern crate typeinfo;
 extern crate typeinfo_derive;
 extern crate uuid;
 
-mod command_line;
-mod components;
-mod configurations;
-mod metrics;
-mod ressources;
-mod rng;
-mod simulation;
-
-
 use std::any::Any;
 
+use crate::systems::clock::StandardClockSystem;
+use crate::systems::recorders::car_pos_rec_sys::CarPosRecSystem;
 use dim::si::S;
 use ressources::*;
 use specs::prelude::*;
-use crate::systems::clock::StandardClockSystem;
-use crate::systems::recorders::car_pos_rec_sys::CarPosRecSystem;
 
-
+mod command_line;
 mod components;
+mod configurations;
 mod errors;
 mod internal_prelude;
 mod metrics;
 mod ressources;
-mod simulator;
+mod rng;
+mod simulation;
 mod systems;
 mod topology;
 mod types;
@@ -57,7 +49,7 @@ fn main() {
 
     //print!("{:?}", EnergyControl::type_name());
     //Ressources registering
-    // System registering
+    // System registering\
 
     //NOTE :: uncomment and add a personal path to try to use the logs
 

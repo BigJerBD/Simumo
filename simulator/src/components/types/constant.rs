@@ -1,7 +1,5 @@
 use crate::metrics::Fdim;
 use crate::components::type_prelude::*;
-use crate::components::simumo_component::*;
-use crate::metrics::Fdim;
 
 use dim::si::{Kilogram, Meter};
 

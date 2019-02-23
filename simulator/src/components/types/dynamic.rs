@@ -1,5 +1,4 @@
 use crate::metrics::Fdim;
-use crate::components::simumo_component::*;
 use crate::components::type_prelude::*;
 
 use dim::si::{Meter, MeterPerSecond, MeterPerSecond2};

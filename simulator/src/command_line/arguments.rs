@@ -1,7 +1,7 @@
 use argparse::{ArgumentParser, Store, StoreTrue};
 // use std::path::Path;
 
-use crate::configuration;
+use crate::configurations::configuration;
 use crate::ressources::generals;
 
 #[derive(Default)]
