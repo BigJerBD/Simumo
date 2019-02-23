@@ -1,25 +1,17 @@
-use specs::Entities;
-
-use specs::{Join, Read, ReadStorage, System};
-
 use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
-
 use crate::components::log_record::LogRecord;
 use crate::ressources::clock;
-use specs::LazyUpdate;
+use crate::systems::recorders::RecorderSystemType;
+use crate::systems::sys_prelude::*;
 
-pub struct CarPosRec {
+#[simusystem]
+#[derive(Default)]
+pub struct CarPosRecSystem {
     capture_freq: f64,
 }
-
-impl CarPosRec {
-    pub fn new(capture_freq: f64) -> Self {
-        Self { capture_freq }
-    }
-}
-
-impl<'a> System<'a> for CarPosRec {
+impl RecorderSystemType for CarPosRecSystem {}
+impl<'a> System<'a> for CarPosRecSystem {
     type SystemData = (
         Read<'a, clock::Clock>,
         Entities<'a>,

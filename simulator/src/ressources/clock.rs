@@ -1,10 +1,22 @@
-use dim::si::{Second, S};
-
 use crate::metrics::Fdim;
+
+use dim::si::{S, Second};
+use serde::Deserialize;
+use serde::Deserializer;
 
 pub struct Clock {
     pub dt: Second<Fdim>,
     tick: i32,
+}
+
+impl<'de> Deserialize<'de> for Clock {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where D: Deserializer<'de>
+    {
+        Ok(Clock::new(
+            Second::new(Fdim::deserialize(deserializer)?)
+        ))
+    }
 }
 
 impl Clock {

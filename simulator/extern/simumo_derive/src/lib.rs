@@ -14,26 +14,6 @@ mod simumo_ser;
 
 use simumo_ser::*;
 
-/// registerable component derivation
-///
-/// help registering types to the ECS
-#[proc_macro_derive(SimumoComponent)]
-pub fn simumo_component(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = parse_macro_input!(input as DeriveInput);
-    let name = &ast.ident;
-    let output = quote! {
-
-        impl SimumoComponent for #name{
-            fn register(&self, simulation: &mut World, isdone: &mut bool){
-                if !*isdone {
-                    simulation.register::<#name>();
-                    *isdone = true;
-                }
-            }
-        }
-    };
-    output.into()
-}
 
 /// Custom serialization derivation
 ///
@@ -76,12 +56,10 @@ pub fn simucomponent_tag(_metadata: proc_macro::TokenStream, input: proc_macro::
 
         #[derive(
             Component,
-            SimumoComponent,
             TypeInfo,
             Debug,
             Clone,
-            // note :: we should not serialzie tag. it is technically useless, but maybe not
-            //Serialize,
+            Deserialize
             )]
         #input
 
@@ -99,11 +77,11 @@ pub fn simucomponent_data(_metadata: proc_macro::TokenStream, input: proc_macro:
 
         #[derive(
             Component,
-            SimumoComponent,
             TypeInfo,
             Debug,
             Clone,
-            SimumoSerialize
+            SimumoSerialize,
+            Deserialize
             )]
         #input
     };
@@ -119,8 +97,39 @@ pub fn simucomponent_base(_metadata: proc_macro::TokenStream, input: proc_macro:
     let output = quote! {
         #[derive(
             Component,
-            SimumoComponent,
             TypeInfo
+            )]
+        #input
+    };
+    output.into()
+}
+
+/// Macro that provide a collection of derivation
+/// for a basic system in simumo
+#[proc_macro_attribute]
+pub fn simusystem(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
+                          -> proc_macro::TokenStream {
+    let input: TokenStream = input.into();
+    let output = quote! {
+        #[derive(
+            TypeInfo,
+            Deserialize
+            )]
+        #input
+    };
+    output.into()
+}
+
+/// Macro that provide a collection of derivation
+/// for a basic simulator ressource
+#[proc_macro_attribute]
+pub fn simuresource(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
+                  -> proc_macro::TokenStream {
+    let input: TokenStream = input.into();
+    let output = quote! {
+        #[derive(
+            TypeInfo,
+            Default
             )]
         #input
     };
