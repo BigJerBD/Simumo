@@ -4,12 +4,12 @@ use std::sync::Mutex;
 use crate::metrics::Fdim;
 
 lazy_static! {
-    pub static ref M_LOG_DIRECTORY: Mutex<RefCell<String>> = Mutex::new(RefCell::new(String::new()));
+    pub static ref M_LOG_DIRECTORY: Mutex<RefCell<String>> =
+        Mutex::new(RefCell::new(String::new()));
     pub static ref LOG_DIRECTORY: String = M_LOG_DIRECTORY.lock().unwrap().borrow().clone();
 }
 
-use dim::si::{MIN, Second};
-
+use dim::si::{Second, MIN};
 
 #[derive(Default)]
 pub struct LogDirectory {
@@ -22,6 +22,6 @@ pub struct EndTime {
 
 impl Default for EndTime {
     fn default() -> Self {
-        Self{ val: MIN }
+        Self { val: MIN }
     }
 }

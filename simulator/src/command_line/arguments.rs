@@ -20,9 +20,11 @@ pub fn execute_arguments() {
         // Todo: check if path is correct.
         // let logger_path = Path::new(&options.logger_path);
         let logger_path = options.logger_path;
-        generals::M_LOG_DIRECTORY.lock().unwrap().replace(logger_path);
+        generals::M_LOG_DIRECTORY
+            .lock()
+            .unwrap()
+            .replace(logger_path);
     }
-
 }
 
 fn parse_arguments() -> CommandLineArguments {
@@ -47,7 +49,8 @@ fn parse_arguments() -> CommandLineArguments {
             &["-l"],
             Store,
             "Logger files output. The default path is: TODO:add default path same as LOG_DIRECTORY in src/general.rs",
-        ).required();*/ // Todo: When ready, use this code beceause we want log file path to be specify.
+        ).required();*/
+        // Todo: When ready, use this code beceause we want log file path to be specify.
 
         parser.refer(&mut options.verbose).add_option(
             &["-v"],

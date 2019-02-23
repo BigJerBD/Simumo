@@ -1,4 +1,4 @@
-use dim::si::{S, Second};
+use dim::si::{Second, S};
 
 use crate::metrics::Fdim;
 
@@ -21,6 +21,9 @@ impl Clock {
 
 impl Default for Clock {
     fn default() -> Self {
-        Self{ dt: 1.0 * S, tick: 0 }
+        Self {
+            dt: 1.0 * S,
+            tick: 0,
+        }
     }
 }

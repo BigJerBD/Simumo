@@ -1,5 +1,5 @@
 use dim::si::{Kilogram, Meter};
-use serde::ser::{Serialize, Serializer, SerializeStruct};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 use simumo_derive::*;
 use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;

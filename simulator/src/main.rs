@@ -36,8 +36,8 @@ use components::constant::CarType;
 use components::dynamic::{Position, Speed};
 use components::log_record::LogRecord;
 use configurations::configuration;
-use ressources::*;
 use dim::si::{M, MPS, S};
+use ressources::*;
 use specs::prelude::*;
 use systems::clock::ClockSys;
 
@@ -51,7 +51,9 @@ fn main() {
     //Ressources registering
     world.add_resource(clock::Clock::new(0.25 * S));
     world.add_resource(generals::EndTime { val: 12.5 * S });
-    world.add_resource(generals::LogDirectory { val: String::from("testpath") });
+    world.add_resource(generals::LogDirectory {
+        val: String::from("testpath"),
+    });
 
     // Component registering
     world.register::<Position>();
@@ -61,19 +63,28 @@ fn main() {
     world
         .create_entity()
         .with(Speed { val: 2.0 * MPS })
-        .with(Position { x: 0.0 * M, y: 0.0 * M })
+        .with(Position {
+            x: 0.0 * M,
+            y: 0.0 * M,
+        })
         .with(CarType)
         .build();
     world
         .create_entity()
         .with(Speed { val: 4.0 * MPS })
-        .with(Position { x: 0.0 * M, y: 0.0 * M })
+        .with(Position {
+            x: 0.0 * M,
+            y: 0.0 * M,
+        })
         .with(CarType)
         .build();
     world
         .create_entity()
         .with(Speed { val: 1.5 * MPS })
-        .with(Position { x: 0.0 * M, y: 0.0 * M })
+        .with(Position {
+            x: 0.0 * M,
+            y: 0.0 * M,
+        })
         .with(CarType)
         .build();
 

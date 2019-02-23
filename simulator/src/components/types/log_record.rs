@@ -12,7 +12,7 @@ use crate::metrics::Fdim;
 #[derive(Serialize)]
 #[storage(VecStorage)]
 pub struct LogRecord {
-    #[serde(serialize_with="timestamp_serialize")]
+    #[serde(serialize_with = "timestamp_serialize")]
     timestamp: Second<Fdim>,
     record_id: u32,
     record_type: String,
@@ -40,8 +40,8 @@ impl LogRecord {
 }
 
 fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+where
+    S: Serializer,
 {
     s.serialize_f64(x.value_unsafe)
 }

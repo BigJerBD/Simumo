@@ -1,5 +1,5 @@
 use dim::si::{Meter, MeterPerSecond, MeterPerSecond2};
-use serde::ser::{Serialize, Serializer, SerializeStruct};
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 use simumo_derive::*;
 use specs::prelude::{Component, VecStorage, World};
 use typeinfo::TypeInfo;
@@ -19,20 +19,20 @@ pub struct Position {
 
 #[simucomponent_data]
 #[storage(VecStorage)]
-pub struct Angle{
+pub struct Angle {
     pub val: Fdim,
 }
 
 #[simucomponent_data]
 #[storage(VecStorage)]
-pub struct Speed{
+pub struct Speed {
     #[simumo_metric]
     pub val: MeterPerSecond<Fdim>,
 }
 
 #[simucomponent_data]
 #[storage(VecStorage)]
-pub struct Acceleration{
+pub struct Acceleration {
     #[simumo_metric]
     pub val: MeterPerSecond2<Fdim>,
 }

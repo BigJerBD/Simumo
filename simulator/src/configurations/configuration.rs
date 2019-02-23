@@ -15,12 +15,11 @@ struct Configs {
 //Todo: Handle properly if some errors happen.
 // Of course, there are going to be more configs.
 /// Set the configurations as internal state.
-pub fn set_internals_configs(options: &arguments::CommandLineArguments){
+pub fn set_internals_configs(options: &arguments::CommandLineArguments) {
     let configs: Configs;
     let mut seed: Uuid = Uuid::new_v4();
 
-    if !options.configuration_path.is_empty()
-    {
+    if !options.configuration_path.is_empty() {
         configs = fetch_configs_from_json_file(&options.configuration_path).unwrap();
         if !configs.seed.is_empty() {
             seed = Uuid::parse_str(&configs.seed).unwrap();
@@ -28,7 +27,8 @@ pub fn set_internals_configs(options: &arguments::CommandLineArguments){
         seed::M_SEED.lock().unwrap().set(seed);
     }
 
-    if options.verbose //Todo: Change println to write in log file.
+    if options.verbose
+    //Todo: Change println to write in log file.
     {
         println!("Seed use: {}", seed); // One day, we will preint all configs.
     }
