@@ -12,6 +12,7 @@ extern crate serde_derive;
 extern crate simumo_derive;
 #[macro_use]
 extern crate specs_derive;
+extern crate dimensioned as dim;
 
 extern crate csv;
 extern crate proc_macro2;
@@ -36,6 +37,7 @@ use components::dynamic::{Position, Speed};
 use components::log_record::LogRecord;
 use configurations::configuration;
 use ressources::*;
+use dim::si::{M, MPS, S};
 use specs::prelude::*;
 use systems::clock::ClockSys;
 
@@ -47,9 +49,9 @@ fn main() {
     command_line::arguments::execute_arguments(); //Find better function name.
 
     //Ressources registering
-    // world.add_resource(seed);
-    world.add_resource(clock::Clock::new(0.25));
-    world.add_resource(generals::EndTime(12.5));
+    world.add_resource(clock::Clock::new(0.25 * S));
+    world.add_resource(generals::EndTime { val: 12.5 * S });
+    world.add_resource(generals::LogDirectory { val: String::from("testpath") });
 
     // Component registering
     world.register::<Position>();
@@ -58,20 +60,20 @@ fn main() {
     world.register::<LogRecord>();
     world
         .create_entity()
-        .with(Speed(2.0))
-        .with(Position { x: 0.0, y: 0.0 })
+        .with(Speed { val: 2.0 * MPS })
+        .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
     world
         .create_entity()
-        .with(Speed(4.0))
-        .with(Position { x: 0.0, y: 0.0 })
+        .with(Speed { val: 4.0 * MPS })
+        .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
     world
         .create_entity()
-        .with(Speed(1.5))
-        .with(Position { x: 0.0, y: 0.0 })
+        .with(Speed { val: 1.5 * MPS })
+        .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
 
@@ -110,7 +112,7 @@ fn main() {
         // verify if the simulation is overs
         let clock = world.read_resource::<clock::Clock>();
         let end_time = world.read_resource::<generals::EndTime>();
-        if clock.get_time() >= end_time.0 {
+        if clock.get_time() >= end_time.val {
             break;
         }
     }
