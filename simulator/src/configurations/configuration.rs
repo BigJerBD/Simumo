@@ -24,8 +24,8 @@ pub fn set_internals_configs(options: &arguments::CommandLineArguments) {
         if !configs.seed.is_empty() {
             seed = Uuid::parse_str(&configs.seed).unwrap();
         }
-        seed::M_SEED.lock().unwrap().set(seed);
     }
+    seed::M_SEED.lock().unwrap().set(seed);
 
     if options.verbose
     //Todo: Change println to write in log file.
@@ -42,4 +42,17 @@ fn fetch_configs_from_json_file(args_path: &String) -> Result<Configs, Box<Error
     let reader = BufReader::new(file);
     let configs = serde_json::from_reader(reader)?;
     Ok(configs)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn set_seed_from_mutex() {
+        let mut command_line_arguments: arguments::CommandLineArguments = Default::default();
+        set_internals_configs(&command_line_arguments);
+
+        assert!(!seed::SEED.is_nil());
+    }
 }
