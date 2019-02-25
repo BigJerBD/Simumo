@@ -52,13 +52,11 @@ fn main() {
     world.register::<CarType>();
     world.register::<Light>();
     world.register::<LogRecord>();
-    world.register::<Observers>();
 
     // Entities registering
     let vehicle1 = world
         .create_entity()
         .with(Identifier("vehicle1".to_string()))
-        .with(Observers::new())
         .with(Speed { val: 2.0 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
@@ -66,7 +64,6 @@ fn main() {
     let vehicle2 = world
         .create_entity()
         .with(Identifier("vehicle2".to_string()))
-        .with(Observers::new())
         .with(Speed { val: 4.0 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
@@ -74,22 +71,19 @@ fn main() {
     let vehicle3 = world
         .create_entity()
         .with(Identifier("vehicle3".to_string()))
-        .with(Observers::new())
         .with(Speed { val: 1.5 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
-    let trafficlight2 = world
-        .create_entity()
-        .with(Identifier("trafficlight2".to_string()))
-        .with(Observers::new())
-        .with(Light::new(TrafficLightColor::RED, 3.0 * S, 1.0 * S, 0.0 * S))
-        .build();
     let trafficlight1 = world
         .create_entity()
         .with(Identifier("trafficlight1".to_string()))
-        .with(Observers { list: vec![&trafficlight2] })
         .with(Light::new(TrafficLightColor::GREEN, 5.0 * S, 1.5 * S, 3.5 * S))
+        .build();
+    let trafficlight2 = world
+        .create_entity()
+        .with(Identifier("trafficlight2".to_string()))
+        .with(Light::new(TrafficLightColor::RED, 3.0 * S, 1.0 * S, 0.0 * S))
         .build();
     
     // Add every entity to the entityTable which links an entity to its Simumo id (not its Specs id)
@@ -103,8 +97,8 @@ fn main() {
     }
     // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
     {
-        //let mut events_manager = world.write_resource::<EventsManager>();
-        //events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
+        let mut events_manager = world.write_resource::<EventsManager>();
+        events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
     }
     world.maintain();
 

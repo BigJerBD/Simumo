@@ -5,7 +5,7 @@ use typeinfo_derive::*;
 #[derive(Component, TypeInfo, Debug)]
 #[storage(VecStorage)]
 pub struct Observers {
-    pub list: Vec<&'static Entity>
+    pub list: Vec<String>
 }
 
 impl Observers {
@@ -14,7 +14,7 @@ impl Observers {
             list: Vec::new()
         }
     }
-    pub fn get_list(&self) -> &Vec<&Entity>{
+    pub fn get_list(&self) -> &Vec<String>{
         &self.list
     }
 }
