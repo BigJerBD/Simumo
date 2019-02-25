@@ -1,0 +1,26 @@
+{
+    "generals": {
+        "log_directory": "TestPath",
+        "seed": ""
+    },
+    "world": {},
+    "sytems": {
+        "agents": [
+            {},
+            {}
+        ],
+        "clock": {},
+        "controls": [
+            {},
+            {}
+        ],
+        "logger": {},
+        "mobility": {},
+        "physic": {},
+        "recorders": [
+            {},
+            {}
+        ]
+    },
+    "entities": {}
+}

@@ -1,9 +1,8 @@
-use crate::components::log_record::{LogRecord};
+use crate::components::log_record::LogRecord;
 use crate::ressources::clock;
 
 use specs::prelude::*;
 use std::collections::HashMap;
-
 
 use crate::systems::logging::loggers::logger_impl::LoggerImpl;
 use std::path::Path;
