@@ -1,5 +1,6 @@
 use crate::ressources::{clock};
-use crate::eventsmanager::{Event, EventsUpdate};
+use crate::eventsmanager::{Event, EventsUpdate, EventsManager};
+use crate::{Identifier};
 
 use dim::si::{S, Second};
 use serde::ser::{Serialize, Serializer};
@@ -17,7 +18,8 @@ use specs::prelude::*;
 #[derive(Copy, Clone, Debug, Serialize, PartialEq)]
 pub enum TrafficLightColor { RED, YELLOW, GREEN, ORANGE }
 
-#[derive(TypeInfo, Debug)]
+#[derive(Component, TypeInfo, Debug)]
+#[storage(VecStorage)]
 pub struct Light {
     pub color: TrafficLightColor,
     pub max_green_time: Second<Fdim>,
@@ -47,72 +49,6 @@ impl Light {
     fn reset_to_red(&mut self) {
         self.color = TrafficLightColor::RED;
         self.time = 0.0 * S;
-    }
-}
-
-
-impl Component for Light {
-    type Storage = FlaggedStorage<Self>;
-}
-
-#[derive(Default)]
-pub struct SysA {
-    reader_id: Option<ReaderId<ComponentEvent>>,
-    inserted: BitSet,
-    modified: BitSet,
-    removed: BitSet,
-}
-
-impl<'a> System<'a> for SysA {
-    type SystemData = (Entities<'a>, ReadStorage<'a, Light>);
-
-    fn setup(&mut self, res: &mut Resources) {
-        Self::SystemData::setup(res);
-        self.reader_id = Some(WriteStorage::<Light>::fetch(&res).register_reader());
-    }
-
-    fn run(&mut self, (entities, tracked): Self::SystemData) {
-        self.modified.clear();
-        self.inserted.clear();
-        self.removed.clear();
-
-        let events = tracked.channel().read(self.reader_id.as_mut().expect("ReaderId not found"));
-        for event in events {
-            match event {
-                ComponentEvent::Modified(id) => {
-                    self.modified.add(*id);
-                }
-                ComponentEvent::Inserted(id) => {
-                    self.inserted.add(*id);
-                }
-                ComponentEvent::Removed(id) => {
-                    self.removed.add(*id);
-                }
-            }
-        }
-        for (entity, _tracked, _) in (&entities, &tracked, &self.modified).join() {
-            println!("modified: {:?}", entity);
-        }
-        for (entity, _tracked, _) in (&entities, &tracked, &self.inserted).join() {
-            println!("inserted: {:?}", entity);
-        }
-        for (entity, _tracked, _) in (&entities, &tracked, &self.removed).join() {
-            println!("removed: {:?}", entity);
-        }
-    }
-}
-
-#[derive(Default)]
-pub struct SysB;
-impl<'a> System<'a> for SysB {
-    type SystemData = (Entities<'a>, WriteStorage<'a, Light>);
-    fn run(&mut self, (entities, mut tracked): Self::SystemData) {
-        for (entity, mut restricted) in (&entities, &mut tracked.restrict_mut()).join() {
-            if entity.id() % 2 == 0 {
-                let mut comp = restricted.get_mut_unchecked();
-                //comp.color = TrafficLightColor::ORANGE;
-            }
-        }
     }
 }
 
@@ -161,37 +97,37 @@ impl IObserver<Light> for Light {
 pub struct LightUpdate;
 impl<'a> System<'a> for LightUpdate {
     type SystemData = (
+        Write<'a, EventsManager>,
         Entities<'a>,
+        ReadStorage<'a, Identifier>,
         WriteStorage<'a, Light>,
         Read<'a, clock::Clock>
     );
 
-    fn run(&mut self, (entities, mut lights, clock): Self::SystemData) {
+    fn run(&mut self, (mut eventsmanager, entities, identifiers, mut lights, clock): Self::SystemData) {
         let mut x: &mut Light = &mut Light::new(TrafficLightColor::GREEN, 3.0 * S, 1.0 * S, 0.0 * S);
-        for (entity, light) in (&entities, &mut lights).join() {
-            if (light.color == TrafficLightColor::RED) {
-                x = light;
-            } else {
-                match light.color {
-                    TrafficLightColor::GREEN => {
-                        light.time = light.time - clock.get_dt();
-                        if light.time <= (core::f64::EPSILON * S) {
-                            light.reset_to_yellow();
-                            light.notify(&Event::TrafficLightColorChange(TrafficLightColor::YELLOW));
-                        }
-                    },
-                    TrafficLightColor::YELLOW => {
-                        light.time = light.time - clock.get_dt();
-                        if light.time <= (core::f64::EPSILON * S) {
-                            light.reset_to_red();
-                            light.notify(&Event::TrafficLightColorChange(TrafficLightColor::RED));
-                        }
-                    },
-                    TrafficLightColor::RED => {
-                        x.reset_to_green();
-                    },
-                    _ => ()
-                }
+        for (entity, identifier, light) in (&entities, &identifiers, &mut lights).join() {
+            match light.color {
+                TrafficLightColor::GREEN => {
+                    light.time = light.time - clock.get_dt();
+                    if light.time <= (core::f64::EPSILON * S) {
+                        light.reset_to_yellow();
+                        eventsmanager.add_event(identifier.0.as_str(), &Event::TrafficLightColorChange(TrafficLightColor::YELLOW));
+                        //light.notify(&Event::TrafficLightColorChange(TrafficLightColor::YELLOW));
+                    }
+                },
+                TrafficLightColor::YELLOW => {
+                    light.time = light.time - clock.get_dt();
+                    if light.time <= (core::f64::EPSILON * S) {
+                        light.reset_to_red();
+                        eventsmanager.add_event(identifier.0.as_str(), &Event::TrafficLightColorChange(TrafficLightColor::RED))
+                        //light.notify(&Event::TrafficLightColorChange(TrafficLightColor::RED));
+                    }
+                },
+                TrafficLightColor::RED => {
+                    x.reset_to_green();
+                },
+                _ => ()
             }
         }
     }

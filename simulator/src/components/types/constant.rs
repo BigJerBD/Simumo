@@ -24,7 +24,7 @@ pub struct Mass {
 
 #[simucomponent_data]
 #[storage(VecStorage)]
-pub struct Identifier(pub i32);
+pub struct Identifier(pub String);
 
 //entity types
 #[simucomponent_tag]
