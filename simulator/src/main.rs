@@ -99,6 +99,7 @@ fn main() {
     {
         let mut events_manager = world.write_resource::<EventsManager>();
         events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+        events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
     }
     world.maintain();
 

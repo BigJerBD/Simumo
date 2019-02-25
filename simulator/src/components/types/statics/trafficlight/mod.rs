@@ -105,10 +105,20 @@ impl<'a> System<'a> for LightUpdate {
     );
 
     fn run(&mut self, (mut eventsmanager, entities, identifiers, mut lights, clock): Self::SystemData) {
-        let mut x: &mut Light = &mut Light::new(TrafficLightColor::GREEN, 3.0 * S, 1.0 * S, 0.0 * S);
         for (entity, identifier, light) in (&entities, &identifiers, &mut lights).join() {
             println!("{:#?}", eventsmanager.get_events_to_execute(identifier.0.as_str()));
-
+            // We check the events that apply (the events that were triggered by the entities that are observed by this one)
+            let events_to_execute: Vec<&Event> = eventsmanager.get_events_to_execute(identifier.0.as_str());
+            for event_to_execute in events_to_execute.iter() {
+                match event_to_execute {
+                    Event::TrafficLightColorChange(new_color) => {
+                        if new_color == &TrafficLightColor::RED {
+                            light.reset_to_green();
+                        }
+                    }
+                }
+            }
+            // We update the light's time (and color if applicable)
             match light.color {
                 TrafficLightColor::GREEN => {
                     light.time = light.time - clock.get_dt();
@@ -125,9 +135,6 @@ impl<'a> System<'a> for LightUpdate {
                         eventsmanager.add_event_to_be_executed(identifier.0.as_str(), &Event::TrafficLightColorChange(TrafficLightColor::RED))
                         //light.notify(&Event::TrafficLightColorChange(TrafficLightColor::RED));
                     }
-                },
-                TrafficLightColor::RED => {
-                    x.reset_to_green();
                 },
                 _ => ()
             }
