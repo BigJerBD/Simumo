@@ -22,7 +22,7 @@ mod util;
 
 use ressources::{generals, clock, eventsmanager};
 use components::dynamic::{Position, Speed};
-use components::statics::trafficlight::{Light, TrafficLightColor, LightUpdate};
+use components::statics::trafficlight::{Light, TrafficLightColor, LightsUpdate};
 use eventsmanager::{EventsManager, EventsUpdate, EventsHookUpdate};
 use dim::si::{M, MPS, S};
 use specs::prelude::*;
@@ -105,7 +105,7 @@ fn main() {
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::logging::print_sys::PrintLog, "print", &[])
         .with(EventsHookUpdate, "eventshook_system", &[])
-        .with(LightUpdate, "color_update", &["print"])
+        .with(LightsUpdate, "color_update", &["print"])
         .with(
             systems::physic::mobility::PositionUpdate,
             "pos_update",
