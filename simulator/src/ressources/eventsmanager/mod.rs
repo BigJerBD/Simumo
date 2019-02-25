@@ -1,12 +1,7 @@
 use std::collections::HashMap;
 use specs::prelude::*;
-use crate::{Identifier, EntityTable, IObservable, IObserver};
-use crate::{Light, TrafficLightColor};
-extern crate shrev;
-use shrev::EventChannel;
-
-mod observables;
-pub use observables::{Observers};
+use crate::{Identifier};
+use crate::{TrafficLightColor};
 
 #[derive(Clone, Debug)]
 pub enum Event {
@@ -46,15 +41,7 @@ impl EventsManager {
             None => Vec::new()
         }
     }
-    /*pub fn get_events(&self, id_observer: &str) -> Vec<&Event> {
-        match self.events_new.get(id_observer) {
-            Some(events) => events.clone(),
-            None => Vec::new()
-        }
-    }*/
     pub fn swap_events(&mut self) {
-        /*self.events_old = events;
-        self.events_new = HashMap::new();*/
         let mut events_reorganized_by_observer: HashMap<String, Vec<&Event>> = HashMap::new();
         for (id_observable, events) in self.events_new.iter() {
             let id_observers: Vec<String> = self.get_observers(id_observable.as_str());
@@ -72,14 +59,12 @@ impl EventsManager {
 pub struct EventsHookUpdate;
 impl<'a> System<'a> for EventsHookUpdate {
     type SystemData = (
-        Read<'a, EventsManager>,
-        Read<'a, EntityTable>,
+        Write<'a, EventsManager>,
         Entities<'a>,
-        ReadStorage<'a, Identifier>,
-        WriteStorage<'a, Observers>
+        ReadStorage<'a, Identifier>
     );
 
-    fn run(&mut self, (eventsmanager, entitytable, entities, identifiers, mut observables): Self::SystemData) {
+    fn run(&mut self, (mut eventsmanager, entities, identifiers): Self::SystemData) {
         /*for (entity, identifier, observableslist) in (&entities, &identifiers, &mut observables).join() {
             let currentObservables: &Vec<&Entity> = observableslist.get_list();
             for currentObservable in currentObservables {
@@ -92,23 +77,10 @@ impl<'a> System<'a> for EventsHookUpdate {
 pub struct EventsUpdate;
 impl<'a> System<'a> for EventsUpdate {
     type SystemData = (
-        Write<'a, EventsManager>,
-        Entities<'a>,
-        ReadStorage<'a, Identifier>
+        Write<'a, EventsManager>
     );
 
-    fn run(&mut self, (mut eventsmanager, entities, identifiers): Self::SystemData) {
-        /*let mut events_reorganized_by_observer: HashMap<String, Vec<&Event>> = HashMap::new();
-        for (entity, identifier) in (&entities, &identifiers).join() {
-            let events: Vec<&Event> = eventsmanager.get_events(identifier.0.as_str());
-            let idObservers: Vec<String> = eventsmanager.get_observers(identifier.0.as_str());
-            for idObserver in idObservers {
-                for event in events.iter() {
-                    events_reorganized_by_observer.entry(idObserver.to_string()).or_insert(Vec::new()).push(event);
-                }
-            }
-        }
-        //eventsmanager.swap_events(events_reorganized_by_observer);*/
+    fn run(&mut self, mut eventsmanager: Self::SystemData) {
         eventsmanager.swap_events();
     }
 }

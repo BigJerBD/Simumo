@@ -20,11 +20,10 @@ mod simulation;
 mod systems;
 mod util;
 
-use ressources::{generals, clock, eventsmanager, entitytable};
+use ressources::{generals, clock, eventsmanager};
 use components::dynamic::{Position, Speed};
-use components::statics::trafficlight::{Light, TrafficLightColor, LightUpdate, IObservable, IObserver};
-use eventsmanager::{EventsManager, EventsUpdate, Observers, EventsHookUpdate};
-use entitytable::{EntityTable};
+use components::statics::trafficlight::{Light, TrafficLightColor, LightUpdate};
+use eventsmanager::{EventsManager, EventsUpdate, EventsHookUpdate};
 use dim::si::{M, MPS, S};
 use specs::prelude::*;
 
@@ -43,7 +42,6 @@ fn main() {
     world.add_resource(generals::EndTime { val: 12.5 * S });
     world.add_resource(generals::LogDirectory { val: String::from("testpath") });
     world.add_resource(EventsManager::new());
-    world.add_resource(EntityTable::new());
 
     // Component registering
     world.register::<Identifier>();
@@ -54,51 +52,44 @@ fn main() {
     world.register::<LogRecord>();
 
     // Entities registering
-    let vehicle1 = world
+    world
         .create_entity()
         .with(Identifier("vehicle1".to_string()))
         .with(Speed { val: 2.0 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
-    let vehicle2 = world
+    world
         .create_entity()
         .with(Identifier("vehicle2".to_string()))
         .with(Speed { val: 4.0 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
-    let vehicle3 = world
+    world
         .create_entity()
         .with(Identifier("vehicle3".to_string()))
         .with(Speed { val: 1.5 * MPS })
         .with(Position { x: 0.0 * M, y: 0.0 * M })
         .with(CarType)
         .build();
-    let trafficlight1 = world
+    world
         .create_entity()
         .with(Identifier("trafficlight1".to_string()))
         .with(Light::new(TrafficLightColor::GREEN, 5.0 * S, 1.5 * S, 3.5 * S))
         .build();
-    let trafficlight2 = world
+    world
         .create_entity()
         .with(Identifier("trafficlight2".to_string()))
         .with(Light::new(TrafficLightColor::RED, 3.0 * S, 1.0 * S, 0.0 * S))
         .build();
-    
-    // Add every entity to the entityTable which links an entity to its Simumo id (not its Specs id)
-    {
-        let mut entity_table = world.write_resource::<EntityTable>();
-        entity_table.insert("vehicle1".to_string(), vehicle1);
-        entity_table.insert("vehicle2".to_string(), vehicle2);
-        entity_table.insert("vehicle3".to_string(), vehicle3);
-        entity_table.insert("trafficlight1".to_string(), trafficlight1);
-        entity_table.insert("trafficlight2".to_string(), trafficlight2);
-    }
+
     // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
     {
         let mut events_manager = world.write_resource::<EventsManager>();
+        // Here, for example, trafficlight2 observes trafficlight1
         events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+        // And here, trafficlight1 observes trafficlight2
         events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
     }
     world.maintain();
@@ -120,6 +111,7 @@ fn main() {
             "pos_update",
             &["print"],
         )
+        // EventsUpdate has to be done last (except for the ClockSys update)
         .with(EventsUpdate, "events_update", &["print"])
         // NOTE uncomment this also
         //.with(
@@ -146,5 +138,4 @@ fn main() {
         }
     }
     println!("Showing results log...");
-    //sim.get_state();
 }
