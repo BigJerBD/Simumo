@@ -4,10 +4,9 @@
         "seed": ""
     },
     "world": {},
-    "sytems": {
+    "systems": {
         "agents": [
-            {},
-            {}
+            {"type":"Accelerating"}
         ],
         "clock": {},
         "controls": [

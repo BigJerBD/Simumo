@@ -3,14 +3,22 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
-use super::generals::Generals;
+use serde::Deserialize;
+use serde::Deserializer;
+
+use crate::systems::agents::AgentSystems;
+
+use super::generals::GeneralConfigurations;
+use std::marker::PhantomData;
+use crate::configurations::systems::SystemsConfiguration;
 
 /// Represent the root level configuration.
 ///
 /// Todo: Can't handle empty field in serialization.
 #[derive(Deserialize, Default)]
 pub struct Configuration {
-    pub generals: Generals,
+    pub generals: GeneralConfigurations,
+    pub systems: SystemsConfiguration
 }
 
 impl Configuration {
@@ -26,19 +34,22 @@ impl Configuration {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::rng::seed;
+
+    use super::*;
 
     #[test]
     #[ignore] // Todo: unignore when lazy_static no more. Baby don't hurt me no more...
     fn null_seed_is_set() {
         let config = Configuration {
-            generals: Generals {
+            generals: GeneralConfigurations {
                 log_directory: "".to_string(),
                 seed: "".to_string(),
             },
+            systems: SystemsConfiguration::default()
         };
         assert!(seed::SEED.is_nil());
     }
@@ -46,10 +57,11 @@ mod tests {
     #[test]
     fn setted_seed_is_set() {
         let config = Configuration {
-            generals: Generals {
+            generals: GeneralConfigurations {
                 log_directory: "".to_string(),
                 seed: "2d524fe8-55f2-4406-bbf2-8b6568871aa2".to_string(),
             },
+            systems: SystemsConfiguration::default()
         };
         config.setup();
         assert_eq!(seed::SEED.to_string(), config.generals.seed);

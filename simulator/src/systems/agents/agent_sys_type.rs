@@ -15,6 +15,7 @@ impl SystemTypeDefinition for AgentSystemType {
 }
 
 #[derive(Deserialize)]
+#[serde(tag="type")]
 pub enum AgentSystems {
-    AcceleratingAgentSys(AcceleratingAgentSystem),
+    Accelerating(AcceleratingAgentSystem),
 }

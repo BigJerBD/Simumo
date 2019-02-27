@@ -3,12 +3,12 @@ use uuid::Uuid;
 
 /// Represent the general configuration.
 #[derive(Deserialize, Default)]
-pub struct Generals {
+pub struct GeneralConfigurations {
     pub log_directory: String,
     pub seed: String,
 }
 
-impl Generals {
+impl GeneralConfigurations {
     pub fn setup(&self) {
         if !self.seed.is_empty() {
             let uuid = Uuid::parse_str(&self.seed).unwrap();
