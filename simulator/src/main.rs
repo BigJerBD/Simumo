@@ -21,7 +21,6 @@ extern crate typeinfo;
 extern crate typeinfo_derive;
 extern crate uuid;
 
-mod entities;
 mod command_line;
 mod components;
 mod configurations;
