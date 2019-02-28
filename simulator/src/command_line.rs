@@ -19,19 +19,6 @@ impl CommandLineArguments {
                 .add_option(&["-c"], Store, "Json configuration file path")
                 .required();
 
-            parser.refer(&mut options.logger_path).add_option(
-            &["-l"],
-            Store,
-            "Logger files output. The default path is: TODO:add default path same as LOG_DIRECTORY in src/general.rs",
-        );
-
-            // Todo: When ready, use this code beceause we want log file path to be specify.
-            /*parser.refer(&mut options.logger_path).add_option(
-                &["-l"],
-                Store,
-                "Logger files output. The default path is: TODO:add default path same as LOG_DIRECTORY in src/general.rs",
-            ).required();*/
-
             parser.refer(&mut options.verbose).add_option(
                 &["-v"],
                 StoreTrue,
