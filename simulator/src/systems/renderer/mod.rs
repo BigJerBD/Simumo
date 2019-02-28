@@ -1,14 +1,9 @@
-use crate::Position;
+use opengl_graphics::GlGraphics;
 use piston::input::RenderArgs;
-use opengl_graphics::{ GlGraphics };
-use specs::{ Component, ReadStorage, System, VecStorage, ReadExpect, WriteExpect };
+use specs::{Component, ReadExpect, ReadStorage, System, VecStorage, WriteExpect};
 
-#[derive(Component, Debug)]
-#[storage(VecStorage)]
-pub struct Rectangle {
-    pub width: f64,
-    pub height: f64
-}
+use crate::components::constant::Rectangle;
+use crate::components::dynamic::Position;
 
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
@@ -29,7 +24,7 @@ impl<'a> System<'a> for DrawClear {
 pub struct DrawRectangles;
 impl<'a> System<'a> for DrawRectangles {
     type SystemData = (
-        ReadStorage<'a, Position>, 
+        ReadStorage<'a, Position>,
         ReadStorage<'a, Rectangle>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>);
@@ -51,7 +46,7 @@ impl<'a> System<'a> for DrawRectangles {
                 let transform = c.transform
                     .trans(pos.x.value_unsafe * 10., pos.y.value_unsafe * 10.)
                     .scale(rect.width, rect.height);
-                
+
                 rectangle(RED, square, transform, gl);
             });
         }
