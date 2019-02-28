@@ -15,7 +15,7 @@ impl SystemTypeDefinition for PhysicSystemType {
 }
 
 #[derive(Deserialize)]
-#[serde(tag="type")]
+#[serde(tag = "type")]
 pub enum PhysicSystems {
     AccelerationSystem(AccelerationSystem),
 }

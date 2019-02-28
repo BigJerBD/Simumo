@@ -17,7 +17,7 @@ impl SystemTypeDefinition for RecorderSystemType {
 }
 
 #[derive(Deserialize)]
-#[serde(tag="type")]
+#[serde(tag = "type")]
 pub enum RecorderSystems {
     CarPosRecSystem(CarPosRecSystem),
 }

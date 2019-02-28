@@ -15,7 +15,7 @@ impl SystemTypeDefinition for ControlSystemType {
 }
 
 #[derive(Deserialize)]
-#[serde(tag="type")]
+#[serde(tag = "type")]
 pub enum ControlSystems {
     //
 }

@@ -17,7 +17,7 @@ impl SystemTypeDefinition for LoggerSystemType {
 }
 
 #[derive(Deserialize)]
-#[serde(tag="type")]
+#[serde(tag = "type")]
 pub enum LoggerSystems {
     CsvLogger(LoggerSystem<CsvLogger>),
     NdJsonLogger(LoggerSystem<NdJsonLogger>),

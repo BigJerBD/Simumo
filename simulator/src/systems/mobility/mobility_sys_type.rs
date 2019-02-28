@@ -15,7 +15,7 @@ impl SystemTypeDefinition for MobilitySystemType {
 }
 
 #[derive(Deserialize)]
-#[serde(tag="type")]
+#[serde(tag = "type")]
 pub enum MobilitySystems {
     StandardMobilitySys(StandardMobilitySystem),
 }
