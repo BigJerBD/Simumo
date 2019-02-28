@@ -17,7 +17,8 @@ impl Configuration {
     pub fn setup(&self) {
         self.generals.setup();
     }
-    pub fn from_path(args_path: &String) -> Result<Self, Box<Error>> {
+
+    pub fn from_path(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;
         let reader = BufReader::new(file);
@@ -34,7 +35,7 @@ mod tests {
     #[test]
     #[ignore] // Todo: unignore when lazy_static no more. Baby don't hurt me no more...
     fn null_seed_is_set() {
-        let config = Configuration {
+        let _config = Configuration {
             generals: Generals {
                 log_directory: "".to_string(),
                 seed: "".to_string(),

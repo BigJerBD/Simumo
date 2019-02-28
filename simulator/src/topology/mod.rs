@@ -1,6 +1,6 @@
+mod curve;
 mod road;
 mod road_connector;
-mod spline;
 
 use petgraph::graph::{EdgeIndex, NodeIndex};
 use petgraph::Graph;
