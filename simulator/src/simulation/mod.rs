@@ -1,29 +1,6 @@
-use crate::ressources::clock;
-use crate::ressources::generals;
-use specs::prelude::*;
-use specs::Dispatcher;
+mod simulation;
+mod dispatchers;
+mod entities;
 
-pub struct Simulation<'a, 'b> {
-    world: World,
-    dispatcher: Dispatcher<'a, 'b>,
-}
 
-impl<'a, 'b> Simulation<'a, 'b> {
-    pub fn run_simulation(&mut self) {
-        loop {
-            self.dispatcher.dispatch(&self.world.res);
-            // Maintain dynamically add and remove entities in dispatch.
-            self.world.maintain();
-
-            if has_ended(&self.world) {
-                break;
-            }
-        }
-    }
-}
-
-fn has_ended(ressources: &World) -> bool {
-    let clock = ressources.read_resource::<clock::Clock>();
-    let end_time = ressources.read_resource::<generals::EndTime>();
-    clock.get_time() >= end_time.val
-}
+pub use self::simulation::Simulation;

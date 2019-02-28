@@ -8,13 +8,22 @@ edition = "2018"
 argparse = "0.2.2"
 dimensioned = "0.7.0"
 lazy_static = "1.2.0"
-simumo_derive = {path = "extern/simumo_derive"}
 uuid = {version = "0.7", features = ["v4"]}
+
+#debug window
+piston_window = "0.89.0"
+piston = "0.42.0"
+piston2d-graphics = "0.30.0"
+pistoncore-glutin_window = "0.54.0"
+piston2d-opengl_graphics = "0.59.0"
+
 #data structure
 petgraph = "0.4.13"
+
 #ecs
 specs = "0.14.3"
 specs-derive = "0.4.0"
+
 #serialization
 csv = "1"
 serde = "1.0.87"
@@ -30,6 +39,7 @@ quote = "0.6.11"
 #externals
 typeinfo = {path = "extern/typeinfo"}
 typeinfo_derive = {path = "extern/typeinfo_derive"}
+simumo_derive = {path = "extern/simumo_derive"}
 
 #rng
 rand = "0.6"
