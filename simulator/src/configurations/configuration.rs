@@ -14,7 +14,7 @@ use super::generals::GeneralConfigurations;
 /// Represent the root level configuration.
 ///
 /// Todo: Can't handle empty field in serialization.
-#[derive(Deserialize, Default)]
+#[derive(Deserialize)]
 pub struct Configuration {
     pub generals: GeneralConfigurations,
     pub systems: SystemsConfiguration,
