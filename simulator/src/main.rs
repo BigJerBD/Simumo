@@ -37,6 +37,7 @@ mod configurations;
 mod errors;
 mod internal_prelude;
 mod metrics;
+mod osmgraph_api;
 mod ressources;
 mod rng;
 mod simulation;
