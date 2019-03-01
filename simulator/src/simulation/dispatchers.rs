@@ -1,12 +1,10 @@
-use piston_window::OpenGL;
 use specs::Dispatcher;
 use specs::DispatcherBuilder;
 
+use crate::systems::clock;
+use crate::systems::mobility;
 use crate::systems::renderer::DrawClear;
 use crate::systems::renderer::DrawRectangles;
-use crate::systems::mobility;
-use crate::systems::clock;
-
 
 pub fn make_base_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()
@@ -18,7 +16,6 @@ pub fn make_base_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
         .with(clock::StandardClockSystem, "clock_sys", &[])
         .build()
 }
-
 
 pub fn make_render_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()

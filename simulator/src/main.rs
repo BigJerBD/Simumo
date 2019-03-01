@@ -12,6 +12,11 @@ extern crate specs_derive;
 
 extern crate csv;
 extern crate dimensioned as dim;
+extern crate glutin_window;
+extern crate graphics;
+extern crate opengl_graphics;
+extern crate piston;
+extern crate piston_window;
 extern crate proc_macro2;
 extern crate rand;
 extern crate serde;
@@ -20,16 +25,9 @@ extern crate specs;
 extern crate typeinfo;
 extern crate typeinfo_derive;
 extern crate uuid;
-extern crate piston_window;
-extern crate piston;
-extern crate graphics;
-extern crate glutin_window;
-extern crate opengl_graphics;
 
-
-
-mod topology;
 mod command_line;
+mod topology;
 mod types;
 
 mod components;
@@ -44,9 +42,7 @@ mod simulation;
 mod systems;
 mod util;
 
-
 fn main() {
-
     //let args = command_line::CommandLineArguments::parse();
     //let config = Configuration::from_path(&args.configuration_path).unwrap();
     //config.setup();
@@ -55,7 +51,4 @@ fn main() {
 
     let mut simulation = simulation::Simulation::new();
     simulation.run_simulation();
-
-
-
 }

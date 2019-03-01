@@ -1,6 +1,5 @@
-mod simulation;
 mod dispatchers;
 mod entities;
+mod simulator;
 
-
-pub use self::simulation::Simulation;
+pub use self::simulator::Simulation;

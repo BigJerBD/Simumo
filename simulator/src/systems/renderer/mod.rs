@@ -1,15 +1,13 @@
 use opengl_graphics::GlGraphics;
 use piston::input::RenderArgs;
-use specs::{Component, ReadExpect, ReadStorage, System, VecStorage, WriteExpect};
+use specs::{ReadExpect, ReadStorage, System, WriteExpect};
 
 use crate::components::constant::Rectangle;
 use crate::components::dynamic::Position;
 
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
-    type SystemData = (
-        WriteExpect<'a, GlGraphics>,
-        ReadExpect<'a, RenderArgs>);
+    type SystemData = (WriteExpect<'a, GlGraphics>, ReadExpect<'a, RenderArgs>);
 
     fn run(&mut self, (mut g_handle, args): Self::SystemData) {
         use graphics::*;
@@ -27,12 +25,11 @@ impl<'a> System<'a> for DrawRectangles {
         ReadStorage<'a, Position>,
         ReadStorage<'a, Rectangle>,
         WriteExpect<'a, GlGraphics>,
-        ReadExpect<'a, RenderArgs>);
+        ReadExpect<'a, RenderArgs>,
+    );
 
-    fn run(&mut self, data: Self::SystemData) {
+    fn run(&mut self, (pos_dat, rect_dat, mut g_handle, args): Self::SystemData) {
         use specs::Join;
-
-        let (pos_dat, rect_dat, mut g_handle, args) = data;
 
         for (pos, rect) in (&pos_dat, &rect_dat).join() {
             use graphics::*;
@@ -43,7 +40,8 @@ impl<'a> System<'a> for DrawRectangles {
             g_handle.draw(args.viewport(), |c, gl| {
                 // TODO:: Au lieu d'utiliser value_unsafe, est-ce qu'on peut obtenir la valeur en Meters par exemple?
                 // TODO:: Au lieu de multiplier par 10, utiliser une échelle appropriée compte tenu de la hauteur et largeur de la boite dans laquelle se déplacent les voitures
-                let transform = c.transform
+                let transform = c
+                    .transform
                     .trans(pos.x.value_unsafe * 10., pos.y.value_unsafe * 10.)
                     .scale(rect.width, rect.height);
 
