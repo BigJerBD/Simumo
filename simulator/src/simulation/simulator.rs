@@ -79,9 +79,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
 
         world.add_resource(clock::Clock::new(0.25 * S));
         world.add_resource(generals::EndTime { val: 12.5 * S });
-        world.add_resource(generals::LogDirectory {
-            val: String::from("testpath"),
-        });
     }
 }
 
