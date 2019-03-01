@@ -6,19 +6,31 @@
     "world": {},
     "systems": {
         "agents": [
-            {"type":"Accelerating"}
+            {
+                "type": "Accelerating"
+            }
         ],
-        "clock": {},
-        "controls": [
-            {},
-            {}
-        ],
-        "logger": {},
-        "mobility": {},
-        "physic": {},
+        "clock": {
+            "type": "StandardClockSys"
+        },
+        "controls": [],
+        "loggers": {
+            "directory": "TestPath",
+            "names": [],
+            "type": "CsvLogger",
+            "writers": {}
+        },
+        "mobility": {
+            "type": "StandardMobilitySys"
+        },
+        "physics": {
+            "type": "AccelerationSystem"
+        },
         "recorders": [
-            {},
-            {}
+            {
+                "capture_freq": 0,
+                "type": "CarPosRecSystem"
+            }
         ]
     },
     "entities": {}
