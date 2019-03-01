@@ -1,6 +1,5 @@
 {
     "generals": {
-        "log_directory": "TestPath",
         "seed": ""
     },
     "world": {},

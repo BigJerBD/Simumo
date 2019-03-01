@@ -1,3 +1,4 @@
+use crate::ressources::generals;
 use crate::systems::agents::AgentSystems;
 use crate::systems::clock::ClockSystems;
 use crate::systems::controls::ControlSystems;
@@ -14,6 +15,5 @@ pub struct SystemsConfiguration {
     pub loggers: LoggerSystems,
     pub mobility: MobilitySystems,
     pub physics: PhysicSystems,
-    pub recorders: Vec<RecorderSystems>
+    pub recorders: Vec<RecorderSystems>,
 }
-

@@ -5,7 +5,6 @@ use uuid::Uuid;
 /// Represent the general configuration.
 #[derive(Deserialize, Default)]
 pub struct GeneralConfigurations {
-    pub log_directory: String, //Todo Remove this attribut. it is going to be in system/logger.
     pub seed: String,
 }
 
@@ -16,16 +15,6 @@ impl GeneralConfigurations {
             seed::M_SEED.lock().unwrap().set(uuid);
         } else {
             seed::M_SEED.lock().unwrap().set(Uuid::new_v4());
-        }
-
-        if !self.log_directory.is_empty() { // Todo Remove this.
-            let log_directory = self.log_directory.to_string();
-            generals::M_LOG_DIRECTORY
-                .lock()
-                .unwrap()
-                .replace(log_directory);
-        } else {
-            panic!("Json configuration file must have a log directory path in generals attributs.")
         }
     }
 }
