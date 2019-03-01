@@ -12,6 +12,11 @@ extern crate specs_derive;
 
 extern crate csv;
 extern crate dimensioned as dim;
+extern crate glutin_window;
+extern crate graphics;
+extern crate opengl_graphics;
+extern crate piston;
+extern crate piston_window;
 extern crate proc_macro2;
 extern crate rand;
 extern crate serde;
@@ -22,26 +27,28 @@ extern crate typeinfo_derive;
 extern crate uuid;
 
 mod command_line;
+mod topology;
+mod types;
+
 mod components;
 mod configurations;
 mod errors;
 mod internal_prelude;
 mod metrics;
+mod osmgraph_api;
 mod ressources;
 mod rng;
 mod simulation;
 mod systems;
-mod topology;
-mod types;
 mod util;
 
-use configurations::Configuration;
-
-///Todo: handle what should be verbose.
 fn main() {
-    let args = command_line::CommandLineArguments::parse();
-    let config = Configuration::from_path(&args.configuration_path).unwrap();
-    config.setup();
+    //let args = command_line::CommandLineArguments::parse();
+    //let config = Configuration::from_path(&args.configuration_path).unwrap();
+    //config.setup();
+    //
+    //if args.verbose {}
 
-    if args.verbose {}
+    let mut simulation = simulation::Simulation::new();
+    simulation.run_simulation();
 }

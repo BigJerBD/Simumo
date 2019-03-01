@@ -34,6 +34,7 @@ impl LogRecord {
     }
 }
 
+#[allow(clippy::trivially_copy_pass_by_ref)]
 fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,

@@ -31,3 +31,10 @@ pub struct CarType;
 #[simucomponent_tag]
 #[storage(VecStorage)]
 pub struct BikeType;
+
+#[simucomponent_data]
+#[storage(VecStorage)]
+pub struct Rectangle {
+    pub width: f64,
+    pub height: f64,
+}
