@@ -1,0 +1,231 @@
+html, body {
+  height: 100%;
+  font-family: "Lucida Sans Unicode" !important;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.headerBox {
+  text-align: center;
+  position: relative;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  background-color: #656565;
+  line-height: 60px;
+  top: 0px;
+  color: #ffffff
+}
+
+.logo {
+  width: 100%;
+  position: absolute;
+  max-width: 140px;
+  padding-top:10px;
+  left:0;
+  /* vertically center the icon */
+   top: 33%; transform: translateY(-40%);
+}
+
+.selectionBoxes {
+  text-align: center;
+  margin-left: 20px;
+  height: 14%;
+}
+
+/*Ex métriques, légende, etc at the top of the page*/
+.selectionBox {
+  background-color: #ffffff;
+  width: 25%;
+  height: 85%;
+  display: inline-block;
+  border-style: outset;
+  padding: 10px;
+  vertical-align: top;
+}
+
+/* For the legende */
+.gradientbox {
+  position: relative;
+  border: 1px solid;
+  width: 100%;
+  height: 20px;
+  background-color: #ccc;
+}
+
+.beginLegendBox
+{
+  float:left;
+  width: 0%;
+}
+
+.middleLegendBox
+{
+  float:left;
+  width: 50%;
+  text-align: right;
+}
+
+.endLegendBox
+{
+  float:left;
+  width: 50%;
+  text-align: right;
+}
+
+/* Where the Visualization appears */
+.VisualizationBox {
+  text-align: center;
+  border: 1px solid gray;
+  border-top: none;
+  width: 100%;
+  background-position: center center;
+  height: 60%;
+  margin: 20px;
+  padding: 0;
+  left: 0;
+  top: 0;
+}
+
+.sliderPosition {
+  width: 95%;
+  margin: auto;
+}
+
+/* For the chronological slider */
+#flat-slider.ui-slider {
+  background: #d5cebc;
+  border: none;
+  border-radius: 0;
+}
+
+#flat-slider.ui-slider .ui-slider-handle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50% 50% 0;
+  border-color: transparent;
+  transition: border 0.4s ease;
+}
+
+#flat-slider.ui-slider .ui-slider-handle.ui-state-hover,
+#flat-slider.ui-slider .ui-slider-handle.ui-state-focus,
+#flat-slider.ui-slider .ui-slider-handle.ui-state-active {
+  border-color: #172f38;
+}
+
+#flat-slider.ui-slider .ui-slider-pip .ui-slider-line {
+  background: #d5cebc;
+  transition: all 0.4s ease;
+}
+
+#flat-slider.ui-slider.ui-slider-horizontal {
+  height: 6px;
+}
+
+#flat-slider.ui-slider.ui-slider-horizontal .ui-slider-handle {
+  -webkit-transform: rotateZ(45deg);
+  transform: rotateZ(45deg);
+  top: -25px;
+  margin-left: -10px;
+}
+
+#flat-slider.ui-slider.ui-slider-horizontal .ui-slider-pip {
+  top: 10px;
+}
+
+#flat-slider.ui-slider.ui-slider-horizontal .ui-slider-pip .ui-slider-line {
+  width: 2px;
+  height: 10px;
+  margin-left: -1px;
+}
+
+#flat-slider.ui-slider.ui-slider-horizontal .ui-slider-pip[class*=ui-slider-pip-selected] .ui-slider-line {
+  height: 20px;
+}
+
+#flat-slider.ui-slider.ui-slider-horizontal .ui-slider-pip.ui-slider-pip-inrange .ui-slider-line {
+  height: 12px;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical {
+  width: 6px;
+  height: 125px;
+  display: inline-block;
+  margin: 0 15%;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-handle {
+  -webkit-transform: rotateZ(-45deg);
+  transform: rotateZ(-45deg);
+  left: -25px;
+  margin-bottom: -10px;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-pip {
+  left: 10px;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-pip .ui-slider-line {
+  height: 2px;
+  width: 10px;
+  margin-top: -1px;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-pip[class*=ui-slider-pip-selected] .ui-slider-line {
+  width: 20px;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-pip.ui-slider-pip-inrange .ui-slider-line {
+  width: 12px;
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-handle .ui-slider-tip,
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-handle[class*=ui-state-] .ui-slider-tip {
+  visibility: visible;
+  opacity: 1;
+  border: none;
+  background: transparent;
+  left: 50%;
+  width: 30px;
+  margin-left: -15px;
+  text-align: center;
+  color: white;
+  font-weight: normal;
+  top: 10px;
+  -webkit-transform: rotateZ(45deg);
+  transform: rotateZ(45deg);
+}
+
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-handle .ui-slider-tip:before,
+#flat-slider.ui-slider.ui-slider-vertical .ui-slider-handle[class*=ui-state-] .ui-slider-tip:before {
+  display: none;
+}
+
+#flat-slider .ui-slider-handle,
+#flat-slider .ui-slider-range,
+#flat-slider .ui-slider-pip[class*=ui-slider-pip-selected] .ui-slider-line,
+#flat-slider .ui-slider-pip.ui-slider-pip-inrange .ui-slider-line {
+  background-color: #25daa5;
+}
+
+#flat-slider-vertical-1 .ui-slider-handle,
+#flat-slider-vertical-1 .ui-slider-range,
+#flat-slider-vertical-1 .ui-slider-pip[class*=ui-slider-pip-selected] .ui-slider-line,
+#flat-slider-vertical-1 .ui-slider-pip.ui-slider-pip-inrange .ui-slider-line {
+  background-color: #f27793;
+}
+
+#flat-slider-vertical-2 .ui-slider-handle,
+#flat-slider-vertical-2 .ui-slider-range,
+#flat-slider-vertical-2 .ui-slider-pip[class*=ui-slider-pip-selected] .ui-slider-line,
+#flat-slider-vertical-2 .ui-slider-pip.ui-slider-pip-inrange .ui-slider-line {
+  background-color: #bd77f2;
+}
+
+#flat-slider-vertical-3 .ui-slider-handle,
+#flat-slider-vertical-3 .ui-slider-range,
+#flat-slider-vertical-3 .ui-slider-pip[class*=ui-slider-pip-selected] .ui-slider-line,
+#flat-slider-vertical-3 .ui-slider-pip.ui-slider-pip-inrange .ui-slider-line {
+  background-color: #67c3ec;
