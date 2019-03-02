@@ -5,9 +5,9 @@ use crate::systems::clock;
 use crate::systems::mobility;
 use crate::systems::renderer::DrawClear;
 use crate::systems::renderer::DrawRectangles;
-use crate::ressources::eventsmanager::EventsHookUpdate;
-use crate::ressources::eventsmanager::EventsUpdate;
-use crate::components::statics::trafficlight::LightsUpdate;
+use crate::systems::events::EventsHookUpdate;
+use crate::systems::events::EventsUpdate;
+use crate::systems::statics::LightsUpdate;
 
 pub fn make_base_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()
