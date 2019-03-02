@@ -6,7 +6,7 @@ use crate::metrics::Fdim;
 use dim::si::{S, Second};
 
 #[derive(Copy, Clone, Debug, Serialize, PartialEq)]
-pub enum TrafficLightColor { RED, YELLOW, GREEN, ORANGE }
+pub enum TrafficLightColor { RED, YELLOW, GREEN }
 
 #[derive(Component, TypeInfo, Debug)]
 #[storage(VecStorage)]
