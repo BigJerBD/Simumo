@@ -11,10 +11,9 @@ pub fn type_info(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let name = &ast.ident;
     let tokens = quote! {
-        impl TypeInfo for #name {
-            fn type_name() -> String {String::from(stringify!(#name))}
-            fn type_of(&self) ->  String {String::from(stringify!(#name))}
 
+        impl TypeInfo for #name {
+            const typename : &'static str = stringify!(#name);
         }
     };
     TokenStream::from(tokens)

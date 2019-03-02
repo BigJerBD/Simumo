@@ -2,7 +2,7 @@ from osm_graph import OsmGraph
 from overpy.exception import OverPyException
 
 __GRAPH__ = None
-__GRAPH__.__doc__ = "Graph handle to get data from Osm Graph without using an object "
+
 
 
 def target_location(lon, lat, zoom):

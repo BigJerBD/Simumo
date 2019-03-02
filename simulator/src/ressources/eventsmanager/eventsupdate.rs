@@ -1,6 +1,6 @@
 use specs::prelude::*;
-use crate::{Identifier};
-use super::EventsManager;
+use crate::components::types::constant::Identifier;
+use crate::ressources::eventsmanager::EventsManager;
 
 pub struct EventsHookUpdate;
 impl<'a> System<'a> for EventsHookUpdate {

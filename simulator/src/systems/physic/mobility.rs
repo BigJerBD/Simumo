@@ -6,7 +6,11 @@ use crate::ressources::Clock;
 pub struct PositionUpdate;
 
 impl<'a> System<'a> for PositionUpdate {
-    type SystemData = (WriteStorage<'a, Position>, ReadStorage<'a, Speed>, Read<'a, Clock>);
+    type SystemData = (
+        WriteStorage<'a, Position>,
+        ReadStorage<'a, Speed>,
+        Read<'a, Clock>,
+    );
 
     fn run(&mut self, (mut pos, vel, clock): Self::SystemData) {
         for (pos, vel) in (&mut pos, &vel).join() {
@@ -19,7 +23,11 @@ impl<'a> System<'a> for PositionUpdate {
 pub struct SpeedUpdate;
 
 impl<'a> System<'a> for SpeedUpdate {
-    type SystemData = (WriteStorage<'a, Speed>, ReadStorage<'a, Acceleration>, Read<'a, Clock>);
+    type SystemData = (
+        WriteStorage<'a, Speed>,
+        ReadStorage<'a, Acceleration>,
+        Read<'a, Clock>,
+    );
 
     fn run(&mut self, (mut vel, acc, clock): Self::SystemData) {
         for (vel, acc) in (&mut vel, &acc).join() {

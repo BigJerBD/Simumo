@@ -1,2 +1,5 @@
-pub mod builder;
-pub mod simulation;
+mod dispatchers;
+mod entities;
+mod simulator;
+
+pub use self::simulator::Simulation;

@@ -1,14 +1,20 @@
-use crate::systems::logging::loggers::logger_impl::LoggerImpl;
-use serde::Serialize;
 use std::fs::File;
 use std::io::Write;
 
+use serde::Deserialize;
+use serde::Deserializer;
+use serde::Serialize;
+
+use crate::systems::loggers::LoggerType;
+
 /// Logger that writes data in a json format in a specified file
+#[derive(Deserialize)]
 pub struct NdJsonLogger {
+    #[serde(deserialize_with = "deser_open")]
     file_writer: File,
 }
 
-impl LoggerImpl for NdJsonLogger {
+impl LoggerType for NdJsonLogger {
     fn open(filename: &str) -> Self {
         let filename = [filename, ".ndjson"].concat();
         Self {
@@ -19,6 +25,14 @@ impl LoggerImpl for NdJsonLogger {
     fn write<S: Serialize>(&mut self, record: S) {
         let mut json = serde_json::to_string(&record).unwrap();
         json.push('\n');
-        self.file_writer.write(json.as_bytes()).unwrap();
+        self.file_writer.write_all(json.as_bytes()).unwrap();
     }
+}
+
+/// Function to open file instead of serializing it
+fn deser_open<'de, D>(deserializer: D) -> Result<File, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Ok(File::create(String::deserialize(deserializer)?).unwrap())
 }

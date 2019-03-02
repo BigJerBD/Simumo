@@ -1,11 +1,23 @@
 [package]
 name = "simulator"
 version = "0.1.0"
-authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>","bigj2701 <bigjerbd@gmail.com>"]
+authors = ["Karim Elmougi <karim.elmougi@gmail.com>", "whis2401 <samleafs@protonmail.com>","bigj2701 <bigjerbd@gmail.com>", "nadj2316 <jonatan.nadeau@usherbrooke.ca>" ]
 edition = "2018"
 
 [dependencies]
+argparse = "0.2.2"
 dimensioned = "0.7.0"
+lazy_static = "1.2.0"
+uuid = {version = "0.7", features = ["v4"]}
+cpython = "0.2.1"
+
+#debug window
+piston_window = "0.89.0"
+piston = "0.42.0"
+piston2d-graphics = "0.30.0"
+pistoncore-glutin_window = "0.54.0"
+piston2d-opengl_graphics = "0.59.0"
+
 #data structure
 petgraph = "0.4.13"
 #ecs
@@ -24,7 +36,11 @@ erased-serde = "0.3"
 syn = "0.15.26"
 proc-macro2 = "0.4.27"
 quote = "0.6.11"
+
 #externals
 typeinfo = {path = "extern/typeinfo"}
 typeinfo_derive = {path = "extern/typeinfo_derive"}
 simumo_derive = {path = "extern/simumo_derive"}
+
+#rng
+rand = "0.6"

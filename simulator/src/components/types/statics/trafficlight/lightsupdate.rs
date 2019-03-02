@@ -2,9 +2,10 @@ extern crate specs;
 use specs::prelude::*;
 use dim::si::S;
 use crate::ressources::{clock};
-use crate::eventsmanager::{Event, EventsManager};
-use crate::{Identifier};
-use super::{Light, TrafficLightColor};
+use crate::ressources::eventsmanager::{Event, EventsManager};
+use crate::components::types::constant::Identifier;
+use crate::components::types::statics::trafficlight::Light;
+use crate::components::types::statics::trafficlight::TrafficLightColor;
 
 pub struct LightsUpdate;
 impl<'a> System<'a> for LightsUpdate {
