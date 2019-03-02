@@ -3,8 +3,6 @@
 #[macro_use]
 extern crate erased_serde;
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate specs_derive;
@@ -34,7 +32,6 @@ mod internal_prelude;
 mod metrics;
 mod osmgraph_api;
 mod ressources;
-mod rng;
 mod simulation;
 mod systems;
 mod topology;
@@ -44,8 +41,7 @@ mod util;
 fn main() {
     let args = command_line::CommandLineArguments::parse();
     let config = configurations::Configuration::from_path(&args.configuration_path).unwrap();
-    config.setup();
 
-    // let mut simulation = simulation::Simulation::new(); //Envoyer les configs.
-    // simulation.run_simulation();
+    let mut simulation = simulation::Simulation::new(config);
+    simulation.run_simulation();
 }

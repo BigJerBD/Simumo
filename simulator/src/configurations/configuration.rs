@@ -17,10 +17,6 @@ pub struct Configuration {
 }
 
 impl Configuration {
-    pub fn setup(&self) {
-        self.generals.setup();
-    }
-
     pub fn from_path(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;
@@ -30,35 +26,35 @@ impl Configuration {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::rng::seed;
+// #[cfg(test)]
+// mod tests {
+//     use crate::rng::seed;
 
-    use super::*;
+//     use super::*;
 
-    #[test]
-    #[ignore] // Todo: unignore when lazy_static no more. Baby don't hurt me no more...
-    fn null_seed_is_set() {
-        let _config = Configuration {
-            generals: Generals {
-                log_directory: "".to_string(),
-                seed: "".to_string(),
-            },
-            systems: SystemsConfiguration::default(),
-        };
-        assert!(seed::SEED.is_nil());
-    }
+//     #[test]
+//     #[ignore] // Todo: unignore when lazy_static no more. Baby don't hurt me no more...
+//     fn null_seed_is_set() {
+//         let _config = Configuration {
+//             generals: Generals {
+//                 log_directory: "".to_string(),
+//                 seed: "".to_string(),
+//             },
+//             systems: SystemsConfiguration::default(),
+//         };
+//         assert!(seed::SEED.is_nil());
+//     }
 
-    #[test]
-    fn setted_seed_is_set() {
-        let config = Configuration {
-            generals: GeneralConfigurations {
-                log_directory: "".to_string(),
-                seed: "2d524fe8-55f2-4406-bbf2-8b6568871aa2".to_string(),
-            },
-            systems: SystemsConfiguration::default(),
-        };
-        config.setup();
-        assert_eq!(seed::SEED.to_string(), config.generals.seed);
-    }
-}
+//     #[test]
+//     fn setted_seed_is_set() {
+//         let config = Configuration {
+//             generals: GeneralConfigurations {
+//                 log_directory: "".to_string(),
+//                 seed: "2d524fe8-55f2-4406-bbf2-8b6568871aa2".to_string(),
+//             },
+//             systems: SystemsConfiguration::default(),
+//         };
+//         config.setup();
+//         assert_eq!(seed::SEED.to_string(), config.generals.seed);
+//     }
+// }

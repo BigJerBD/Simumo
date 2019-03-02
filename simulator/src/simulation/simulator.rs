@@ -1,19 +1,20 @@
+use dim::si::S;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
 use piston::event_loop::{EventSettings, Events};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
-
 use piston_window::RenderEvent;
 use specs::prelude::*;
 use specs::Dispatcher;
+use uuid::Uuid;
 
+use crate::configurations::Configuration;
 use crate::ressources::clock;
 use crate::ressources::generals;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
 use crate::simulation::entities::create_entities;
-use dim::si::S;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -25,11 +26,12 @@ pub struct Simulation<'a, 'b> {
 impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
-    pub fn new() -> Self {
+    pub fn new(config: Configuration) -> Self {
         let mut world = World::new();
         let window = Self::create_window();
 
-        Self::create_resources(&mut world);
+        Self::create_resources(&mut world, config.generals.seed);
+
         let mut base_dispatcher = make_base_dispatcher();
         let mut render_dispatcher = make_render_dispatcher();
         base_dispatcher.setup(&mut world.res);
@@ -73,12 +75,20 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .unwrap()
     }
 
-    fn create_resources(world: &mut World) {
+    fn create_resources(world: &mut World, seed: String) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
+        let mut s: Uuid = Uuid::new_v4();
+
         world.add_resource(graphics_handle);
 
         world.add_resource(clock::Clock::new(0.25 * S));
         world.add_resource(generals::EndTime { val: 12.5 * S });
+
+        if !seed.is_empty() {
+            s = Uuid::parse_str(&seed).unwrap_or_else(|_| panic!("Format of the seed isn't right."));
+        }
+
+        world.add_resource(s);
     }
 }
 

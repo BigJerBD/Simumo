@@ -7,7 +7,6 @@ edition = "2018"
 [dependencies]
 argparse = "0.2.2"
 dimensioned = "0.7.0"
-lazy_static = "1.2.0"
 uuid = {version = "0.7", features = ["v4"]}
 cpython = "0.2.1"
 
