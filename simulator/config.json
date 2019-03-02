@@ -2,7 +2,12 @@
     "generals": {
         "seed": "055c1509-cf2e-499a-9c79-e85ace6e654d"
     },
-    "world": {},
+    "map": {
+        "latitude": -72.0514,
+        "longitude": 45.00,
+        "type": "OsmGraph",
+        "zoom": 2
+    },
     "systems": {
         "agents": [
             {

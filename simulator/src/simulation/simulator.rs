@@ -10,6 +10,9 @@ use specs::Dispatcher;
 use uuid::Uuid;
 
 use crate::configurations::Configuration;
+use crate::configurations::map;
+use crate::osmgraph_api::OsmGraphApi;
+use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::clock;
 use crate::ressources::generals;
 use crate::simulation::dispatchers::make_base_dispatcher;
@@ -26,7 +29,17 @@ pub struct Simulation<'a, 'b> {
 impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
-    pub fn new(config: Configuration) -> Self {
+    pub fn from_config(config: Configuration) -> Self {
+        // let map:PythonOsmGraphApi = match config.map {
+        //     MapConfiguration::OsmGraph(val) => PythonOsmGraphApi::query_graph(val.longitude, val.latitude, val.zoom),
+        //     _ => panic!("The map type doesn't exist.")
+        // };
+
+        //Todo: handle different map type.
+        // Si le config.map est de type OsmGraph alors appeller la function query_graph(val.longitude, val.latitude, val.zoom) avec les paramêtre
+        let map = config.map;
+        let _osm_raw:PythonOsmGraphApi = *OsmGraphApi::query_graph(map.longitude, map.latitude, map.zoom).unwrap();
+
         let mut world = World::new();
         let window = Self::create_window();
 

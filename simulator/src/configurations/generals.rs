@@ -1,4 +1,4 @@
-#[derive(Deserialize, Default)]
+#[derive(Deserialize)]
 pub struct GeneralConfigurations {
     pub seed: String,
 }

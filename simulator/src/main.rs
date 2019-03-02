@@ -42,6 +42,6 @@ fn main() {
     let args = command_line::CommandLineArguments::parse();
     let config = configurations::Configuration::from_path(&args.configuration_path).unwrap();
 
-    let mut simulation = simulation::Simulation::new(config);
+    let mut simulation = simulation::Simulation::from_config(config);
     simulation.run_simulation();
 }

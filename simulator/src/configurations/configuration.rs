@@ -3,9 +3,9 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
-use crate::configurations::systems::SystemsConfiguration;
-
 use super::generals::GeneralConfigurations;
+use super::map::MapConfiguration;
+use super::systems::SystemsConfiguration;
 
 /// Represent the root level configuration.
 ///
@@ -13,6 +13,7 @@ use super::generals::GeneralConfigurations;
 #[derive(Deserialize)]
 pub struct Configuration {
     pub generals: GeneralConfigurations,
+    pub map: MapConfiguration,
     pub systems: SystemsConfiguration,
 }
 
@@ -21,8 +22,8 @@ impl Configuration {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;
         let reader = BufReader::new(file);
-        let configs = serde_json::from_reader(reader)?;
-        Ok(configs)
+        let config = serde_json::from_reader(reader)?;
+        Ok(config)
     }
 }
 
