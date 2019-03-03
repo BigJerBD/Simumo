@@ -28,6 +28,9 @@ impl Clock {
     pub fn get_time(&self) -> Second<Fdim> {
         self.dt * f64::from(self.tick)
     }
+    pub fn get_dt(&self) -> Second<Fdim> {
+        self.dt
+    }
 }
 
 impl Default for Clock {
