@@ -42,24 +42,47 @@ let olVisualizationLayer;
     {
       let features = olVisualizationLayer.getSource().getFeatures();
       features.forEach(function(entry) {
-        entry.getStyle().setText('');
-      });
+      let style = entry.getStyle();
+      if(style)
+      {
+        style.setText('');
+      }
+    });
 
       //Add text label style for the feature where the mouse is to add the exact value
       map.forEachFeatureAtPixel(e.pixel, function(feature) {
         if(feature.get("value") != null)
         {
-          feature.getStyle().setText(new ol.style.Text({
-            font: 'bold 14px Arial',
-            text: (Math.round(feature.get("unormalizedValue") * 10) / 10).toString(),
-            fill: new ol.style.Fill({color: 'black'}),
-            offsetY: -15
-          }));
+          let style = feature.getStyle();
+          if(style)
+          {
+            style.setText(new ol.style.Text({
+              font: 'bold 14px Arial',
+              text: (Math.round(feature.get("reelValue") * 10) / 10).toString(),
+              fill: new ol.style.Fill({color: 'black'}),
+              offsetY: -15
+            }));
+          }
         }
       });
       olVisualizationLayer.getSource().refresh({force:true}); //refresh the layer for the new styles
     }});
 })(window, document);
+
+function componentToHex(c) {
+    let hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function arrayRgbToHex(array) {
+  let hexArray = []
+  array.forEach(x => {hexArray.push(rgbToHex(x.r, x.g, x.b))});
+  return hexArray;
+}
 
 
 function getColor(color1, color2, interpolation)
@@ -93,6 +116,21 @@ function getColorFromGradient(gradient, interpolation)
   }
 }
 
+function addColorToPoints(points, gradient)
+{
+  points.forEach( p => {
+    let circleColor = getColorFromGradient(gradient, p.get('value'));
+    let circleStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({
+              color: `rgba(${circleColor.r},${circleColor.g},${circleColor.b},0.9)`
+          })
+    })});
+    p.setStyle(circleStyle);
+  });
+}
+
 function getPoint(point)
 {
   function lonlatToPoint(x,y) {
@@ -100,43 +138,16 @@ function getPoint(point)
     return new ol.geom.Point([pointCoordonates[0], pointCoordonates[1]]);
   }
 
-  // let gradient= [
-  //   {r: 255  ,g:255 , b: 0  },
-  //   {r: 255  ,g:128 , b: 0  },
-  //   {r: 255  ,g:0 , b: 0  }
-  // ];
-  let gradient= []
-  let colors = document.getElementById("legendColors").children;
-  for (let i = 0, length = colors.length; i < length; i++) {
-    gradient.push(
-      {
-         r: parseInt(colors[i].getAttribute('data-red')),
-         g:parseInt(colors[i].getAttribute('data-green')),
-         b: parseInt(colors[i].getAttribute('data-blue'))
-      });
-	 }
-
-  let circleColor = getColorFromGradient(gradient,point['interpolation']);
-
-  let circleStyle = new ol.style.Style({
-    image: new ol.style.Circle({
-        radius: 6,
-        fill: new ol.style.Fill({
-            color: `rgba(${circleColor.r},${circleColor.g},${circleColor.b},0.9)`
-        })
-  })});
-
   let p = new ol.Feature({
     'geometry': lonlatToPoint(point['lon'],point['lat']),
     'value' : point['interpolation'],
-    'unormalizedValue' : point['value'],
+    'reelValue' : point['value'],
     'unit' : point['unit']
   });
-  p.setStyle(circleStyle);
   return p;
 }
 
-function updateVisualizationLayer(points)
+function updateVisualizationLayer(points, style, gradient)
 {
   if(olVisualizationLayer)
   {
@@ -149,14 +160,33 @@ function updateVisualizationLayer(points)
     features[i] = getPoint(points[i]);
   }
 
-  let pointsSource = new ol.source.Vector({
-    features: features,
-  });
+  if(style == "coloredPoints")
+  {
+    addColorToPoints(features, gradient)
+    let pointsSource = new ol.source.Vector({
+      features: features,
+    });
 
-  let visualizationLayer = new ol.layer.Vector({
-    source: pointsSource
-  });
-  olVisualizationLayer = visualizationLayer; //keep access to map variable
-  olMap.addLayer(olVisualizationLayer);
+    let colorsPointsLayer = new ol.layer.Vector({
+      source: pointsSource
+    });
+    olVisualizationLayer = colorsPointsLayer; //keep access to map variable
+    olMap.addLayer(colorsPointsLayer);
+  }
+  else if(style == "heatMap")
+  {
+    let pointsSource = new ol.source.Vector({
+      features: features,
+    });
 
+    let heatMapLayer = new ol.layer.Heatmap({
+        source: pointsSource,
+        blur: 18,     //interesting between 10 and 30
+        radius: 8,   //interesting between 5 and 12
+        gradient: arrayRgbToHex(gradient),
+        weight: 'value'
+      });
+    olVisualizationLayer = heatMapLayer; //keep access to map variable
+    olMap.addLayer(heatMapLayer);
+  }
 }
