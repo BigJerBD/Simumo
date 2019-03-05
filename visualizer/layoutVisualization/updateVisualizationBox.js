@@ -1,4 +1,4 @@
-function parseLogs(logs, unitToSelect) {
+function parseLogs(logs, unitToSelect, max) {
   let logsJson = JSON.parse(logs);
   let parsedLogs = []
   logsJson.forEach(function(entry) {
@@ -11,7 +11,7 @@ function parseLogs(logs, unitToSelect) {
           dataType: data["type"],
           unit: data["resolution"],
           value: data["value"],
-          interpolation: data["value"] / $("#flat-slider").slider("option", "max") //normalised value
+          interpolation: data["value"] / max //normalised value
         }
         parsedLogs.push(parsedLog);
       }
@@ -50,6 +50,8 @@ function updateVisualizationBox() {
 
   let timeValueBegin = $('#flat-slider').slider("option", "values")[0];
   let timeValueEnd = $('#flat-slider').slider("option", "values")[1];
+	let timeValueMin = $("#flat-slider").slider("option", "min");
+	let timeValueMax = $("#flat-slider").slider("option", "max");
 
 	if(selectedMetric &&  (timeValueBegin || timeValueBegin === 0)  && (timeValueEnd || timeValueEnd === 0))
 	{
@@ -69,9 +71,9 @@ function updateVisualizationBox() {
 	      url: "/logs/sherbrooke_sample?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd),
 	      cache: false,
 	      success: function(logs) {
-	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'));
+	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'), timeValueMax);
 	        updateVisualizationLayer(parsedLogs, "coloredPoints", gradient);
-					loadColorGradient(timeValueBegin, timeValueEnd, gradient);
+					loadColorGradient(timeValueMin, timeValueMax, gradient);
 	      }
 	    });
 
@@ -81,9 +83,9 @@ function updateVisualizationBox() {
 	      url: "/logs/sherbrooke_sample?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd),
 	      cache: false,
 	      success: function(logs) {
-	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'));
+	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'), timeValueMax);
 	        updateVisualizationLayer(parsedLogs, "heatMap", gradient);
-					loadColorGradient(timeValueBegin, timeValueEnd, gradient);
+					loadColorGradient(timeValueMin, timeValueMax, gradient);
 	      }
 	    });
 	  }

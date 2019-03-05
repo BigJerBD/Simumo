@@ -1,5 +1,6 @@
 let olMap;
 let olVisualizationLayer;
+let lastFeaturesSelected = [];
 
 (function(win, doc) {
 
@@ -40,14 +41,14 @@ let olVisualizationLayer;
     //Remove the text label of the circle features that were clicked on before
     if(olVisualizationLayer)
     {
-      let features = olVisualizationLayer.getSource().getFeatures();
-      features.forEach(function(entry) {
+      lastFeaturesSelected.forEach(function(entry) {
       let style = entry.getStyle();
       if(style)
       {
         style.setText('');
       }
     });
+    lastFeaturesSelected = [];
 
       //Add text label style for the feature where the mouse is to add the exact value
       map.forEachFeatureAtPixel(e.pixel, function(feature) {
@@ -62,6 +63,7 @@ let olVisualizationLayer;
               fill: new ol.style.Fill({color: 'black'}),
               offsetY: -15
             }));
+            lastFeaturesSelected.push(feature);
           }
         }
       });
