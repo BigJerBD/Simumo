@@ -1,12 +1,16 @@
 extern crate specs;
+use crate::metrics::Fdim;
+use dim::si::{Second, S};
 use specs::prelude::*;
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
-use crate::metrics::Fdim;
-use dim::si::{S, Second};
 
 #[derive(Copy, Clone, Debug, Serialize, PartialEq)]
-pub enum TrafficLightColor { RED, YELLOW, GREEN }
+pub enum TrafficLightColor {
+    RED,
+    YELLOW,
+    GREEN,
+}
 
 #[derive(Component, TypeInfo, Debug)]
 #[storage(VecStorage)]
@@ -18,12 +22,17 @@ pub struct Light {
 }
 
 impl Light {
-    pub fn new(color: TrafficLightColor, max_green_time: Second<Fdim>, max_yellow_time: Second<Fdim>, time: Second<Fdim>) -> Self {
+    pub fn new(
+        color: TrafficLightColor,
+        max_green_time: Second<Fdim>,
+        max_yellow_time: Second<Fdim>,
+        time: Second<Fdim>,
+    ) -> Self {
         Self {
             color,
             max_green_time,
             max_yellow_time,
-            time
+            time,
         }
     }
     pub fn reset_to_green(&mut self) {

@@ -1,6 +1,6 @@
 pub mod clock;
+pub mod eventsmanagement;
 pub mod generals;
-pub mod eventsmanager;
 mod res_prelude;
 
 pub use clock::Clock;
