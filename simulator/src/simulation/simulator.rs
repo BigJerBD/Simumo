@@ -8,8 +8,7 @@ use piston_window::RenderEvent;
 use specs::prelude::*;
 use specs::Dispatcher;
 
-use crate::ressources::clock;
-use crate::ressources::generals;
+use crate::ressources::{Clock, EndTime};
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
 use crate::simulation::entities::create_entities;
@@ -77,18 +76,15 @@ impl<'a, 'b> Simulation<'a, 'b> {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
         world.add_resource(graphics_handle);
 
-        world.add_resource(clock::Clock::new(0.25 * S));
-        world.add_resource(generals::EndTime { val: 12.5 * S });
-        world.add_resource(generals::LogDirectory {
-            val: String::from("testpath"),
-        });
+        world.add_resource(Clock::new(0.25 * S));
+        world.add_resource(EndTime { val: 12.5 * S });
     }
 }
 
 fn simulation_ended(ressources: &World) -> bool {
     // if keyboard end event  +
 
-    let clock = ressources.read_resource::<clock::Clock>();
-    let end_time = ressources.read_resource::<generals::EndTime>();
+    let clock = ressources.read_resource::<Clock>();
+    let end_time = ressources.read_resource::<EndTime>();
     clock.get_time() >= end_time.val
 }
