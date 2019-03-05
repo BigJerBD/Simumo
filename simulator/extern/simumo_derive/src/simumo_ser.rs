@@ -2,7 +2,6 @@ use proc_macro2::{TokenStream, Ident};
 use syn::{Type, Path, Fields};
 use std::vec::Vec;
 
-
 /// Generate a block serialized field for a
 /// collection of fields
 pub fn make_ser_block(fields: &Fields, struct_name: &Ident) -> Vec<TokenStream> {

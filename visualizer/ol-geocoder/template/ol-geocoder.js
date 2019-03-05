@@ -1245,9 +1245,9 @@
       );
       assert(typeof options === 'object', '@param `options` should be object!');
 
-      DEFAULT_OPTIONS.featureStyle = [
-        new Style({ image: new Icon({ scale: .7, src: FEATURE_SRC }) })
-      ];
+      // DEFAULT_OPTIONS.featureStyle = [
+      //   new Style({ image: new Icon({ scale: .7, src: FEATURE_SRC }) })
+      // ];
 
       this.options = mergeOptions(DEFAULT_OPTIONS, options);
       this.container = undefined;

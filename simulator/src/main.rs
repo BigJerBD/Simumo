@@ -1,4 +1,3 @@
-//todo:: remove this when program will be complete
 #![allow(dead_code)]
 extern crate argparse;
 #[macro_use]

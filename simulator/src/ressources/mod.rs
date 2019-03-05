@@ -1,5 +1,6 @@
-mod clock;
-mod generals;
+pub mod clock;
+pub mod eventsmanagement;
+pub mod generals;
 mod res_prelude;
 mod street_map;
 

@@ -8,7 +8,9 @@ use piston_window::RenderEvent;
 use specs::prelude::*;
 use specs::Dispatcher;
 
-use crate::ressources::{Clock, EndTime};
+use crate::ressources::clock;
+use crate::ressources::eventsmanagement::EventsManager;
+use crate::ressources::generals;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
 use crate::simulation::entities::create_entities;
@@ -76,15 +78,29 @@ impl<'a, 'b> Simulation<'a, 'b> {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
         world.add_resource(graphics_handle);
 
-        world.add_resource(Clock::new(0.25 * S));
-        world.add_resource(EndTime { val: 12.5 * S });
+        world.add_resource(clock::Clock::new(0.25 * S));
+        world.add_resource(generals::EndTime { val: 12.5 * S });
+        world.add_resource(generals::LogDirectory {
+            val: String::from("testpath"),
+        });
+        world.add_resource(EventsManager::new());
+        // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
+        {
+            let mut events_manager = world.write_resource::<EventsManager>();
+            // Here, for example, trafficlight2 observes trafficlight1
+            events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+            // And here, trafficlight1 observes trafficlight2
+            events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
+        }
+        world.add_resource(clock::Clock::new(0.25 * S));
+        world.add_resource(generals::EndTime { val: 12.5 * S });
     }
 }
 
 fn simulation_ended(ressources: &World) -> bool {
     // if keyboard end event  +
 
-    let clock = ressources.read_resource::<Clock>();
-    let end_time = ressources.read_resource::<EndTime>();
+    let clock = ressources.read_resource::<clock::Clock>();
+    let end_time = ressources.read_resource::<generals::EndTime>();
     clock.get_time() >= end_time.val
 }
