@@ -8,8 +8,12 @@ use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
 use specs::world;
 
+use crate::metrics::Fdim;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
+use dim::si::{Meter, MeterPerSecond};
+
+use crate::topology::curve::Curve;
 
 pub type IntersectionId = u64;
 /// used for convenience
@@ -19,26 +23,26 @@ type NodeId = IntersectionId;
 /// it uses the entities ID of specs
 pub type EntityId = world::Index;
 
-/// A GraphMap of the map of the street
+/// A GraphMap of the map of the lane
 ///
 /// # Fields
 ///
-/// * `graph` - graph containing information of the streets base on the `IntersectionId`
+/// * `graph` - graph containing information of the lanes base on the `IntersectionId`
 /// * `intersections` -  mapping of the intersection data based on their `IntersectionId`
 /// * `entity_locations` - locations of the entities in the graph
 ///
-pub struct StreetMap {
-    pub graph: DiGraphMap<NodeId, StreetData>,
+pub struct LaneGraph {
+    pub graph: DiGraphMap<NodeId, LaneData>,
     pub intersections: HashMap<NodeId, IntersectionData>,
     pub entity_locations: HashMap<EntityId, (NodeId, NodeId)>,
 }
 
-impl StreetMap {
+impl LaneGraph {
     pub fn new<I1, I2>(nodes: I1, edges: I2) -> Self
     where
         I1: Iterator<Item = (NodeId, IntersectionData)>,
         I2: IntoIterator,
-        I2::Item: IntoWeightedEdge<StreetData, NodeId = NodeId>,
+        I2::Item: IntoWeightedEdge<LaneData, NodeId = NodeId>,
     {
         Self {
             graph: GraphMap::from_edges(edges),
@@ -64,18 +68,19 @@ impl StreetMap {
             .get_edges()
             .unwrap()
             .iter()
-            .map(|(from, to)| (*from, *to, StreetData::new()))
+            // todo :: replace the none by the valid values
+            .map(|(from, to)| (*from, *to, LaneData::new(None, None, None)))
             .collect();
 
         Self::new(nodes.into_iter(), edges.into_iter())
     }
 
-    /// Take the entity in front of the street `from`
-    /// and put it at the back of the street `to`
+    /// Take the entity in front of the lane `from`
+    /// and put it at the back of the lane `to`
     ///
     pub fn node_forward(&mut self, from: (NodeId, NodeId), to: (NodeId, NodeId)) {
-        let front_entity = { self.street_between_mut(from).pop_front() };
-        self.street_between_mut(to).push_back(front_entity);
+        let front_entity = { self.lane_between_mut(from).pop_front() };
+        self.lane_between_mut(to).push_back(front_entity);
     }
 
     /// forward a tuple of three node
@@ -84,8 +89,8 @@ impl StreetMap {
         self.node_forward((from, middle), (middle, to));
     }
 
-    /// Take the selected entity ID in the end of a street
-    /// and then move it to the front of an other street
+    /// Take the selected entity ID in the end of a lane
+    /// and then move it to the front of an other lane
     ///
     pub fn entity_forward(&mut self, entity: EntityId, destination: NodeId) {
         let (begin, end) = *self.entity_locations.get(&entity).unwrap();
@@ -106,94 +111,112 @@ impl StreetMap {
         self.intersections.get_mut(&entity).unwrap()
     }
 
-    /// get the street with entity id
+    /// get the lane with entity id
     ///
-    pub fn street(&self, entity: EntityId) -> &StreetData {
+    pub fn lane(&self, entity: EntityId) -> &LaneData {
         let location = self.entity_locations.get(&entity).unwrap();
         self.graph.index(*location)
     }
 
-    /// get the street between two node
+    /// get the lane between two node
     ///
-    pub fn street_between(&self, location: (NodeId, NodeId)) -> &StreetData {
+    pub fn lane_between(&self, location: (NodeId, NodeId)) -> &LaneData {
         self.graph.index(location)
     }
 
-    /// get the street as a mutable street based on the entityId
+    /// get the lane as a mutable lane based on the entityId
     ///
-    pub fn street_mut(&mut self, entity: EntityId) -> StreetEntry {
+    pub fn lane_mut(&mut self, entity: EntityId) -> LaneEntry {
         let location = self.entity_locations.get(&entity).unwrap();
-        let street = self.graph.index_mut(*location);
-        StreetEntry {
-            street,
-            street_location: *location,
+        let lane = self.graph.index_mut(*location);
+        LaneEntry {
+            lane,
+            lane_location: *location,
             entity_locations: &mut self.entity_locations,
         }
     }
 
-    /// Get the street as a mutable street between two nodes
+    /// Get the lane as a mutable lane between two nodes
     ///
-    pub fn street_between_mut(&mut self, location: (NodeId, NodeId)) -> StreetEntry {
-        StreetEntry {
-            street: self.graph.index_mut(location),
-            street_location: location,
+    pub fn lane_between_mut(&mut self, location: (NodeId, NodeId)) -> LaneEntry {
+        LaneEntry {
+            lane: self.graph.index_mut(location),
+            lane_location: location,
             entity_locations: &mut self.entity_locations,
         }
     }
 }
 
-/// Access Entry that allows to modify the StreetMap while keeping its integrity
+/// Access Entry that allows to modify the LaneMap while keeping its integrity
 ///
 /// # Fields
 ///
-/// * `street` :  mut ref of the currently selected street
-/// * `street_location` : location of the street in the graph
+/// * `lane` :  mut ref of the currently selected lane
+/// * `lane_location` : location of the lane in the graph
 /// * `entity_locations` : mut ref of the mapping of all entity locations
 ///
-/// those reference will of course be released when releasing StreetEntry
-pub struct StreetEntry<'a, 'b> {
-    street: &'b mut StreetData,
-    street_location: (NodeId, NodeId),
+/// those reference will of course be released when releasing LaneEntry
+pub struct LaneEntry<'a, 'b> {
+    lane: &'b mut LaneData,
+    lane_location: (NodeId, NodeId),
     entity_locations: &'a mut HashMap<EntityId, (NodeId, NodeId)>,
 }
 
-impl<'a, 'b> StreetEntry<'a, 'b> {
-    pub fn street(&self) -> &StreetData {
-        self.street
+impl<'a, 'b> LaneEntry<'a, 'b> {
+    pub fn lane(&self) -> &LaneData {
+        self.lane
     }
 
     fn push_back(&mut self, entity: EntityId) {
-        self.entity_locations.insert(entity, self.street_location);
-        self.street.push_back(entity);
+        self.entity_locations.insert(entity, self.lane_location);
+        self.lane.push_back(entity);
     }
     fn pop_front(&mut self) -> EntityId {
-        let entity = self.street.pop_front();
+        let entity = self.lane.pop_front();
         self.entity_locations.remove(&entity);
         entity
     }
 
     fn pop_if_front(&mut self, entity: EntityId) -> Option<EntityId> {
-        let _ = self.street.pop_if_front(entity)?;
+        let _ = self.lane.pop_if_front(entity)?;
         self.entity_locations.remove(&entity);
         Some(entity)
     }
 }
 
-/// Contains all the information of a street in the map
+/// Contains all the information of a lane in the map
 ///
 /// # Fields
 ///
 /// * `entity_queue` - ordered queue giving the order of the contained elements
+/// * `width` - width of the lane
+/// * `max_speed` - max speed of the lane
+/// * `curve` - curve of the lane
 ///
+/// note :: `width`,`max_speed` and `curve`are options because we
+///     are not garrenteed yet to have it for everylane
 #[derive(Clone)]
-pub struct StreetData {
+pub struct LaneData {
     entity_queue: VecDeque<EntityId>,
+    //todo :: consider if all the specific data  (width,max_speed,etc)
+    // should be wrapped in a generic this way we could  abstract street info
+    // from the graph w
+    pub width: Option<Meter<Fdim>>,
+    pub max_speed: Option<MeterPerSecond<Fdim>>,
+    pub curve: Option<Curve>,
 }
 
-impl StreetData {
-    pub fn new() -> Self {
+impl LaneData {
+    pub fn new(
+        width: Option<Meter<Fdim>>,
+        max_speed: Option<MeterPerSecond<Fdim>>,
+        curve: Option<Curve>,
+    ) -> Self {
         Self {
             entity_queue: VecDeque::new(),
+            width,
+            max_speed,
+            curve,
         }
     }
 
@@ -203,7 +226,7 @@ impl StreetData {
         &self.entity_queue
     }
 
-    /// Insert a entity at the beginning of the street
+    /// Insert a entity at the beginning of the lane
     ///
     /// note :: we use the back of de entity queue because
     ///         it makes more sense in our context
@@ -211,7 +234,7 @@ impl StreetData {
         self.entity_queue.push_back(entity);
     }
 
-    /// pop an entity at the end of the street
+    /// pop an entity at the end of the lane
     ///
     ///
     pub fn pop_front(&mut self) -> EntityId {
@@ -274,10 +297,10 @@ mod tests {
     ///    /
     ///   2
     ///
-    fn streetmap_triangle() -> StreetMap {
+    fn lane_map_triangle() -> LaneGraph {
         let node = IntersectionData::new(10.0, 10.0);
 
-        StreetMap::new(
+        LaneGraph::new(
             [
                 (1u64, node.clone()),
                 (2u64, node.clone()),
@@ -287,46 +310,46 @@ mod tests {
             .to_vec()
             .into_iter(),
             &[
-                (1, 3, StreetData::new()),
-                (2, 3, StreetData::new()),
-                (3, 4, StreetData::new()),
+                (1, 3, LaneData::new(None, None, None)),
+                (2, 3, LaneData::new(None, None, None)),
+                (3, 4, LaneData::new(None, None, None)),
             ],
         )
     }
 
     #[test]
     fn push_valid() {
-        let mut graph = streetmap_triangle();
-        graph.street_between_mut((1, 3)).push_back(1);
-        graph.street_between_mut((1, 3)).push_back(2);
-        let mut street = graph.street_between_mut((1, 3));
-        assert_eq!(street.street().queue().len(), 2);
-        assert_eq!(street.pop_front(), 1);
-        assert_eq!(street.pop_front(), 2);
-        assert!(street.street().queue().is_empty());
+        let mut graph = lane_map_triangle();
+        graph.lane_between_mut((1, 3)).push_back(1);
+        graph.lane_between_mut((1, 3)).push_back(2);
+        let mut lane = graph.lane_between_mut((1, 3));
+        assert_eq!(lane.lane().queue().len(), 2);
+        assert_eq!(lane.pop_front(), 1);
+        assert_eq!(lane.pop_front(), 2);
+        assert!(lane.lane().queue().is_empty());
     }
 
     #[test]
     fn node_forward_gives_2314() {
-        let mut graph = streetmap_triangle();
-        graph.street_between_mut((1, 3)).push_back(1);
-        graph.street_between_mut((1, 3)).push_back(2);
-        graph.street_between_mut((2, 3)).push_back(3);
-        graph.street_between_mut((3, 4)).push_back(4);
+        let mut graph = lane_map_triangle();
+        graph.lane_between_mut((1, 3)).push_back(1);
+        graph.lane_between_mut((1, 3)).push_back(2);
+        graph.lane_between_mut((2, 3)).push_back(3);
+        graph.lane_between_mut((3, 4)).push_back(4);
 
         graph.node_forward((1, 3), (3, 4));
         graph.node_forward((2, 3), (3, 4));
         graph.node_forward((1, 3), (3, 4));
 
-        let street = graph.street_between((3, 4));
-        assert_eq!(street.queue().get(0).unwrap(), &4);
-        assert_eq!(street.queue().get(1).unwrap(), &1);
-        assert_eq!(street.queue().get(2).unwrap(), &3);
-        assert_eq!(street.queue().get(3).unwrap(), &2);
+        let lane = graph.lane_between((3, 4));
+        assert_eq!(lane.queue().get(0).unwrap(), &4);
+        assert_eq!(lane.queue().get(1).unwrap(), &1);
+        assert_eq!(lane.queue().get(2).unwrap(), &3);
+        assert_eq!(lane.queue().get(3).unwrap(), &2);
 
-        assert_eq!(street.queue().len(), 4);
-        assert!(graph.street_between((1, 3)).queue().is_empty());
-        assert!(graph.street_between((2, 3)).queue().is_empty());
+        assert_eq!(lane.queue().len(), 4);
+        assert!(graph.lane_between((1, 3)).queue().is_empty());
+        assert!(graph.lane_between((2, 3)).queue().is_empty());
     }
 
 }
