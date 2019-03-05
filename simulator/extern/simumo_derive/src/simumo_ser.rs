@@ -1,5 +1,5 @@
 use proc_macro2::{TokenStream, Ident};
-use syn::{parse_macro_input, DeriveInput, Type, Path, DataStruct, Fields};
+use syn::{Type, Path, Fields};
 use std::vec::Vec;
 
 
