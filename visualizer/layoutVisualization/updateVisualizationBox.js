@@ -71,6 +71,7 @@ function updateVisualizationBox() {
 	      success: function(logs) {
 	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'));
 	        updateVisualizationLayer(parsedLogs, "coloredPoints", gradient);
+					loadColorGradient(timeValueBegin, timeValueEnd, gradient);
 	      }
 	    });
 
@@ -82,6 +83,7 @@ function updateVisualizationBox() {
 	      success: function(logs) {
 	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'));
 	        updateVisualizationLayer(parsedLogs, "heatMap", gradient);
+					loadColorGradient(timeValueBegin, timeValueEnd, gradient);
 	      }
 	    });
 	  }

@@ -13,6 +13,7 @@
   <script src="jquery-ui-slider-pips.js"></script>
   <script src="https://unpkg.com/openlayers@4.4.2"></script>
   <!-- <script src="https://unpkg.com/ol-popup@2.0.0"></script> -->
+  <script src="legend.js" type="text/javascript"></script>
   <script src="tabs.js" type="text/javascript"></script>
   <script src="updateVisualizationBox.js" type="text/javascript"></script>
 </header>
@@ -37,7 +38,7 @@
       </div>
     </div>
 
-    <div class="selectionBox">
+    <div class="selectionBox" id="legendBox">
       <h3>Légende</h3>
 
       <div id="legendColors">
@@ -46,18 +47,7 @@
       {% endfor %}
       </div>
 
-      <div class="gradientbox" style="background-image: linear-gradient(to right,{% for color in legend -%} {{ 'rgb(' + [color.red, color.green, color.blue]|join(',') + ')'}} {{ "," if not loop.last }} {%- endfor %});">
-      </div>
-
-      <div class="beginLegendBox">
-        {{timeline.min}}
-      </div>
-      <div class="middleLegendBox">
-        {{timeline.max/2|round|int}}
-      </div>
-      <div class = "endLegendBox">
-        {{timeline.max}}
-      </div>
+      <div id="gradientBox"> </div>
 
   </div>
 

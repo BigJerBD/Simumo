@@ -182,7 +182,7 @@ function updateVisualizationLayer(points, style, gradient)
     let heatMapLayer = new ol.layer.Heatmap({
         source: pointsSource,
         blur: 18,     //interesting between 10 and 30
-        radius: 8,   //interesting between 5 and 12
+        radius: 6,   //interesting between 3 and 10
         gradient: arrayRgbToHex(gradient),
         weight: 'value'
       });
