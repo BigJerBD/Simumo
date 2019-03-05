@@ -276,7 +276,7 @@ pub struct IntersectionData {
 }
 
 impl IntersectionData {
-    fn new(lon: f64, lat: f64) -> Self {
+    pub fn new(lon: f64, lat: f64) -> Self {
         Self {
             position: (lon, lat),
             contained_entity: None,

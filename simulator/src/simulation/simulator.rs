@@ -11,6 +11,9 @@ use specs::Dispatcher;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
+use crate::ressources::lane_graph::IntersectionData;
+use crate::ressources::lane_graph::LaneData;
+use crate::ressources::lane_graph::LaneGraph;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
 use crate::simulation::entities::create_entities;
@@ -94,6 +97,23 @@ impl<'a, 'b> Simulation<'a, 'b> {
         }
         world.add_resource(clock::Clock::new(0.25 * S));
         world.add_resource(generals::EndTime { val: 12.5 * S });
+
+        //todo remove this and replace it by a config later one
+        world.add_resource(LaneGraph::new(
+            [
+                (1, IntersectionData::new(10.0, 10.0)),
+                (2, IntersectionData::new(10.0, 30.0)),
+                (3, IntersectionData::new(20.0, 20.0)),
+                (4, IntersectionData::new(30.0, 20.0)),
+            ]
+            .to_vec()
+            .into_iter(),
+            &[
+                (1, 3, LaneData::new(None, None, None)),
+                (2, 3, LaneData::new(None, None, None)),
+                (3, 4, LaneData::new(None, None, None)),
+            ],
+        ));
     }
 }
 
