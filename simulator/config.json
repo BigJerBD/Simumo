@@ -3,10 +3,10 @@
         "seed": "055c1509-cf2e-499a-9c79-e85ace6e654d"
     },
     "map": {
-        "latitude": -72.0514,
-        "longitude": 45.00,
+        "latitude": 45.4000800,
+        "longitude": -71.8990800,
         "type": "OsmGraph",
-        "zoom": 2
+        "zoom": 1200
     },
     "systems": {
         "agents": [

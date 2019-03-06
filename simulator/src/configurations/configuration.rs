@@ -4,7 +4,7 @@ use std::io::BufReader;
 use std::path::Path;
 
 use super::generals::GeneralConfigurations;
-use super::map::MapConfiguration;
+use super::map::Map;
 use super::systems::SystemsConfiguration;
 
 /// Represent the root level configuration.
@@ -13,7 +13,7 @@ use super::systems::SystemsConfiguration;
 #[derive(Deserialize)]
 pub struct Configuration {
     pub generals: GeneralConfigurations,
-    pub map: MapConfiguration,
+    pub map: Map,
     pub systems: SystemsConfiguration,
 }
 

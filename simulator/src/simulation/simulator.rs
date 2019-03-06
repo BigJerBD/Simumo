@@ -30,19 +30,18 @@ impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
-        // let map:PythonOsmGraphApi = match config.map {
-        //     MapConfiguration::OsmGraph(val) => PythonOsmGraphApi::query_graph(val.longitude, val.latitude, val.zoom),
-        //     _ => panic!("The map type doesn't exist.")
-        // };
+        //Configs
+        let map:PythonOsmGraphApi = match config.map {
+            map::Map::OsmGraph(val) => *(PythonOsmGraphApi::query_graph(val.longitude, val.latitude, val.zoom).unwrap()),
+            _ => panic!("The map type doesn't exist.")
+        };
 
-        //Todo: handle different map type.
-        // Si le config.map est de type OsmGraph alors appeller la function query_graph(val.longitude, val.latitude, val.zoom) avec les paramêtre
-        let map = config.map;
-        let _osm_raw:PythonOsmGraphApi = *OsmGraphApi::query_graph(map.longitude, map.latitude, map.zoom).unwrap();
+        //Todo: Systems
 
         let mut world = World::new();
         let window = Self::create_window();
 
+        //ressources
         Self::create_resources(&mut world, config.generals.seed);
 
         let mut base_dispatcher = make_base_dispatcher();
@@ -50,6 +49,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         base_dispatcher.setup(&mut world.res);
         render_dispatcher.setup(&mut world.res);
 
+        //entities
         create_entities(&mut world);
 
         Self {
