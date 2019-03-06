@@ -3,17 +3,21 @@ use specs::prelude::*;
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
 use crate::metrics::Fdim;
+use crate::metrics::second_deserialize;
 use dim::si::{S, Second};
 
-#[derive(Copy, Clone, Debug, Serialize, PartialEq)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TrafficLightColor { RED, YELLOW, GREEN }
 
-#[derive(Component, TypeInfo, Debug)]
+#[derive(Copy, Clone, Component, TypeInfo, Debug, Deserialize)]
 #[storage(VecStorage)]
 pub struct Light {
     pub color: TrafficLightColor,
+    #[serde(deserialize_with = "second_deserialize")]
     pub max_green_time: Second<Fdim>,
+    #[serde(deserialize_with = "second_deserialize")]
     pub max_yellow_time: Second<Fdim>,
+    #[serde(deserialize_with = "second_deserialize")]
     pub time: Second<Fdim>,
 }
 

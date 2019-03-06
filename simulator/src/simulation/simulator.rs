@@ -10,6 +10,7 @@ use specs::Dispatcher;
 
 use crate::ressources::clock;
 use crate::ressources::generals;
+use crate::ressources::entitiesmanager::EntitiesManager;
 use crate::ressources::eventsmanager::EventsManager;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
@@ -83,6 +84,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(generals::LogDirectory {
             val: String::from("testpath"),
         });
+        world.add_resource(EntitiesManager::new());
         world.add_resource(EventsManager::new());
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
         {

@@ -13,6 +13,7 @@ use dim::si::{M, MPS, S};
 pub fn create_entities(world: &mut World) {
     world
         .create_entity()
+        .with(Identifier("vehicle01".to_string()))
         .with(Speed { val: 2.0 * MPS })
         .with(Position {
             x: 0.0 * M,
@@ -26,6 +27,7 @@ pub fn create_entities(world: &mut World) {
         .build();
     world
         .create_entity()
+        .with(Identifier("vehicle02".to_string()))
         .with(Speed { val: 4.0 * MPS })
         .with(Position {
             x: 0.0 * M,
@@ -39,6 +41,7 @@ pub fn create_entities(world: &mut World) {
         .build();
     world
         .create_entity()
+        .with(Identifier("vehicle03".to_string()))
         .with(Speed { val: 1.5 * MPS })
         .with(Position {
             x: 0.0 * M,

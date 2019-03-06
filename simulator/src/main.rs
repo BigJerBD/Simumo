@@ -31,6 +31,7 @@ mod types;
 
 mod components;
 mod configurations;
+mod entities;
 mod errors;
 mod internal_prelude;
 mod metrics;
@@ -47,6 +48,19 @@ fn main() {
     //config.setup();
     //
     //if args.verbose {}
+
+    /*let json = r#"
+        [
+          {
+            "Ca": "/users"
+          },
+          {
+            "timeout": 5,
+            "priority": "High"
+          }
+        ]
+    "#;
+    let requests: Vec<Request> = serde_json::from_str(json).unwrap();*/
 
     let mut simulation = simulation::Simulation::new();
     simulation.run_simulation();
