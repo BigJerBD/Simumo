@@ -31,9 +31,8 @@ impl<'a, 'b> Simulation<'a, 'b> {
 
     pub fn from_config(config: Configuration) -> Self {
         //Configs
-        let map:PythonOsmGraphApi = match config.map {
+        let _map:PythonOsmGraphApi = match config.map {
             map::Map::OsmGraph(val) => *(PythonOsmGraphApi::query_graph(val.longitude, val.latitude, val.zoom).unwrap()),
-            _ => panic!("The map type doesn't exist.")
         };
 
         //Todo: Systems
