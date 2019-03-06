@@ -23,7 +23,7 @@ def render_ol_map(map_output_path, city):
     os.remove(map_output_path + "/OlMapTemplate.j2")
 
 
-def render_layout(map_output_path, timeline, metrics):
+def render_layout(map_output_path, timeline, metrics, legend):
     # copy directory containing the outputmap and its ressources
     layout_path = "./layoutVisualization"
 
@@ -35,19 +35,15 @@ def render_layout(map_output_path, timeline, metrics):
     # - the legend of the metrics si the one requested (not done for now)
     template_env = jinja2.Environment(loader=jinja2.FileSystemLoader(map_output_path))
     template = template_env.get_template('layout.j2')
-    map_rendered = template.render(timeline=timeline, metrics=metrics)
+    map_rendered = template.render(timeline=timeline, metrics=metrics, legend=legend)
     with open(map_output_path + "/layout.html", "w") as text_file:
         print(map_rendered, file=text_file)
     os.remove(map_output_path + '/layout.j2')
 
 
-def render_visualization(city, timeline, metrics):
+def render_visualization(city, timeline, metrics, legend):
     map_output_path = "./output"
     render_ol_map(map_output_path, city)
-    render_layout(map_output_path, timeline, metrics)
+    render_layout(map_output_path, timeline, metrics, legend)
 
 
-timeline = {"min": 0, "max": 50, "intervalStep": 2}
-metrics = ["débit", "gigue"]
-
-render_visualization("Sherbrooke", timeline, metrics)

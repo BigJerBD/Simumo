@@ -47,23 +47,32 @@ ul {
 }
 
 /* For the legende */
-.input-color {
+.gradientbox {
   position: relative;
-}
-
-.input-color input {
-  padding-left: 20px;
-}
-
-.input-color .color-box {
   border: 1px solid;
-  width: 10px;
-  height: 10px;
-  display: inline-block;
+  width: 100%;
+  height: 20px;
   background-color: #ccc;
-  position: absolute;
-  left: 5px;
-  top: 5px;
+}
+
+.beginLegendBox
+{
+  float:left;
+  width: 0%;
+}
+
+.middleLegendBox
+{
+  float:left;
+  width: 50%;
+  text-align: right;
+}
+
+.endLegendBox
+{
+  float:left;
+  width: 50%;
+  text-align: right;
 }
 
 /* Where the Visualization appears */

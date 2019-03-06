@@ -14,6 +14,7 @@ use crate::configurations::map;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::clock;
+use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
@@ -101,6 +102,16 @@ impl<'a, 'b> Simulation<'a, 'b> {
         }
 
         world.add_resource(s);
+
+        world.add_resource(EventsManager::new());
+        // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
+        {
+            let mut events_manager = world.write_resource::<EventsManager>();
+            // Here, for example, trafficlight2 observes trafficlight1
+            events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+            // And here, trafficlight1 observes trafficlight2
+            events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
+        }
     }
 }
 
