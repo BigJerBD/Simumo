@@ -9,8 +9,8 @@ use specs::prelude::*;
 use specs::Dispatcher;
 use uuid::Uuid;
 
-use crate::configurations::Configuration;
 use crate::configurations::map;
+use crate::configurations::Configuration;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::clock;
@@ -31,10 +31,10 @@ impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
-        //Configs
-        let _map:PythonOsmGraphApi = match config.map {
-            map::Map::OsmGraph(val) => *(PythonOsmGraphApi::query_graph(val.longitude, val.latitude, val.zoom).unwrap()),
-        };
+        //map Todo: uncommented below when query_graph works.
+        // let _map:PythonOsmGraphApi = match config.map {
+        //     map::Map::OsmGraph(val) => *(PythonOsmGraphApi::query_graph(val.longitude, val.latitude, val.zoom).unwrap()),
+        // };
 
         //Todo: Systems
 
@@ -98,7 +98,8 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(generals::EndTime { val: 12.5 * S });
 
         if !seed.is_empty() {
-            s = Uuid::parse_str(&seed).unwrap_or_else(|_| panic!("Format of the seed isn't right."));
+            s = Uuid::parse_str(&seed)
+                .unwrap_or_else(|_| panic!("Format of the seed isn't right."));
         }
 
         world.add_resource(s);
