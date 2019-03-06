@@ -3,8 +3,6 @@ use argparse::{ArgumentParser, Store, StoreTrue};
 #[derive(Default)]
 pub struct CommandLineArguments {
     pub configuration_path: String, // change this for Path data. See Configurations as example
-    pub logger_path: String,
-    pub verbose: bool,
 }
 
 impl CommandLineArguments {
@@ -19,11 +17,6 @@ impl CommandLineArguments {
                 .add_option(&["-c"], Store, "Json configuration file path")
                 .required();
 
-            parser.refer(&mut options.verbose).add_option(
-                &["-v"],
-                StoreTrue,
-                "Show details about arguments execution and probably other things.",
-            );
             parser.parse_args_or_exit();
         }
         options
