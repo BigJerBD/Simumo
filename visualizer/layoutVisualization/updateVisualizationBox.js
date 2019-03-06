@@ -1,10 +1,32 @@
-function parseLogs(logs, unitToSelect, max) {
-  let logsJson = JSON.parse(logs);
-  let parsedLogs = []
-  logsJson.forEach(function(entry) {
+let minMaxByMetric = {};
+function getMinAndMaxOfLog(log, metric)
+{
+	if(minMaxByMetric[metric] == undefined)
+	{
+		let logJson = JSON.parse(log);
+		let min = Number.POSITIVE_INFINITY;
+		let max = Number.NEGATIVE_INFINITY;
+		logJson.forEach(function(entry) {
+			entry["data"].forEach(function(data) {
+				min = Math.min(data["value"], min);
+				max = Math.max(data["value"], max);
+			});
+		});
+		minMaxByMetric[metric] = [min,max];
+		return [min,max];
+	}
+	else {
+		return minMaxByMetric[metric];
+	}
+}
+
+function parseLog(log, unitToSelect, max) {
+  let logJson = JSON.parse(log);
+  let parsedLog = []
+  logJson.forEach(function(entry) {
     entry["data"].forEach(function(data) {
       if (data["resolution"] == unitToSelect) {
-        let parsedLog = {
+        let logEntry = {
           lon: entry["lon"],
           lat: entry["lat"],
           metricType: entry["metric_type"],
@@ -13,11 +35,11 @@ function parseLogs(logs, unitToSelect, max) {
           value: data["value"],
           interpolation: data["value"] / max //normalised value
         }
-        parsedLogs.push(parsedLog);
+        parsedLog.push(logEntry);
       }
     });
   });
-  return parsedLogs;
+  return parsedLog;
 }
 
 function secToTimestamp(sec) {
@@ -44,52 +66,86 @@ function updateVisualizationBox() {
       break;
     }
   }
+	if(!selectedMetric)
+	{
+		return;
+	}
+	let logName = selectedMetric.getAttribute('data-logName');
+	let logUnit = selectedMetric.getAttribute('data-unit');
 
   let coloredPointsTab = document.getElementById('tabs').getElementsByTagName("a")[0];
   let heatMapTab = document.getElementById('tabs').getElementsByTagName("a")[1];
 
-  let timeValueBegin = $('#flat-slider').slider("option", "values")[0];
-  let timeValueEnd = $('#flat-slider').slider("option", "values")[1];
-	let timeValueMin = $("#flat-slider").slider("option", "min");
-	let timeValueMax = $("#flat-slider").slider("option", "max");
+	let timeValueBegin = NaN;
+  let timeValueEnd = NaN;
+	let timeValueMin = NaN;
+	let timeValueMax = NaN;
 
-	if(selectedMetric &&  (timeValueBegin || timeValueBegin === 0)  && (timeValueEnd || timeValueEnd === 0))
+  let existTimeline = $('#flat-slider').attr('class') != 'unintialized';
+	if(!existTimeline)
 	{
-		let gradient = []
-	  let colors = document.getElementById("legendColors").children;
-	  for (let i = 0, length = colors.length; i < length; i++) {
-	    gradient.push({
-	      r: parseInt(colors[i].getAttribute('data-red')),
-	      g: parseInt(colors[i].getAttribute('data-green')),
-	      b: parseInt(colors[i].getAttribute('data-blue'))
-	    });
-	  }
-
-	  if (coloredPointsTab.className == "selected") {
-	    switchTabToMap();
-	    $.ajax({
-	      url: "/logs/sherbrooke_sample?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd),
-	      cache: false,
-	      success: function(logs) {
-	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'), timeValueMax);
-	        updateVisualizationLayer(parsedLogs, "coloredPoints", gradient);
-					loadColorGradient(timeValueMin, timeValueMax, gradient);
-	      }
-	    });
-
-	  } else if (heatMapTab.className == "selected") {
-	    switchTabToMap();
-	    $.ajax({
-	      url: "/logs/sherbrooke_sample?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd),
-	      cache: false,
-	      success: function(logs) {
-	        let parsedLogs = parseLogs(logs, selectedMetric.getAttribute('data-unit'), timeValueMax);
-	        updateVisualizationLayer(parsedLogs, "heatMap", gradient);
-					loadColorGradient(timeValueMin, timeValueMax, gradient);
-	      }
-	    });
-	  }
+		$('#flat-slider').attr('class', 'initialized');
 	}
+	else {
+		timeValueBegin = $('#flat-slider').slider("option", "values")[0];
+		timeValueEnd = $('#flat-slider').slider("option", "values")[1];
+		timeValueMin = $("#flat-slider").slider("option", "min");
+		timeValueMax = $("#flat-slider").slider("option", "max");
+	}
+
+	let gradient = []
+  let colors = document.getElementById("legendColors").children;
+  for (let i = 0, length = colors.length; i < length; i++) {
+    gradient.push({
+      r: parseInt(colors[i].getAttribute('data-red')),
+      g: parseInt(colors[i].getAttribute('data-green')),
+      b: parseInt(colors[i].getAttribute('data-blue'))
+    });
+  }
+
+	let urlLog = !existTimeline
+	          ? "/logs/" + logName
+						: "/logs/" + logName + "?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd);
+
+  if (coloredPointsTab.className == "selected") {
+    switchTabToMap();
+    $.ajax({
+      url: urlLog,
+      cache: false,
+      success: function(log) {
+				let minMaxLog = getMinAndMaxOfLog(log, coloredPointsTab);
+				let minOfLog = parseInt(minMaxLog[0]);
+				let maxOfLog =  Math.ceil(minMaxLog[1]);
+				if(!existTimeline)
+				{
+					updateTimeline(minOfLog, maxOfLog);
+				}
+				loadColorGradient(minOfLog, maxOfLog, gradient);
+				let parsedLog = parseLog(log, logUnit, maxOfLog);
+				updateVisualizationLayer(parsedLog, "coloredPoints", gradient);
+      }
+    });
+
+  } else if (heatMapTab.className == "selected") {
+    switchTabToMap();
+    $.ajax({
+      url: urlLog,
+      cache: false,
+      success: function(log) {
+				let minMaxLog = getMinAndMaxOfLog(log, coloredPointsTab);
+				let minOfLog = parseInt(minMaxLog[0]);
+				let maxOfLog =  Math.ceil(minMaxLog[1]);
+				if(!existTimeline)
+				{
+					updateTimeline(minOfLog, maxOfLog);
+				}
+				loadColorGradient(minOfLog, maxOfLog, gradient);
+				let parsedLog = parseLog(log, logUnit, maxOfLog);
+				updateVisualizationLayer(parsedLog, "heatMap", gradient);
+      }
+    });
+  }
+
 
   $("body").css("cursor", "default");
 }

@@ -15,6 +15,7 @@
   <!-- <script src="https://unpkg.com/ol-popup@2.0.0"></script> -->
   <script src="legend.js" type="text/javascript"></script>
   <script src="tabs.js" type="text/javascript"></script>
+  <script src="timeline.js" type="text/javascript"></script>
   <script src="updateVisualizationBox.js" type="text/javascript"></script>
 </header>
 
@@ -31,7 +32,7 @@
       <h3>Métriques</h3>
       <div class="metricSelectionBox">
         {% for metric in metrics %}
-          <input type="radio" name="metricSelection" style="float:left;" onclick="updateVisualizationBox()" data-unit={{"\"" +metric.unit + "\""}}>
+          <input type="radio" name="metricSelection" style="float:left;" onclick="updateVisualizationBox()" data-logName={{"\"" +metric.logName + "\""}} data-unit={{"\"" +metric.unit + "\""}} }>
           <div style="float:left;">{{metric.name + '(' +metric.unitLabel + ')'}}</div>
           <br>
         {% endfor %}
@@ -72,21 +73,5 @@
   <br>
 
   <div class="sliderPosition">
-    <div id="flat-slider"></div>
+    <div id="flat-slider" class="unintialized"></div>
   </div>
-
-  <!-- https://simeydotme.github.io/jQuery-ui-Slider-Pips/#installation -->
-  <script>
-    $("#flat-slider").slider({
-      max: {{timeline.max}},
-      min: {{timeline.min}},
-      range: true,
-      values: [{{timeline.min}}, {{timeline.max}}],
-      slide: updateVisualizationBox
-    }).slider("pips", {
-      rest: "label",
-      step: {{(timeline.max - timeline.min)/10.0}}
-    });
-  </script>
-
-</body>
