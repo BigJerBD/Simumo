@@ -16,6 +16,7 @@ use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
 use crate::simulation::entities::create_entities;
 use dim::si::S;
+use std::process::Command;
 
 pub struct Simulation<'a, 'b> {
     world: World,

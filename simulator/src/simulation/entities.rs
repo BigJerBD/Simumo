@@ -2,12 +2,10 @@ use crate::components::dynamic::Position;
 use crate::components::dynamic::Speed;
 use crate::components::statics::trafficlight::Light;
 use crate::components::statics::trafficlight::TrafficLightColor;
-use specs::world::Builder;
-use specs::World;
-
 use crate::components::constant::Identifier;
 use crate::components::constant::Rectangle;
-
+use specs::world::Builder;
+use specs::World;
 use dim::si::{M, MPS, S};
 
 pub fn create_entities(world: &mut World) {
