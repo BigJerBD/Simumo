@@ -11,7 +11,7 @@ use dim::si::{M, MPS, S};
 pub fn create_entities(world: &mut World) {
     world
         .create_entity()
-        .with(Identifier("vehicle01".to_string()))
+        .with(Identifier { val: "vehicle01".to_string() })
         .with(Speed { val: 2.0 * MPS })
         .with(Position {
             x: 0.0 * M,
@@ -25,7 +25,7 @@ pub fn create_entities(world: &mut World) {
         .build();
     world
         .create_entity()
-        .with(Identifier("vehicle02".to_string()))
+        .with(Identifier { val: "vehicle02".to_string() })
         .with(Speed { val: 4.0 * MPS })
         .with(Position {
             x: 0.0 * M,
@@ -39,7 +39,7 @@ pub fn create_entities(world: &mut World) {
         .build();
     world
         .create_entity()
-        .with(Identifier("vehicle03".to_string()))
+        .with(Identifier { val: "vehicle03".to_string() })
         .with(Speed { val: 1.5 * MPS })
         .with(Position {
             x: 0.0 * M,
@@ -53,12 +53,12 @@ pub fn create_entities(world: &mut World) {
         .build();
     world
         .create_entity()
-        .with(Identifier("trafficlight1".to_string()))
+        .with(Identifier { val: "trafficlight1".to_string() })
         .with(Light::new(TrafficLightColor::GREEN, 5.0 * S, 1.5 * S, 3.5 * S))
         .build();
     world
         .create_entity()
-        .with(Identifier("trafficlight2".to_string()))
+        .with(Identifier { val: "trafficlight2".to_string() })
         .with(Light::new(TrafficLightColor::RED, 3.0 * S, 1.0 * S, 0.0 * S))
         .build();
 }

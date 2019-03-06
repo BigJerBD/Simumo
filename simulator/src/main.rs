@@ -29,15 +29,15 @@ mod command_line;
 mod topology;
 mod types;
 
+mod metrics;
+mod rng;
 mod components;
 mod configurations;
 mod entities;
 mod errors;
 mod internal_prelude;
-mod metrics;
-mod osmgraph_api;
+//mod osmgraph_api;
 mod ressources;
-mod rng;
 mod simulation;
 mod systems;
 mod util;
@@ -48,19 +48,6 @@ fn main() {
     //config.setup();
     //
     //if args.verbose {}
-
-    /*let json = r#"
-        [
-          {
-            "Ca": "/users"
-          },
-          {
-            "timeout": 5,
-            "priority": "High"
-          }
-        ]
-    "#;
-    let requests: Vec<Request> = serde_json::from_str(json).unwrap();*/
 
     let mut simulation = simulation::Simulation::new();
     simulation.run_simulation();

@@ -12,7 +12,7 @@ use crate::entities::entity_type::Creatable;
 use specs::World;
 use specs::Builder;
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
     pub id: Identifier,
     //mass : Mass,
@@ -26,7 +26,6 @@ pub struct CarEntity {
     pub acceleration: Acceleration,
     //energy_control: EnergyControl,
     //agent_type:
-    pub car_type: CarType,
 }
 
 impl Creatable for CarEntity {
@@ -36,6 +35,7 @@ impl Creatable for CarEntity {
             .with(self.id.clone())
             .with(self.position.clone())
             .with(self.speed.clone())
+            .with(CarType)
             .with(Rectangle { width: 5.0, height: 5.0 })
             .build();
     }
