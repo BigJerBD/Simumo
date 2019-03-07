@@ -4,7 +4,7 @@ use crate::components::types::statics::trafficlight::Light;
 use specs::World;
 use specs::Builder;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct LightEntity{
     pub id: Identifier,
     pub light: Light

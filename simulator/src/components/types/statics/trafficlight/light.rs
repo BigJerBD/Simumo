@@ -1,17 +1,22 @@
 extern crate specs;
+use crate::metrics::Fdim;
+use crate::metrics::second_deserialize;
+use dim::si::{Second, S};
 use specs::prelude::*;
 use typeinfo::TypeInfo;
 use typeinfo_derive::*;
-use crate::metrics::Fdim;
-use crate::metrics::second_deserialize;
-use dim::si::{S, Second};
 
 #[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub enum TrafficLightColor { RED, YELLOW, GREEN }
+pub enum TrafficLightColor {
+    RED,
+    YELLOW,
+    GREEN,
+}
 
 #[derive(Copy, Clone, Component, TypeInfo, Debug, Deserialize)]
 #[storage(VecStorage)]
 pub struct Light {
+    #[serde(rename = "initial_color")]
     pub color: TrafficLightColor,
     #[serde(deserialize_with = "second_deserialize")]
     pub max_green_time: Second<Fdim>,
@@ -22,12 +27,17 @@ pub struct Light {
 }
 
 impl Light {
-    pub fn new(color: TrafficLightColor, max_green_time: Second<Fdim>, max_yellow_time: Second<Fdim>, time: Second<Fdim>) -> Self {
+    pub fn new(
+        color: TrafficLightColor,
+        max_green_time: Second<Fdim>,
+        max_yellow_time: Second<Fdim>,
+        time: Second<Fdim>,
+    ) -> Self {
         Self {
             color,
             max_green_time,
             max_yellow_time,
-            time
+            time,
         }
     }
     pub fn reset_to_green(&mut self) {

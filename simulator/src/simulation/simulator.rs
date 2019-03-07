@@ -9,9 +9,9 @@ use specs::prelude::*;
 use specs::Dispatcher;
 
 use crate::ressources::clock;
+use crate::ressources::entitiesmanagement::EntitiesManager;
+use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
-use crate::ressources::entitiesmanager::EntitiesManager;
-use crate::ressources::eventsmanager::EventsManager;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
 use crate::simulation::entities::create_entities;

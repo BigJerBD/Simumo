@@ -2,11 +2,11 @@ use specs::Dispatcher;
 use specs::DispatcherBuilder;
 
 use crate::systems::clock;
+use crate::systems::events::EventsHookUpdate;
+use crate::systems::events::EventsUpdate;
 use crate::systems::mobility;
 use crate::systems::renderer::DrawClear;
 use crate::systems::renderer::DrawRectangles;
-use crate::systems::events::EventsHookUpdate;
-use crate::systems::events::EventsUpdate;
 use crate::systems::statics::LightsUpdate;
 use crate::systems::print::PrintSystem;
 use crate::systems::spawners::SpawnerSystem;

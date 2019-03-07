@@ -7,6 +7,15 @@ pub trait Instantiable<'a> {
     fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>);
 }
 
+#[derive(Deserialize, Debug)]
+#[serde(tag = "type")]
+pub enum EntityType {
+    #[serde(rename = "vehicle")]
+    CarEntity(CarEntity),
+    #[serde(rename = "trafficlight")]
+    LightEntity(LightEntity)
+}
+
 /*#[derive(Deserialize)]
 enum EntitiesTypes<'a> {
     CarEntity(CarEntity),

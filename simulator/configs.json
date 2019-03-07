@@ -22,5 +22,41 @@
             {}
         ]
     },
-    "entities": {}
+    "entities": [
+        {
+            "id": { "val": "vehicle01" },
+            "type": "vehicle",
+            "position": { "x": 0.0, "y": 0.0 },
+            "speed": { "val": 2.0 }
+        },
+        {
+            "id": { "val": "vehicle02" },
+            "type": "vehicle",
+            "position": { "x": 0.0, "y": 0.0 },
+            "speed": { "val": 4.0 },
+            "acceleration": { "val": 0.4 }
+        },
+        {
+            "id": { "val": "vehicle03" },
+            "type": "vehicle",
+            "position": { "x": 0.0, "y": 0.0 },
+            "speed": { "val": 1.5 }
+        },
+        {
+            "id": { "val": "trafficlight01" },
+            "type": "trafficlight",
+            "initial_color": "GREEN",
+            "green_time": 5.0,
+            "yellow_time": 1.5,
+            "time": 3.5
+        },
+        {
+            "id": { "val": "trafficlight02" },
+            "type": "trafficlight",
+            "initial_color": "RED",
+            "green_time": 3.0,
+            "yellow_time": 1.0,
+            "time": 0.0
+        }
+    ]
 }

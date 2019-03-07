@@ -54,11 +54,21 @@ pub fn create_entities(world: &mut World) {
     world
         .create_entity()
         .with(Identifier { val: "trafficlight1".to_string() })
-        .with(Light::new(TrafficLightColor::GREEN, 5.0 * S, 1.5 * S, 3.5 * S))
+        .with(Light::new(
+            TrafficLightColor::GREEN,
+            5.0 * S,
+            1.5 * S,
+            3.5 * S,
+        ))
         .build();
     world
         .create_entity()
         .with(Identifier { val: "trafficlight2".to_string() })
-        .with(Light::new(TrafficLightColor::RED, 3.0 * S, 1.0 * S, 0.0 * S))
+        .with(Light::new(
+            TrafficLightColor::RED,
+            3.0 * S,
+            1.0 * S,
+            0.0 * S,
+        ))
         .build();
 }
