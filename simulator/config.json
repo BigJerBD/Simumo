@@ -1,0 +1,81 @@
+{
+    "generals": {
+        "seed": "055c1509-cf2e-499a-9c79-e85ace6e654d"
+    },
+    "map": {
+        "latitude": 45.4000800,
+        "longitude": -71.8990800,
+        "type": "OsmGraph",
+        "zoom": 1200
+    },
+    "systems": {
+        "agents": [
+            {
+                "type": "Accelerating"
+            }
+        ],
+        "clock": {
+            "type": "StandardClockSys"
+        },
+        "controls": [],
+        "loggers": {
+            "directory": "TestPath",
+            "names": [],
+            "type": "CsvLogger",
+            "writers": {}
+        },
+        "mobility": {
+            "type": "StandardMobilitySys"
+        },
+        "physics": {
+            "type": "AccelerationSystem"
+        },
+        "recorders": [
+            {
+                "capture_freq": 0,
+                "type": "CarPosRecSystem"
+            }
+        ]
+    },
+    "entities": [
+        {
+            "id": { "val": "vehicle01" },
+            "type": "vehicle",
+            "position": { "x": 0.0, "y": 0.0 },
+            "speed": { "val": 2.0 }
+        },
+        {
+            "id": { "val": "vehicle02" },
+            "type": "vehicle",
+            "position": { "x": 0.0, "y": 0.0 },
+            "speed": { "val": 4.0 },
+            "acceleration": { "val": 0.4 }
+        },
+        {
+            "id": { "val": "vehicle03" },
+            "type": "vehicle",
+            "position": { "x": 0.0, "y": 0.0 },
+            "speed": { "val": 1.5 }
+        },
+        {
+            "id": { "val": "trafficlight01" },
+            "type": "trafficlight",
+            "light": {
+                "initial_color": "GREEN",
+                "green_time": 5.0,
+                "yellow_time": 1.5,
+                "time": 3.5
+            }
+        },
+        {
+            "id": { "val": "trafficlight02" },
+            "type": "trafficlight",
+            "light": {
+                "initial_color": "RED",
+                "green_time": 3.0,
+                "yellow_time": 1.0,
+                "time": 0.0
+            }
+        }
+    ]
+}
