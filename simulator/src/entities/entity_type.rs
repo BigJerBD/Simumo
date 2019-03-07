@@ -2,13 +2,10 @@ use crate::entities::entity_prelude::*;
 use crate::entities::types::CarEntity;
 use crate::entities::types::LightEntity;
 
-pub trait Creatable {
+pub trait Instantiable<'a> {
     fn create(&self, world: &mut World);
+    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>);
 }
-
-/*pub trait Spawnable {
-    //fn spawn(&mut world: World);
-}*/
 
 /*#[derive(Deserialize)]
 enum EntitiesTypes<'a> {

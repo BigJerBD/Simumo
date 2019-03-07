@@ -5,12 +5,12 @@ use crate::components::constant::Mass;
 use crate::components::types::dynamic::Angle;
 use crate::components::types::dynamic::Acceleration;
 use crate::components::types::controls::EnergyControl;
-use crate::components::types::constant::CarType;
 use crate::components::types::constant::Identifier;
 use crate::components::types::constant::Rectangle;
-use crate::entities::entity_type::Creatable;
+use crate::entities::entity_type::Instantiable;
 use specs::World;
 use specs::Builder;
+use specs::prelude::{Entities, LazyUpdate, Read, Write};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
@@ -28,15 +28,21 @@ pub struct CarEntity {
     //agent_type:
 }
 
-impl Creatable for CarEntity {
+impl<'a> Instantiable<'a> for CarEntity {
     fn create(&self, world: &mut World) {
         world
             .create_entity()
             .with(self.id.clone())
             .with(self.position.clone())
             .with(self.speed.clone())
-            .with(CarType)
             .with(Rectangle { width: 5.0, height: 5.0 })
             .build();
+    }
+    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>) {
+        let entity = entities.create();
+        updater.insert(entity, self.id.clone());
+        updater.insert(entity, self.position.clone());
+        updater.insert(entity, self.speed.clone());
+        updater.insert(entity, Rectangle { width: 5.0, height: 5.0 });
     }
 }
