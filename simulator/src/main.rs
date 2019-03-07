@@ -29,7 +29,7 @@ mod configurations;
 mod entities;
 mod errors;
 mod internal_prelude;
-//mod osmgraph_api;
+mod osmgraph_api;
 mod metrics;
 mod ressources;
 mod simulation;

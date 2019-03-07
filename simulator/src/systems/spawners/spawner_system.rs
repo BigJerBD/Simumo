@@ -24,8 +24,22 @@ impl<'a> System<'a> for SpawnerSystem {
     );
 
     fn run(&mut self, (clock, mut entity_manager, entities, updater): Self::SystemData) {
-        //entity_manager.spawn(EntityType::CarEntity())
-
-        //new_car_entity.spawn(&entities, updater);
+        let json = r#"
+            {
+                "id": "spawnedvehicle",
+                "type": "vehicle",
+                "position": {
+                    "x": 24.0,
+                    "y": 32.0
+                },
+                "speed": {
+                    "val": 6.0
+                },
+                "acceleration": {
+                    "val": 0.5
+                }
+            }"#;
+        let new_car: CarEntity = serde_json::from_str(json).unwrap();
+        new_car.spawn(&entities, updater);
     }
 }
