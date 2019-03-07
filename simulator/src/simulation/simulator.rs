@@ -11,6 +11,7 @@ use uuid::Uuid;
 
 use crate::configurations::map;
 use crate::configurations::Configuration;
+use crate::entities::entity_type::Instantiable;
 //use crate::osmgraph_api::OsmGraphApi;
 //use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::clock;
@@ -19,7 +20,6 @@ use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
-use crate::simulation::entities::create_entities;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -51,7 +51,9 @@ impl<'a, 'b> Simulation<'a, 'b> {
         render_dispatcher.setup(&mut world.res);
 
         //entities
-        create_entities(&mut world);
+        for entity in config.entities.iter() {
+            entity.create(&mut world);
+        }
 
         Self {
             world,

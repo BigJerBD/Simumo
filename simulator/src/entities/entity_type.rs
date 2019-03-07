@@ -16,17 +16,17 @@ pub enum EntityType {
     LightEntity(LightEntity)
 }
 
-/*#[derive(Deserialize)]
-enum EntitiesTypes<'a> {
-    CarEntity(CarEntity),
-    LightEntity(LightEntity)
-}*/
-
-/*impl<'a> Spawnable for EntitiesTypes<'a>{
-    fn spawn(&self, updater: Read<'a, LazyUpdate>){
+impl<'a> Instantiable<'a> for EntityType {
+    fn create(&self, world: &mut World) {
         match self {
-            CarEntity(car) => car.create(),
-            LightEntity(light) => 
+            EntityType::CarEntity(car) => car.create(world),
+            EntityType::LightEntity(light) => light.create(world)
         }
     }
-}*/
+    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>){
+        match self {
+            EntityType::CarEntity(car) => car.spawn(entities, updater),
+            EntityType::LightEntity(light) => light.spawn(entities, updater)
+        }
+    }
+}
