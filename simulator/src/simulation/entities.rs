@@ -9,6 +9,7 @@ use crate::components::constant::Identifier;
 use crate::components::constant::Rectangle;
 
 use dim::si::{M, MPS, S};
+//use crate::components::types::constant::CarType;
 
 pub fn create_entities(world: &mut World) {
     world

@@ -1,7 +1,7 @@
+use dim::si::Second;
+
 use crate::components::type_prelude::*;
 use crate::metrics::Fdim;
-
-use dim::si::Second;
 
 #[simucomponent_base]
 #[derive(Serialize)]
@@ -11,7 +11,6 @@ pub struct LogRecord {
     timestamp: Second<Fdim>,
     record_id: u32,
     record_type: String,
-    #[serde(flatten)]
     log_data: Box<LogWritable>,
 }
 
@@ -36,8 +35,8 @@ impl LogRecord {
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
 fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
+    where
+        S: Serializer,
 {
     //todo make timestamp into a 00:00:00 format
     s.serialize_f64(x.value_unsafe)

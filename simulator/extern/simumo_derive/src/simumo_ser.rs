@@ -1,6 +1,6 @@
-use proc_macro2::{TokenStream, Ident};
-use syn::{parse_macro_input, DeriveInput, Type, Path, DataStruct, Fields};
-use std::vec::Vec;
+use proc_macro2::{Ident, TokenStream};
+use syn::{Fields, Path, Type};
+
 
 /// Generate a block serialized field for a
 /// collection of fields
@@ -17,8 +17,13 @@ pub fn make_ser_block(fields: &Fields, struct_name: &Ident) -> Vec<TokenStream> 
             .any(|att| path_to_str(&att.path) == "simumo_metric"))
         .collect();
 
-    let result: Vec<TokenStream> = izip!(&names, &types, &metric_tags)
-        .map(|(n, t, m)| make_ser_statement(n, t, m, struct_name))
+    let result: Vec<TokenStream> = izip!((0..names.len()), &names, &types, &metric_tags)
+        .map(|(i, name, type_str, metric_tags)| make_ser_statement(
+            name,
+            type_str,
+            metric_tags,
+            i,
+            struct_name))
         .collect();
 
     result
@@ -26,27 +31,49 @@ pub fn make_ser_block(fields: &Fields, struct_name: &Ident) -> Vec<TokenStream> 
 
 /// Generatea serialize statement
 /// if it is a metric from Dimensioned it gets unwraped
-pub fn make_ser_statement(field_name: &Ident, ttype: &String,
-                          is_metric: &bool, struct_name: &Ident)
+pub fn make_ser_statement(field_name: &Ident,
+                          ttype: &String,
+                          is_metric: &bool,
+                          arg_number : usize,
+                          struct_name: &Ident)
                           -> TokenStream {
-    let mut tag = field_name.to_string();
+    //todo :: lot of code repetition, should be reworked
     if *is_metric {
-        tag.push(':');
-        tag.push_str(ttype);
 
         if field_name == struct_name {
-            quote! {state.serialize_field(#tag, &self.0.value_unsafe)?;}
+            quote! {
+            seq.serialize_element(&LogDataEntry::new(
+                String::from(stringify!(#field_name))
+                Some(String::from(#ttype)),
+                self.#arg_number.value_unsafe
+                ))?;
+            }
+        } else {
+            quote! {
+            seq.serialize_element(&LogDataEntry::new(
+                String::from(stringify!(#field_name)),
+                Some(String::from(#ttype)),
+                self.#field_name.value_unsafe
+                ))?;
+            }
         }
-        else{
-            quote! {state.serialize_field(#tag, &self.#field_name.value_unsafe)?;}
-        }
-
     } else {
         if field_name == struct_name {
-            quote! {state.serialize_field(#tag, &self.0)?;}
-        }
-        else {
-            quote! {state.serialize_field(#tag, &self.#field_name)?;}
+            quote! {
+            seq.serialize_element(&LogDataEntry::new(
+                String::from(stringify!(#field_name)),
+                None,
+                self.#arg_number.clone()
+                ))?;
+            }
+        } else {
+            quote! {
+            seq.serialize_element(&LogDataEntry::new(
+                String::from(stringify!(#field_name)),
+                None,
+                self.#field_name.clone()
+                ))?;
+            }
         }
     }
 }
@@ -64,6 +91,7 @@ pub fn type_to_str(unknown_type: &Type) -> String {
 
 /// Get the first element in a identifier path
 /// example path = path::to::selement
+/// todo :: this line is unsafe when we ally complex path to components
 pub fn path_to_str(path: &Path) -> String {
     let segments = &path.segments;
     if segments.len() == 1 {

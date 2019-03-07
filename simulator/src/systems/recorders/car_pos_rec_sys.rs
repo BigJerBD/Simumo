@@ -10,6 +10,13 @@ use crate::systems::sys_prelude::*;
 pub struct CarPosRecSystem {
     capture_freq: f64,
 }
+impl CarPosRecSystem{
+
+    pub fn new(capture_freq:f64)-> Self{
+        Self{ capture_freq }
+    }
+
+}
 impl RecorderSystemType for CarPosRecSystem {}
 impl<'a> System<'a> for CarPosRecSystem {
     type SystemData = (
