@@ -9,10 +9,11 @@ use crate::systems::sys_prelude::*;
 /// specific Logger
 ///
 /// example :: CsvLogging, PrintLogging, JsonLogging, etc.
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 pub struct LoggerSystem<L: LoggerType> {
-    log_directory: String,
-    log_writers: HashMap<String, L>,
+    directory: String,
+    names: Vec<String>,
+    writers: HashMap<String, L>,
 }
 
 //impl<L: LoggerType> SystemDefinition for LoggerSys<L> {
@@ -57,7 +58,7 @@ impl<'a, L: LoggerType> System<'a> for LoggerSystem<L> {
     fn run(&mut self, (_clock, mut records): Self::SystemData) {
         for record in records.join() {
             let logkey = record.get_type();
-            match self.log_writers.get_mut(logkey) {
+            match self.writers.get_mut(logkey) {
                 Some(writer) => writer.write(record),
                 None => panic!("Invalid log type {}", logkey),
             }

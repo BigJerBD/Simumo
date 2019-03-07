@@ -1,20 +1,4 @@
-use crate::rng::seed;
-use uuid::Uuid;
-
-/// Represent the general configuration.
-#[derive(Deserialize, Default)]
-pub struct Generals {
-    pub log_directory: String,
+#[derive(Deserialize)]
+pub struct GeneralConfigurations {
     pub seed: String,
-}
-
-impl Generals {
-    pub fn setup(&self) {
-        if !self.seed.is_empty() {
-            let uuid = Uuid::parse_str(&self.seed).unwrap();
-            seed::M_SEED.lock().unwrap().set(uuid);
-        } else {
-            seed::M_SEED.lock().unwrap().set(Uuid::new_v4());
-        }
-    }
 }

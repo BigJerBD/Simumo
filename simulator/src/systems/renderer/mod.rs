@@ -30,7 +30,6 @@ impl<'a> System<'a> for DrawRectangles {
 
     fn run(&mut self, (pos_dat, rect_dat, mut g_handle, args): Self::SystemData) {
         use specs::Join;
-
         for (pos, rect) in (&pos_dat, &rect_dat).join() {
             use graphics::*;
 
