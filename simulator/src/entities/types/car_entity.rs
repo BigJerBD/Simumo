@@ -8,12 +8,14 @@ use crate::components::types::controls::EnergyControl;
 use crate::components::types::constant::Identifier;
 use crate::components::types::constant::Rectangle;
 use crate::entities::entity_type::Instantiable;
+use crate::metrics::identifier_deserialize;
 use specs::World;
 use specs::Builder;
 use specs::prelude::{Entities, LazyUpdate, Read, Write};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
+    #[serde(deserialize_with = "identifier_deserialize")]
     pub id: Identifier,
     //mass : Mass,
     //length : Length,

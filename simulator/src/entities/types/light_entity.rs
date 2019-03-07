@@ -2,12 +2,14 @@ use crate::components::types::dynamic::Position;
 use crate::components::types::constant::Identifier;
 use crate::components::types::statics::trafficlight::Light;
 use crate::entities::entity_type::Instantiable;
+use crate::metrics::identifier_deserialize;
 use specs::World;
 use specs::Builder;
 use specs::prelude::{Entities, LazyUpdate, Read, Write};
 
 #[derive(Deserialize, Debug)]
 pub struct LightEntity {
+    #[serde(deserialize_with = "identifier_deserialize")]
     pub id: Identifier,
     pub light: Light
 }

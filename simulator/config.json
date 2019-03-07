@@ -39,9 +39,7 @@
     },
     "entities": [
         {
-            "id": {
-                "val": "vehicle01"
-            },
+            "id": "vehicle01",
             "type": "vehicle",
             "position": {
                 "x": 0.0,
@@ -52,9 +50,7 @@
             }
         },
         {
-            "id": {
-                "val": "vehicle02"
-            },
+            "id": "vehicle02",
             "type": "vehicle",
             "position": {
                 "x": 0.0,
@@ -68,9 +64,7 @@
             }
         },
         {
-            "id": {
-                "val": "vehicle03"
-            },
+            "id": "vehicle03",
             "type": "vehicle",
             "position": {
                 "x": 0.0,
@@ -81,9 +75,7 @@
             }
         },
         {
-            "id": {
-                "val": "trafficlight01"
-            },
+            "id": "trafficlight01",
             "type": "trafficlight",
             "light": {
                 "initial_color": "GREEN",
@@ -93,9 +85,7 @@
             }
         },
         {
-            "id": {
-                "val": "trafficlight02"
-            },
+            "id": "trafficlight02",
             "type": "trafficlight",
             "light": {
                 "initial_color": "RED",
