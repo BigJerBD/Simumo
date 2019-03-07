@@ -1,5 +1,4 @@
 pub mod clock;
-pub mod entitiesmanagement;
 pub mod eventsmanagement;
 pub mod generals;
 mod res_prelude;

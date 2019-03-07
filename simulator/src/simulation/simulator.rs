@@ -15,7 +15,6 @@ use crate::entities::entity_type::Instantiable;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::clock;
-use crate::ressources::entitiesmanagement::EntitiesManager;
 use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
 use crate::simulation::dispatchers::make_base_dispatcher;
@@ -106,7 +105,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         }
 
         world.add_resource(s);
-        world.add_resource(EntitiesManager::new());
         world.add_resource(EventsManager::new());
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
         {
