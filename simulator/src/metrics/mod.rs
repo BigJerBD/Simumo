@@ -1,9 +1,11 @@
+use crate::components::constant::Identifier;
 use dim::si::{Kilogram, Meter, MeterPerSecond, MeterPerSecond2, Second};
 use serde::de::Deserialize;
 use serde::Deserializer;
 
 pub type Fdim = f64;
 pub type Idim = i64;
+pub type Id = String;
 
 // Function to open file instead of serializing it
 pub fn fdeserialize<'de, D>(deserializer: D) -> Result<Fdim, D::Error>
@@ -11,6 +13,13 @@ where
     D: Deserializer<'de>,
 {
     Fdim::deserialize(deserializer)
+}
+
+pub fn identifier_deserialize<'de, D>(deserializer: D) -> Result<Identifier, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Ok(Identifier(Id::deserialize(deserializer)?))
 }
 
 pub fn ideserialize<'de, D>(deserializer: D) -> Result<Idim, D::Error>

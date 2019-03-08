@@ -1,7 +1,7 @@
 use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
 use crate::components::log_record::LogRecord;
-use crate::ressources::clock;
+use crate::ressources;
 use crate::systems::recorders::RecorderSystemType;
 use crate::systems::sys_prelude::*;
 
@@ -20,7 +20,7 @@ impl CarPosRecSystem{
 impl RecorderSystemType for CarPosRecSystem {}
 impl<'a> System<'a> for CarPosRecSystem {
     type SystemData = (
-        Read<'a, clock::Clock>,
+        Read<'a, ressources::Clock>,
         Entities<'a>,
         ReadStorage<'a, CarType>,
         ReadStorage<'a, Position>,

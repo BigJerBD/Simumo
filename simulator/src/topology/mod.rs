@@ -1,4 +1,4 @@
-mod curve;
+pub mod curve;
 mod road;
 mod road_connector;
 

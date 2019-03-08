@@ -4,17 +4,20 @@ use specs::DispatcherBuilder;
 use crate::systems::clock;
 use crate::systems::events::EventsHookUpdate;
 use crate::systems::events::EventsUpdate;
-use crate::systems::loggers::logger_sys::DirectoryStructure;
-use crate::systems::loggers::LoggerSystem;
-use crate::systems::loggers::types::NdJsonLogger;
+//suse crate::systems::loggers::logger_sys::DirectoryStructure;
+//use crate::systems::loggers::LoggerSystem;
+//use crate::systems::loggers::types::NdJsonLogger;
 use crate::systems::mobility;
-use crate::systems::recorders;
+use crate::systems::print::PrintSystem;
+//use crate::systems::recorders;
 use crate::systems::renderer::DrawClear;
 use crate::systems::renderer::DrawRectangles;
+use crate::systems::spawners::SpawnerSystem;
 use crate::systems::statics::LightsUpdate;
 
 pub fn make_base_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()
+        .with(SpawnerSystem, "spawner_system", &[])
         .with(EventsHookUpdate, "eventshook_system", &[])
         .with(LightsUpdate, "color_update", &[])
         //.with(systems::logging::print_sys::PrintLog, "print", &[])
@@ -32,6 +35,7 @@ pub fn make_base_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
         .with_barrier()
         .with(EventsUpdate, "events_update", &[])
         .with(clock::StandardClockSystem, "clock_sys", &[])
+        .with(PrintSystem, "print_sys", &[])
         .build()
 }
 

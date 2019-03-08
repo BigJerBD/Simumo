@@ -1,14 +1,12 @@
 #![allow(dead_code)]
-extern crate argparse;
 #[macro_use]
 extern crate erased_serde;
-#[macro_use]
-extern crate lazy_static;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate specs_derive;
 
+extern crate argparse;
 extern crate csv;
 extern crate dimensioned as dim;
 extern crate glutin_window;
@@ -26,28 +24,24 @@ extern crate typeinfo_derive;
 extern crate uuid;
 
 mod command_line;
-mod topology;
-mod types;
-
 mod components;
 mod configurations;
+mod entities;
 mod errors;
 mod internal_prelude;
 mod metrics;
 mod osmgraph_api;
 mod ressources;
-mod rng;
 mod simulation;
 mod systems;
+mod topology;
+mod types;
 mod util;
 
 fn main() {
-    //let args = command_line::CommandLineArguments::parse();
-    //let config = Configuration::from_path(&args.configuration_path).unwrap();
-    //config.setup();
-    //
-    //if args.verbose {}
+    let args = command_line::CommandLineArguments::parse();
+    let config = configurations::Configuration::from_path(&args.configuration_path).unwrap();
 
-    let mut simulation = simulation::Simulation::new();
+    let mut simulation = simulation::Simulation::from_config(config);
     simulation.run_simulation();
 }

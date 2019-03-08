@@ -91,7 +91,7 @@ pub fn type_to_str(unknown_type: &Type) -> String {
 
 /// Get the first element in a identifier path
 /// example path = path::to::selement
-/// todo :: this line is unsafe when we ally complex path to components
+/// todo :: this line is unsafe when we use complex path to components
 pub fn path_to_str(path: &Path) -> String {
     let segments = &path.segments;
     if segments.len() == 1 {

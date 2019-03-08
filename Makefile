@@ -20,8 +20,7 @@ build_simumap: build_dir build_venv
 	@echo "Building Simumap"
 	scripts/pip_install.sh build/venv/bin/activate -r simumap/requirements.txt
 	scripts/pip_install.sh build/venv/bin/activate ./simumap
-
-
+	echo "export PYTHONPATH='$(PYTHONPATH):`pwd`/simumap/simumap'" >> build/venv/bin/activate
 build_vizualizer: build_dir
 	@echo "Building Visualizer"
 
@@ -41,6 +40,7 @@ dev_venv:
 
 	scripts/pip_install.sh venv/bin/activate -r simumap/requirements.txt
 	scripts/pip_install.sh venv/bin/activate ./simumap
+	echo "export PYTHONPATH='$(PYTHONPATH):`pwd`/simumap/simumap'" >> venv/bin/activate
 
 clean: dev_clean build_clean
 
