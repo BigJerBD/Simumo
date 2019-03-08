@@ -6,7 +6,8 @@ use crate::systems::events::EventsHookUpdate;
 use crate::systems::events::EventsUpdate;
 use crate::systems::mobility;
 use crate::systems::renderer::DrawClear;
-use crate::systems::renderer::DrawRectangles;
+use crate::systems::renderer::DrawMap;
+use crate::systems::renderer::DrawVehicles;
 use crate::systems::statics::LightsUpdate;
 use crate::systems::print::PrintSystem;
 use crate::systems::spawners::SpawnerSystem;
@@ -23,13 +24,14 @@ pub fn make_base_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
         .with_barrier()
         .with(EventsUpdate, "events_update", &[])
         .with(clock::StandardClockSystem, "clock_sys", &[])
-        .with(PrintSystem, "print_sys", &[])
+        //.with(PrintSystem, "print_sys", &[])
         .build()
 }
 
 pub fn make_render_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()
         .with_thread_local(DrawClear)
-        .with_thread_local(DrawRectangles)
+        .with_thread_local(DrawMap)
+        .with_thread_local(DrawVehicles)
         .build()
 }
