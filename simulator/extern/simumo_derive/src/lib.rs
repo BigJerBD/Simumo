@@ -6,9 +6,8 @@ extern crate quote;
 extern crate itertools;
 extern crate syn;
 
-use proc_macro2::{TokenStream, Ident, Span};
-use syn::{parse_macro_input, DeriveInput, Type, Path, Pat};
-use std::vec::Vec;
+use proc_macro2::TokenStream;
+use syn::DeriveInput;
 
 mod simumo_ser;
 

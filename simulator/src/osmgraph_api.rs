@@ -5,6 +5,8 @@ use cpython::PyErr;
 use cpython::PyObject;
 use cpython::{PyDict, Python};
 
+type NodeId = u64;
+
 /// Osm Graph Api  Trait Interface
 pub trait OsmGraphApi {
     /// Specifies the error type given by the Api implementation
@@ -20,11 +22,11 @@ pub trait OsmGraphApi {
     fn query_graph(lon: f64, lat: f64, zoom: i64) -> Result<Box<Self>, Self::ErrorType>;
 
     /// Get the nodes of the queried graph
-    fn get_nodes(&self) -> Result<HashMap<i64, (f64, f64)>, Self::ErrorType>;
+    fn get_nodes(&self) -> Result<HashMap<NodeId, (f64, f64)>, Self::ErrorType>;
     /// Get the adjacendies of the queried graph
-    fn get_adjacencies(&self) -> Result<HashMap<i64, Vec<i64>>, Self::ErrorType>;
+    fn get_adjacencies(&self) -> Result<HashMap<NodeId, Vec<NodeId>>, Self::ErrorType>;
     /// Get the edges of the queried graph
-    fn get_edges(&self) -> Result<HashMap<i64, i64>, Self::ErrorType>;
+    fn get_edges(&self) -> Result<HashMap<NodeId, NodeId>, Self::ErrorType>;
 }
 
 /// Python OsmGraphAPI
@@ -44,7 +46,7 @@ impl PythonOsmGraphApi {
     const MODULE_NAME: &'static str = "simumap";
 
     /// calls a module that does a web query with overpy ( Overpass Python API)
-    fn target_location(&self, lon: f64, lat: f64, zoom: i64) -> Result<(), PyErr> {
+    pub fn target_location(&self, lon: f64, lat: f64, zoom: i64) -> Result<(), PyErr> {
         let py = self.gil.python();
         py.eval(
             &format!(
@@ -79,7 +81,7 @@ impl OsmGraphApi for PythonOsmGraphApi {
         Ok(Box::new(result))
     }
 
-    fn get_nodes(&self) -> Result<HashMap<i64, (f64, f64)>, PyErr> {
+    fn get_nodes(&self) -> Result<HashMap<NodeId, (f64, f64)>, PyErr> {
         let py = self.gil.python();
         let res: PyDict = py
             .eval(
@@ -92,14 +94,14 @@ impl OsmGraphApi for PythonOsmGraphApi {
         res.items(py)
             .iter()
             .map(|x| {
-                let id: i64 = x.0.extract(py)?;
+                let id: NodeId = x.0.extract(py)?;
                 let val: (f64, f64) = x.1.extract(py)?;
                 Ok((id, val))
             })
             .collect::<Result<HashMap<_, _>, _>>()
     }
 
-    fn get_adjacencies(&self) -> Result<HashMap<i64, Vec<i64>>, Self::ErrorType> {
+    fn get_adjacencies(&self) -> Result<HashMap<NodeId, Vec<NodeId>>, Self::ErrorType> {
         let py = self.gil.python();
         let res: PyDict = py
             .eval(
@@ -112,14 +114,14 @@ impl OsmGraphApi for PythonOsmGraphApi {
         res.items(py)
             .iter()
             .map(|x| {
-                let beg: i64 = x.0.extract(py)?;
-                let end: Vec<i64> = x.1.extract(py)?;
+                let beg: NodeId = x.0.extract(py)?;
+                let end: Vec<NodeId> = x.1.extract(py)?;
                 Ok((beg, end))
             })
             .collect::<Result<HashMap<_, _>, _>>()
     }
 
-    fn get_edges(&self) -> Result<HashMap<i64, i64>, PyErr> {
+    fn get_edges(&self) -> Result<HashMap<NodeId, NodeId>, PyErr> {
         let py = self.gil.python();
         let res: Vec<(PyObject, PyObject)> = py
             .eval(
@@ -131,8 +133,8 @@ impl OsmGraphApi for PythonOsmGraphApi {
 
         res.iter()
             .map(|x| {
-                let beg: i64 = x.0.extract(py)?;
-                let end: i64 = x.1.extract(py)?;
+                let beg: NodeId = x.0.extract(py)?;
+                let end: NodeId = x.1.extract(py)?;
                 Ok((beg, end))
             })
             .collect::<Result<HashMap<_, _>, _>>()
