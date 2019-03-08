@@ -1,5 +1,4 @@
 use crate::components::constant::Identifier;
-use crate::components::constant::Rectangle;
 use crate::components::dynamic::Position;
 use crate::components::dynamic::Speed;
 use crate::entities::types::CarEntity;

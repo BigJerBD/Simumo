@@ -6,9 +6,11 @@ use crate::components::types::dynamic::Angle;
 use crate::components::types::dynamic::Acceleration;
 use crate::components::types::controls::EnergyControl;
 use crate::components::types::constant::Identifier;
-use crate::components::types::constant::Rectangle;
+use crate::components::types::constant::Drawer;
 use crate::entities::entity_type::Instantiable;
 use crate::metrics::identifier_deserialize;
+use crate::systems::renderer::drawableshape::DrawableShape;
+use crate::systems::renderer::drawableshape::Rectangle;
 use specs::World;
 use specs::Builder;
 use specs::prelude::{Entities, LazyUpdate, Read, Write};
@@ -37,7 +39,9 @@ impl<'a> Instantiable<'a> for CarEntity {
             .with(self.id.clone())
             .with(self.position.clone())
             .with(self.speed.clone())
-            .with(Rectangle { width: 5.0, height: 5.0 })
+            .with(Drawer { 
+                figure: DrawableShape::Rectangle(Rectangle::new(5.0, 5.0))
+            })
             .build();
     }
     fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>) {
@@ -45,6 +49,8 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(entity, self.id.clone());
         updater.insert(entity, self.position.clone());
         updater.insert(entity, self.speed.clone());
-        updater.insert(entity, Rectangle { width: 5.0, height: 5.0 });
+        updater.insert(entity, Drawer {
+            figure: DrawableShape::Rectangle(Rectangle::new(5.0, 5.0))
+        });
     }
 }
