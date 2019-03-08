@@ -1,4 +1,4 @@
-use argparse::{ArgumentParser, Store, StoreTrue};
+use argparse::{ArgumentParser, Store};
 
 #[derive(Default)]
 pub struct CommandLineArguments {

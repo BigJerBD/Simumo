@@ -13,20 +13,20 @@ pub enum EntityType {
     #[serde(rename = "vehicle")]
     CarEntity(CarEntity),
     #[serde(rename = "trafficlight")]
-    LightEntity(LightEntity)
+    LightEntity(LightEntity),
 }
 
 impl<'a> Instantiable<'a> for EntityType {
     fn create(&self, world: &mut World) {
         match self {
             EntityType::CarEntity(car) => car.create(world),
-            EntityType::LightEntity(light) => light.create(world)
+            EntityType::LightEntity(light) => light.create(world),
         }
     }
-    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>){
+    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>) {
         match self {
             EntityType::CarEntity(car) => car.spawn(entities, updater),
-            EntityType::LightEntity(light) => light.spawn(entities, updater)
+            EntityType::LightEntity(light) => light.spawn(entities, updater),
         }
     }
 }
