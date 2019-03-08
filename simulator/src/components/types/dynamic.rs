@@ -2,7 +2,7 @@ use crate::components::type_prelude::*;
 use crate::metrics::Fdim;
 
 use dim::si::{Meter, MeterPerSecond, MeterPerSecond2};
-use dim::si::{M, MPS, MPS2, S};
+use dim::si::{M, MPS, MPS2};
 
 #[simucomponent_data]
 #[storage(VecStorage)]
@@ -17,7 +17,10 @@ pub struct Position {
 
 impl Default for Position {
     fn default() -> Self {
-        Self { x: 0.0 * M, y: 0.0 * M }
+        Self {
+            x: 0.0 * M,
+            y: 0.0 * M,
+        }
     }
 }
 
