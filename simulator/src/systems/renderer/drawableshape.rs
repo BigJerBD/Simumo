@@ -2,7 +2,7 @@ use opengl_graphics::GlGraphics;
 use graphics::Context;
 use graphics::rectangle;
 use graphics::Transformed;
-use crate::systems::renderer::color::Color;
+use crate::systems::renderer::Color;
 
 pub trait Drawable {
     fn draw(&self, x: f64, y: f64, color: Color, c: Context, gl: &mut GlGraphics);

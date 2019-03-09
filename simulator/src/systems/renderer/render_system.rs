@@ -18,7 +18,7 @@ impl<'a> System<'a> for DrawClear {
 
     fn run(&mut self, (mut g_handle, args): Self::SystemData) {
         g_handle.draw(args.viewport(), |_, gl| {
-            clear(Color::LIGHTGRAY.get(), gl);
+            clear(Color::GREENGRASS.get(), gl);
         });
     }
 }
@@ -34,9 +34,9 @@ impl<'a> System<'a> for DrawMap {
         let laneGraph: LaneGraph = LaneGraph::new(
             [
                 (1u64, IntersectionData::new(10.0, 10.0)),
-                (2u64, IntersectionData::new(10.0, 24.0)),
-                (3u64, IntersectionData::new(30.0, 17.0)),
-                (4u64, IntersectionData::new(40.0, 17.0)),
+                (2u64, IntersectionData::new(50.0, 240.0)),
+                (3u64, IntersectionData::new(150.0, 100.0)),
+                (4u64, IntersectionData::new(400.0, 100.0)),
             ]
             .to_vec()
             .into_iter(),
@@ -47,19 +47,17 @@ impl<'a> System<'a> for DrawMap {
             ],
         );
         //println!("{:#?}", laneGraph.get_nodes());
+        const zoom_factor: f64 = 1.0;
         for (nodeid, node) in laneGraph.get_nodes() {
-            g_handle.draw(args.viewport(), |c, gl| {
-                let transform = c
-                    .transform
-                    .trans(node.position.0 * 10., node.position.1 * 10.)
-                    .scale(5.0, 5.0);
-                rectangle(Color::BLACK.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
-                //drawer.figure.draw(position.x.value_unsafe * 10., position.y.value_unsafe * 10., Color::RED, c, gl);
-            });
             let mut voisins: Neighbors<'_, u64, petgraph::Directed> = laneGraph.graph.neighbors(*nodeid);
             while let Some(voisin) = voisins.next() {
                 let lane: &LaneData = laneGraph.lane_between((*nodeid, voisin));
-                println!("{:#?}, {:#?}: {:#?}", nodeid, voisin, lane.width);
+                let laneWidth: f64 = lane.width.unwrap().value_unsafe;
+                let position_voisin: (f64, f64) = laneGraph.intersection(voisin).position;
+                
+                g_handle.draw(args.viewport(), |c, gl| {
+                    draw_rectangle_between_two_points(node.position, position_voisin, laneWidth, c, gl);
+                });
             }
         }
     }
@@ -81,4 +79,17 @@ impl<'a> System<'a> for DrawVehicles {
             });
         }
     }
+}
+
+fn draw_rectangle_between_two_points(p1: (f64, f64), p2: (f64, f64), width: f64, c: Context, gl: &mut GlGraphics) {
+    let rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
+    let rectangle_width: f64 = width;
+    let rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
+
+    let transform = c
+        .transform
+        .trans(p1.0, p1.1)
+        .rot_rad(rectangle_angle)
+        .scale(rectangle_length, rectangle_width * 10.0);
+    rectangle(Color::GRAY.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
 }
