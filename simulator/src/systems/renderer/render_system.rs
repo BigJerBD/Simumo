@@ -12,6 +12,8 @@ use crate::systems::renderer::drawableshape::Drawable;
 use petgraph::graphmap::Neighbors;
 use dim::si::{M};
 
+const zoom_factor: f64 = 2.0;
+
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
     type SystemData = (WriteExpect<'a, GlGraphics>, ReadExpect<'a, RenderArgs>);
@@ -46,17 +48,23 @@ impl<'a> System<'a> for DrawMap {
                 (3, 4, LaneData::new(Some(3.5 * M), None, None)),
             ],
         );
-        //println!("{:#?}", laneGraph.get_nodes());
-        const zoom_factor: f64 = 1.0;
+
         for (nodeid, node) in laneGraph.get_nodes() {
+            let position_node: (f64, f64) = node.position;
             let mut voisins: Neighbors<'_, u64, petgraph::Directed> = laneGraph.graph.neighbors(*nodeid);
             while let Some(voisin) = voisins.next() {
                 let lane: &LaneData = laneGraph.lane_between((*nodeid, voisin));
-                let laneWidth: f64 = lane.width.unwrap().value_unsafe;
+                let lane_width: f64 = lane.width.unwrap().value_unsafe;
                 let position_voisin: (f64, f64) = laneGraph.intersection(voisin).position;
                 
                 g_handle.draw(args.viewport(), |c, gl| {
-                    draw_rectangle_between_two_points(node.position, position_voisin, laneWidth, c, gl);
+                    draw_lane_between_two_points(
+                        (position_node.0 * zoom_factor, position_node.1 * zoom_factor),
+                        (position_voisin.0 * zoom_factor, position_voisin.1 * zoom_factor),
+                        lane_width,
+                        Color::GRAY,
+                        c, gl
+                    );
                 });
             }
         }
@@ -75,13 +83,24 @@ impl<'a> System<'a> for DrawVehicles {
     fn run(&mut self, (positions, drawers, mut g_handle, args): Self::SystemData) {
         for (position, drawer) in (&positions, &drawers).join() {
             g_handle.draw(args.viewport(), |c, gl| {
-                drawer.figure.draw(position.x.value_unsafe * 10., position.y.value_unsafe * 10., Color::RED, c, gl);
+                drawer.figure.draw(
+                    position.x.value_unsafe * zoom_factor,
+                    position.y.value_unsafe * zoom_factor,
+                    Color::BLACK,
+                    c, gl
+                );
             });
         }
     }
 }
 
-fn draw_rectangle_between_two_points(p1: (f64, f64), p2: (f64, f64), width: f64, c: Context, gl: &mut GlGraphics) {
+fn draw_lane_between_two_points(
+    p1: (f64, f64),
+    p2: (f64, f64),
+    width: f64,
+    color: Color,
+    c: Context, gl: &mut GlGraphics
+) {
     let rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
     let rectangle_width: f64 = width;
     let rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
@@ -90,6 +109,6 @@ fn draw_rectangle_between_two_points(p1: (f64, f64), p2: (f64, f64), width: f64,
         .transform
         .trans(p1.0, p1.1)
         .rot_rad(rectangle_angle)
-        .scale(rectangle_length, rectangle_width * 10.0);
-    rectangle(Color::GRAY.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
+        .scale(rectangle_length, rectangle_width * zoom_factor);
+    rectangle(color.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
 }

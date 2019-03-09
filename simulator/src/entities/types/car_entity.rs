@@ -40,7 +40,7 @@ impl<'a> Instantiable<'a> for CarEntity {
             .with(self.position.clone())
             .with(self.speed.clone())
             .with(Drawer { 
-                figure: DrawableShape::Rectangle(Rectangle::new(5.0, 5.0))
+                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0))
             })
             .build();
     }
@@ -50,7 +50,7 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(entity, self.position.clone());
         updater.insert(entity, self.speed.clone());
         updater.insert(entity, Drawer {
-            figure: DrawableShape::Rectangle(Rectangle::new(5.0, 5.0))
+            figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0))
         });
     }
 }
