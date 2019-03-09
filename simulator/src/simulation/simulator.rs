@@ -22,6 +22,7 @@ use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
+//use std::process::Command;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -113,9 +114,9 @@ impl<'a, 'b> Simulation<'a, 'b> {
         {
             let mut events_manager = world.write_resource::<EventsManager>();
             // Here, for example, trafficlight2 observes trafficlight1
-            events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+            events_manager.connect("trafficlight01".to_string(), "trafficlight02".to_string());
             // And here, trafficlight1 observes trafficlight2
-            events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
+            events_manager.connect("trafficlight02".to_string(), "trafficlight01".to_string());
         }
         world.add_resource(clock::Clock::new(0.25 * S));
         world.add_resource(generals::EndTime { val: 12.5 * S });
@@ -124,9 +125,9 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(LaneGraph::new(
             [
                 (1, IntersectionData::new(10.0, 10.0)),
-                (2, IntersectionData::new(10.0, 30.0)),
-                (3, IntersectionData::new(20.0, 20.0)),
-                (4, IntersectionData::new(30.0, 20.0)),
+                (2, IntersectionData::new(50.0, 240.0)),
+                (3, IntersectionData::new(150.0, 100.0)),
+                (4, IntersectionData::new(400.0, 100.0)),
             ]
             .to_vec()
             .into_iter(),

@@ -82,6 +82,10 @@
                 "max_green_time": 5.0,
                 "max_yellow_time": 1.5,
                 "time": 3.5
+            },
+            "position": {
+                "x": 150.0,
+                "y": 100.0
             }
         },
         {
@@ -92,6 +96,10 @@
                 "max_green_time": 3.0,
                 "max_yellow_time": 1.0,
                 "time": 0.0
+            },
+            "position": {
+                "x": 400.0,
+                "y": 100.0
             }
         }
     ]

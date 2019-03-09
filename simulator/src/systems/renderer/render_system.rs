@@ -1,9 +1,11 @@
 use opengl_graphics::GlGraphics;
 use piston::input::RenderArgs;
-use specs::{ReadExpect, ReadStorage, System, Join, WriteExpect};
+use specs::{Read, ReadExpect, ReadStorage, System, Join, WriteExpect};
 use graphics::*;
 use crate::components::constant::Drawer;
 use crate::components::dynamic::Position;
+use crate::components::dynamic::Speed;
+use crate::components::statics::trafficlight::Light;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
@@ -33,7 +35,8 @@ impl<'a> System<'a> for DrawMap {
     );
 
     fn run(&mut self, (mut g_handle, args): Self::SystemData) {
-        let laneGraph: LaneGraph = LaneGraph::new(
+        // TODO: Normalment, ici, on lirait le graph avec osmgraph_api
+        let lane_graph: LaneGraph = LaneGraph::new(
             [
                 (1u64, IntersectionData::new(10.0, 10.0)),
                 (2u64, IntersectionData::new(50.0, 240.0)),
@@ -49,13 +52,13 @@ impl<'a> System<'a> for DrawMap {
             ],
         );
 
-        for (nodeid, node) in laneGraph.get_nodes() {
+        for (nodeid, node) in lane_graph.get_nodes() {
             let position_node: (f64, f64) = node.position;
-            let mut voisins: Neighbors<'_, u64, petgraph::Directed> = laneGraph.graph.neighbors(*nodeid);
+            let mut voisins: Neighbors<'_, u64, petgraph::Directed> = lane_graph.graph.neighbors(*nodeid);
             while let Some(voisin) = voisins.next() {
-                let lane: &LaneData = laneGraph.lane_between((*nodeid, voisin));
+                let lane: &LaneData = lane_graph.lane_between((*nodeid, voisin));
                 let lane_width: f64 = lane.width.unwrap().value_unsafe;
-                let position_voisin: (f64, f64) = laneGraph.intersection(voisin).position;
+                let position_voisin: (f64, f64) = lane_graph.intersection(voisin).position;
                 
                 g_handle.draw(args.viewport(), |c, gl| {
                     draw_lane_between_two_points(
@@ -71,17 +74,42 @@ impl<'a> System<'a> for DrawMap {
     }
 }
 
-pub struct DrawVehicles;
-impl<'a> System<'a> for DrawVehicles {
+pub struct DrawTrafficLights;
+impl<'a> System<'a> for DrawTrafficLights {
     type SystemData = (
         ReadStorage<'a, Position>,
+        ReadStorage<'a, Light>,
         ReadStorage<'a, Drawer>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
     );
 
-    fn run(&mut self, (positions, drawers, mut g_handle, args): Self::SystemData) {
-        for (position, drawer) in (&positions, &drawers).join() {
+    fn run(&mut self, (positions, lights, drawers, mut g_handle, args): Self::SystemData) {
+        for (position, light, drawer) in (&positions, &lights, &drawers).join() {
+            g_handle.draw(args.viewport(), |c, gl| {
+                drawer.figure.draw(
+                    position.x.value_unsafe * zoom_factor,
+                    position.y.value_unsafe * zoom_factor,
+                    light.color.get_rendering_color(),
+                    c, gl
+                );
+            });
+        }
+    }
+}
+
+pub struct DrawVehicles;
+impl<'a> System<'a> for DrawVehicles {
+    type SystemData = (
+        ReadStorage<'a, Position>,
+        ReadStorage<'a, Speed>,
+        ReadStorage<'a, Drawer>,
+        WriteExpect<'a, GlGraphics>,
+        ReadExpect<'a, RenderArgs>,
+    );
+
+    fn run(&mut self, (positions, speeds, drawers, mut g_handle, args): Self::SystemData) {
+        for (position, speed, drawer) in (&positions, &speeds, &drawers).join() {
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(
                     position.x.value_unsafe * zoom_factor,

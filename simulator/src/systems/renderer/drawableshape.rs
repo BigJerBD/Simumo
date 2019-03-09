@@ -1,5 +1,6 @@
 use opengl_graphics::GlGraphics;
 use graphics::Context;
+use graphics::ellipse;
 use graphics::rectangle;
 use graphics::Transformed;
 use crate::systems::renderer::Color;
@@ -50,19 +51,23 @@ impl Drawable for Rectangle {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Circle {
-    width: f64,
-    height: f64
+    radius: f64
+}
+
+impl Circle {
+    pub fn new(radius: f64) -> Self {
+        Self {
+            radius
+        }
+    }
 }
 
 impl Drawable for Circle {
     fn draw(&self, x: f64, y: f64, color: Color, c: Context, gl: &mut GlGraphics) {
-        /*const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-        let square = rectangle::square(0.0, 0.0, 1.0);
         let transform = c
             .transform
-            .trans(pos.x.value_unsafe * 10., pos.y.value_unsafe * 10.)
-            .scale(self.width, self.height);
-
-        rectangle(RED, square, transform, gl);*/
+            .trans(x, y)
+            .scale(self.radius, self.radius);
+        ellipse(color.get(), ellipse::circle(0.0, 0.0, 1.0), transform, gl);
     }
 }

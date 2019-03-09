@@ -7,6 +7,7 @@ use crate::systems::events::EventsUpdate;
 use crate::systems::mobility;
 use crate::systems::renderer::DrawClear;
 use crate::systems::renderer::DrawMap;
+use crate::systems::renderer::DrawTrafficLights;
 use crate::systems::renderer::DrawVehicles;
 use crate::systems::statics::LightsUpdate;
 use crate::systems::print::PrintSystem;
@@ -32,6 +33,7 @@ pub fn make_render_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()
         .with_thread_local(DrawClear)
         .with_thread_local(DrawMap)
+        .with_thread_local(DrawTrafficLights)
         .with_thread_local(DrawVehicles)
         .build()
 }

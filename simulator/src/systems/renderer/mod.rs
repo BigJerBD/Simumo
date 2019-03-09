@@ -7,3 +7,4 @@ mod render_system;
 pub use render_system::DrawClear;
 pub use render_system::DrawMap;
 pub use render_system::DrawVehicles;
+pub use render_system::DrawTrafficLights;
