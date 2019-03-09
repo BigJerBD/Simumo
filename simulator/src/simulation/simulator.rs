@@ -1,3 +1,4 @@
+use dim::si::M;
 use dim::si::S;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
@@ -132,9 +133,9 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .to_vec()
             .into_iter(),
             &[
-                (1, 3, LaneData::new(None, None, None)),
-                (2, 3, LaneData::new(None, None, None)),
-                (3, 4, LaneData::new(None, None, None)),
+                (1, 3, LaneData::new(Some(3.0 * M), None, None)),
+                (2, 3, LaneData::new(Some(2.5 * M), None, None)),
+                (3, 4, LaneData::new(Some(3.5 * M), None, None)),
             ],
         ));
     }

@@ -12,7 +12,6 @@ use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::Color;
 use crate::systems::renderer::drawableshape::Drawable;
 use petgraph::graphmap::Neighbors;
-use dim::si::{M};
 
 const zoom_factor: f64 = 2.0;
 
@@ -30,28 +29,12 @@ impl<'a> System<'a> for DrawClear {
 pub struct DrawMap;
 impl<'a> System<'a> for DrawMap {
     type SystemData = (
+        ReadExpect<'a, LaneGraph>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
     );
 
-    fn run(&mut self, (mut g_handle, args): Self::SystemData) {
-        // TODO: Normalment, ici, on lirait le graph avec osmgraph_api
-        let lane_graph: LaneGraph = LaneGraph::new(
-            [
-                (1u64, IntersectionData::new(10.0, 10.0)),
-                (2u64, IntersectionData::new(50.0, 240.0)),
-                (3u64, IntersectionData::new(150.0, 100.0)),
-                (4u64, IntersectionData::new(400.0, 100.0)),
-            ]
-            .to_vec()
-            .into_iter(),
-            &[
-                (1, 3, LaneData::new(Some(3.0 * M), None, None)),
-                (2, 3, LaneData::new(Some(2.5 * M), None, None)),
-                (3, 4, LaneData::new(Some(3.5 * M), None, None)),
-            ],
-        );
-
+    fn run(&mut self, (lane_graph, mut g_handle, args): Self::SystemData) {
         for (nodeid, node) in lane_graph.get_nodes() {
             let position_node: (f64, f64) = node.position;
             let mut voisins: Neighbors<'_, u64, petgraph::Directed> = lane_graph.graph.neighbors(*nodeid);
