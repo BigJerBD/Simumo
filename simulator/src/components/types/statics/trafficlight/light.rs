@@ -1,7 +1,7 @@
 extern crate specs;
-use crate::metrics::Fdim;
 use crate::metrics::second_deserialize;
 use crate::systems::renderer::Color;
+use crate::metrics::Fdim;
 use dim::si::{Second, S};
 use specs::prelude::*;
 use typeinfo::TypeInfo;

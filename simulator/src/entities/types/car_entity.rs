@@ -1,19 +1,15 @@
-use crate::components::types::dynamic::Position;
-use crate::components::types::constant::Length;
-use crate::components::types::dynamic::Speed;
-use crate::components::constant::Mass;
-use crate::components::types::dynamic::Angle;
-use crate::components::types::dynamic::Acceleration;
-use crate::components::types::controls::EnergyControl;
 use crate::components::types::constant::Identifier;
 use crate::components::types::constant::Drawer;
+use crate::components::types::dynamic::Acceleration;
+use crate::components::types::dynamic::Position;
+use crate::components::types::dynamic::Speed;
 use crate::entities::entity_type::Instantiable;
 use crate::metrics::identifier_deserialize;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
 use specs::World;
+use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
-use specs::prelude::{Entities, LazyUpdate, Read, Write};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
@@ -49,8 +45,11 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(entity, self.id.clone());
         updater.insert(entity, self.position.clone());
         updater.insert(entity, self.speed.clone());
-        updater.insert(entity, Drawer {
-            figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0))
-        });
+        updater.insert(
+            entity,
+            Drawer {
+                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0))
+            }
+        );
     }
 }

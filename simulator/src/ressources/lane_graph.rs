@@ -75,14 +75,6 @@ impl LaneGraph {
         Self::new(nodes.into_iter(), edges.into_iter())
     }
 
-    pub fn get_edges() {
-        
-    }
-
-    pub fn get_nodes(&self) -> &HashMap<NodeId, IntersectionData> {
-        &self.intersections
-    }
-
     /// Take the entity in front of the lane `from`
     /// and put it at the back of the lane `to`
     ///
@@ -106,6 +98,16 @@ impl LaneGraph {
     }
 
     // Method to access
+
+    pub fn intersections(&self) -> &HashMap<NodeId, IntersectionData> {
+        &self.intersections
+    }
+    pub fn lanes(&self) -> &DiGraphMap<NodeId, LaneData> {
+        &self.graph
+    }
+    pub fn entity_locations(&self) -> &HashMap<EntityId, (NodeId, NodeId)> {
+        &self.entity_locations
+    }
 
     /// get a reference of the intersection
     ///
@@ -277,9 +279,9 @@ impl LaneData {
 /// * `position` - position in longitude latitude
 /// * `contained_entity` - Index referencing to the contained entity
 ///
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct IntersectionData {
-    pub position: (f64, f64),
+    position: (f64, f64),
     contained_entity: Option<EntityId>,
 }
 
@@ -289,6 +291,10 @@ impl IntersectionData {
             position: (lon, lat),
             contained_entity: None,
         }
+    }
+
+    pub fn position(&self) -> (f64, f64) {
+        self.position
     }
 }
 

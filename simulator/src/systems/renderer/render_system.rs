@@ -1,19 +1,18 @@
 use opengl_graphics::GlGraphics;
 use piston::input::RenderArgs;
-use specs::{Read, ReadExpect, ReadStorage, System, Join, WriteExpect};
+use specs::{ReadExpect, ReadStorage, System, Join, WriteExpect};
 use graphics::*;
 use crate::components::constant::Drawer;
 use crate::components::dynamic::Position;
 use crate::components::dynamic::Speed;
 use crate::components::statics::trafficlight::Light;
-use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::Color;
 use crate::systems::renderer::drawableshape::Drawable;
 use petgraph::graphmap::Neighbors;
 
-const zoom_factor: f64 = 2.0;
+const ZOOM_FACTOR: f64 = 2.0;
 
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
@@ -35,18 +34,18 @@ impl<'a> System<'a> for DrawMap {
     );
 
     fn run(&mut self, (lane_graph, mut g_handle, args): Self::SystemData) {
-        for (nodeid, node) in lane_graph.get_nodes() {
-            let position_node: (f64, f64) = node.position;
+        for (nodeid, node) in lane_graph.intersections() {
+            let position_node: (f64, f64) = node.position();
             let mut voisins: Neighbors<'_, u64, petgraph::Directed> = lane_graph.graph.neighbors(*nodeid);
             while let Some(voisin) = voisins.next() {
                 let lane: &LaneData = lane_graph.lane_between((*nodeid, voisin));
                 let lane_width: f64 = lane.width.unwrap().value_unsafe;
-                let position_voisin: (f64, f64) = lane_graph.intersection(voisin).position;
+                let position_voisin: (f64, f64) = lane_graph.intersection(voisin).position();
                 
                 g_handle.draw(args.viewport(), |c, gl| {
                     draw_lane_between_two_points(
-                        (position_node.0 * zoom_factor, position_node.1 * zoom_factor),
-                        (position_voisin.0 * zoom_factor, position_voisin.1 * zoom_factor),
+                        (position_node.0 * ZOOM_FACTOR, position_node.1 * ZOOM_FACTOR),
+                        (position_voisin.0 * ZOOM_FACTOR, position_voisin.1 * ZOOM_FACTOR),
                         lane_width,
                         Color::GRAY,
                         c, gl
@@ -71,8 +70,8 @@ impl<'a> System<'a> for DrawTrafficLights {
         for (position, light, drawer) in (&positions, &lights, &drawers).join() {
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(
-                    position.x.value_unsafe * zoom_factor,
-                    position.y.value_unsafe * zoom_factor,
+                    position.x.value_unsafe * ZOOM_FACTOR,
+                    position.y.value_unsafe * ZOOM_FACTOR,
                     light.color.get_rendering_color(),
                     c, gl
                 );
@@ -95,8 +94,8 @@ impl<'a> System<'a> for DrawVehicles {
         for (position, speed, drawer) in (&positions, &speeds, &drawers).join() {
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(
-                    position.x.value_unsafe * zoom_factor,
-                    position.y.value_unsafe * zoom_factor,
+                    position.x.value_unsafe * ZOOM_FACTOR,
+                    position.y.value_unsafe * ZOOM_FACTOR,
                     Color::BLACK,
                     c, gl
                 );
@@ -120,6 +119,6 @@ fn draw_lane_between_two_points(
         .transform
         .trans(p1.0, p1.1)
         .rot_rad(rectangle_angle)
-        .scale(rectangle_length, rectangle_width * zoom_factor);
+        .scale(rectangle_length, rectangle_width * ZOOM_FACTOR);
     rectangle(color.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
 }
