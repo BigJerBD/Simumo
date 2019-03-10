@@ -11,6 +11,7 @@ impl<'a> System<'a> for SpawnerSystem {
     type SystemData = (Read<'a, clock::Clock>, Entities<'a>, Read<'a, LazyUpdate>);
 
     fn run(&mut self, (_clock, entities, updater): Self::SystemData) {
+        //todo note this could be an component added in the simulation
         let json = r#"
             {
                 "id": "spawnedvehicle",

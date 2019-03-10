@@ -4,11 +4,13 @@ use crate::components::types::statics::trafficlight::Light;
 use crate::components::types::statics::trafficlight::TrafficLightColor;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::{Event, EventsManager};
+use crate::systems::sys_prelude::*;
 use dim::si::S;
 use specs::prelude::*;
 
-pub struct LightsUpdate;
-impl<'a> System<'a> for LightsUpdate {
+#[simusystem]
+pub struct LightControl;
+impl<'a> System<'a> for LightControl {
     type SystemData = (
         Write<'a, EventsManager>,
         ReadStorage<'a, Identifier>,

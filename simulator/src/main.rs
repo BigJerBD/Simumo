@@ -5,6 +5,9 @@ extern crate erased_serde;
 extern crate serde_derive;
 #[macro_use]
 extern crate specs_derive;
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 
 extern crate argparse;
 extern crate csv;
@@ -39,8 +42,9 @@ mod types;
 mod util;
 
 fn main() {
+    env_logger::init();
     let args = command_line::CommandLineArguments::parse();
-    let config = configurations::Configuration::from_path(&args.configuration_path).unwrap();
+    let config = configurations::Configuration::from_yaml(&args.configuration_path).unwrap();
 
     let mut simulation = simulation::Simulation::from_config(config);
     simulation.run_simulation();

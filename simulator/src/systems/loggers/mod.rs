@@ -1,7 +1,7 @@
-pub mod logger_sys;
-pub mod logger_sys_type;
+pub mod abstract_logger_system;
+pub mod logger_system;
 pub mod types;
 
-pub use self::logger_sys::LoggerSystem;
-pub use self::logger_sys_type::LoggerSystems;
+pub use self::abstract_logger_system::AbstractLoggerSystem;
+pub use self::logger_system::LoggerSystem;
 pub use self::types::*;

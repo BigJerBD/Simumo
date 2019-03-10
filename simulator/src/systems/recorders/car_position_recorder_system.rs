@@ -2,23 +2,19 @@ use crate::components::constant::CarType;
 use crate::components::dynamic::Position;
 use crate::components::log_record::LogRecord;
 use crate::ressources;
-use crate::systems::recorders::RecorderSystemType;
 use crate::systems::sys_prelude::*;
 
 #[simusystem]
 #[derive(Default)]
-pub struct CarPosRecSystem {
+pub struct CarPositionRecorderSystem {
     capture_freq: f64,
 }
-impl CarPosRecSystem{
-
-    pub fn new(capture_freq:f64)-> Self{
-        Self{ capture_freq }
+impl CarPositionRecorderSystem {
+    pub fn new(capture_freq: f64) -> Self {
+        Self { capture_freq }
     }
-
 }
-impl RecorderSystemType for CarPosRecSystem {}
-impl<'a> System<'a> for CarPosRecSystem {
+impl<'a> System<'a> for CarPositionRecorderSystem {
     type SystemData = (
         Read<'a, ressources::Clock>,
         Entities<'a>,

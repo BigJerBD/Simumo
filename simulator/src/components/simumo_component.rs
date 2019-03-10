@@ -33,7 +33,7 @@ enum ComponentTypes {
 ///  it is simpler for quick fix to put it there but its an abomination of design
 #[derive(Serialize)]
 pub struct LogDataEntry<T> {
-    #[serde(rename="type")]
+    #[serde(rename = "type")]
     typename: String,
     resolution: Option<String>,
     value: T,
@@ -46,6 +46,5 @@ impl<T> LogDataEntry<T> {
             resolution,
             value,
         }
-
     }
 }

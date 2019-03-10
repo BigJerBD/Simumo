@@ -1,6 +1,5 @@
-mod clock_sys_type;
-mod standard_clock;
+mod clock_system;
+mod standard_clock_system;
 
-pub use self::clock_sys_type::ClockSystemType;
-pub use self::clock_sys_type::ClockSystems;
-pub use self::standard_clock::StandardClockSystem;
+pub use self::clock_system::ClockSystem;
+pub use self::standard_clock_system::StandardClockSystem;

@@ -70,5 +70,4 @@ where
     Ok(MeterPerSecond2::new(Fdim::deserialize(deserializer)?))
 }
 
-
 // Metrics Serialization

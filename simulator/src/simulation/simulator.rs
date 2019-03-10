@@ -1,23 +1,24 @@
 use dim::si::S;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
-use piston::event_loop::{Events, EventSettings};
+use piston::event_loop::{EventSettings, Events};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
-use specs::Dispatcher;
 use specs::prelude::*;
+use specs::Dispatcher;
 use uuid::Uuid;
 
-use crate::configurations::Configuration;
 use crate::configurations::map;
+use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
-use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
 use crate::ressources::lane_graph::LaneGraph;
-use crate::simulation::dispatchers::make_base_dispatcher;
+use crate::simulation::dispatchers::add_ending_systems;
+use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
+use std::collections::HashMap;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -31,7 +32,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
 
     pub fn from_config(config: Configuration) -> Self {
         //Todo: Systems
-
         let mut world = World::new();
         let window = Self::create_window();
 
@@ -39,8 +39,19 @@ impl<'a, 'b> Simulation<'a, 'b> {
         Self::create_config_ressource(&mut world, &config);
         Self::create_ressources(&mut world);
 
-        let mut base_dispatcher = make_base_dispatcher();
+        let mut system_mapping = HashMap::<String, Vec<String>>::new();
+        let mut base_dispatcher_builder = DispatcherBuilder::new();
+
+        config.systems.declare_systems(&mut system_mapping);
+        add_starting_systems(&mut base_dispatcher_builder);
+        config
+            .systems
+            .setup_systems(&mut base_dispatcher_builder, &system_mapping);
+        add_ending_systems(&mut base_dispatcher_builder);
+
         let mut render_dispatcher = make_render_dispatcher();
+        let mut base_dispatcher = base_dispatcher_builder.build();
+
         base_dispatcher.setup(&mut world.res);
         render_dispatcher.setup(&mut world.res);
 
@@ -87,8 +98,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
 
     fn create_config_ressource(world: &mut World, config: &Configuration) {
         let seed = if !config.generals.seed.is_empty() {
-            Uuid::parse_str(&config.generals.seed)
-                .unwrap_or_else(|_| panic!("invalid seed format"))
+            Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
         } else {
             Uuid::new_v4()
         };
@@ -109,16 +119,16 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(graphics_handle);
         world.add_resource(clock::Clock::new(0.25 * S));
         world.add_resource(generals::EndTime { val: 12.5 * S });
-        world.add_resource(EventsManager::new());
+        //world.add_resource(EventsManager::new());
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
         //todo make this properly configurable
-        {
-            let mut events_manager = world.write_resource::<EventsManager>();
-            // Here, for example, trafficlight2 observes trafficlight1
-            events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
-            // And here, trafficlight1 observes trafficlight2
-            events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
-        }
+        //{
+        //    let mut events_manager = world.write_resource::<EventsManager>();
+        //    // Here, for example, trafficlight2 observes trafficlight1
+        //    events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+        //    // And here, trafficlight1 observes trafficlight2
+        //    events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
+        //}
         //todo remove when not needed anymore
         //world.add_resource(LaneGraph::new(
         //    [
