@@ -34,6 +34,7 @@ systems:
       type: CarPositionRecorder
 
 
+
 entities:
   - id: vehicle01
     type: vehicle
@@ -42,7 +43,6 @@ entities:
       y: 0
     speed:
       val: 2
-
   - id: vehicle02
     type: vehicle
     position:
@@ -52,7 +52,6 @@ entities:
       val: 4
     acceleration:
       val: 0.4
-
   - id: vehicle03
     type: vehicle
     position:
@@ -60,7 +59,6 @@ entities:
       y: 0
     speed:
       val: 1.5
-
   - id: trafficlight01
     type: trafficlight
     light:
@@ -68,7 +66,9 @@ entities:
       max_green_time: 5
       max_yellow_time: 1.5
       time: 3.5
-
+    position:
+      x: 150
+      y: 100
   - id: trafficlight02
     type: trafficlight
     light:
@@ -76,3 +76,6 @@ entities:
       max_green_time: 3
       max_yellow_time: 1
       time: 0
+    position:
+      x: 400
+      y: 100

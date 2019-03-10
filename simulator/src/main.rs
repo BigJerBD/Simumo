@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+#![allow(clippy::type_complexity)]
 #[macro_use]
 extern crate erased_serde;
 #[macro_use]
@@ -27,6 +28,8 @@ extern crate typeinfo_derive;
 extern crate uuid;
 
 mod command_line;
+mod topology;
+mod types;
 mod components;
 mod configurations;
 mod entities;
@@ -37,14 +40,13 @@ mod osmgraph_api;
 mod ressources;
 mod simulation;
 mod systems;
-mod topology;
-mod types;
 mod util;
 
 fn main() {
     env_logger::init();
     let args = command_line::CommandLineArguments::parse();
-    let config = configurations::Configuration::from_yaml(&args.configuration_path).unwrap();
+    let config = configurations::Configuration::from_yaml(
+        &args.configuration_path).unwrap();
 
     let mut simulation = simulation::Simulation::from_config(config);
     simulation.run_simulation();

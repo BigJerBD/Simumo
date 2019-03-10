@@ -10,5 +10,4 @@ pub mod unclassified;
 
 mod sys_prelude;
 mod system_type;
-
 pub use self::system_type::SystemType;

@@ -93,7 +93,7 @@ impl LaneGraph {
     /// and then move it to the front of an other lane
     ///
     pub fn entity_forward(&mut self, entity: EntityId, destination: NodeId) {
-        let (begin, end) = *self.entity_locations.get(&entity).unwrap();
+        let (begin, end) = self.entity_locations[&entity];
         self.segment_forward((begin, end, destination));
     }
 
@@ -112,7 +112,7 @@ impl LaneGraph {
     /// get a reference of the intersection
     ///
     pub fn intersection(&self, entity: NodeId) -> &IntersectionData {
-        self.intersections.get(&entity).unwrap()
+        &self.intersections[&entity]
     }
 
     /// get a mutable reference on the intersection
@@ -124,8 +124,8 @@ impl LaneGraph {
     /// get the lane with entity id
     ///
     pub fn lane(&self, entity: EntityId) -> &LaneData {
-        let location = self.entity_locations.get(&entity).unwrap();
-        self.graph.index(*location)
+        let location = self.entity_locations[&entity];
+        self.graph.index(location)
     }
 
     /// get the lane between two node
@@ -137,11 +137,11 @@ impl LaneGraph {
     /// get the lane as a mutable lane based on the entityId
     ///
     pub fn lane_mut(&mut self, entity: EntityId) -> LaneEntry {
-        let location = self.entity_locations.get(&entity).unwrap();
-        let lane = self.graph.index_mut(*location);
+        let location = self.entity_locations[&entity];
+        let lane = self.graph.index_mut(location);
         LaneEntry {
             lane,
-            lane_location: *location,
+            lane_location: location,
             entity_locations: &mut self.entity_locations,
         }
     }
@@ -268,7 +268,7 @@ impl LaneData {
     pub fn in_front_of(&self, entity: EntityId) -> EntityId {
         let pos = self.entity_queue.iter().position(|x| x == &entity).unwrap();
 
-        *self.entity_queue.get(pos + 1).unwrap()
+        self.entity_queue[pos + 1]
     }
 }
 
@@ -291,6 +291,10 @@ impl IntersectionData {
             position: (lon, lat),
             contained_entity: None,
         }
+    }
+
+    pub fn position(&self) -> (f64, f64) {
+        self.position
     }
 }
 

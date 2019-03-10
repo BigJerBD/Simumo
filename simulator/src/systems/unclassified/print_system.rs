@@ -1,12 +1,12 @@
 use specs::{Join, Read, ReadStorage, System};
 
-use crate::components::dynamic::*;
 use crate::components::statics::trafficlight::*;
 use crate::ressources::clock;
 use crate::systems::mobility::MobilitySystem;
 use crate::systems::sys_prelude::*;
 use crate::systems::system_type::DispatcherBuilderHook;
 use crate::systems::system_type::SystemType;
+use crate::components::types::constant::Identifier;
 
 #[simusystem]
 pub struct PrintSystem;
@@ -32,18 +32,13 @@ impl SystemType for PrintSystem {
 impl<'a> System<'a> for PrintSystem {
     type SystemData = (
         Read<'a, clock::Clock>,
-        ReadStorage<'a, Position>,
         ReadStorage<'a, Light>,
+        ReadStorage<'a, Identifier>,
     );
 
-    fn run(&mut self, (clock, positions, lights): Self::SystemData) {
-        println!("Simulation state at {:#?}", clock.get_time());
-        println!("-----------------------------------");
-        for pos in positions.join() {
-            println!("{:#?}", pos);
-        }
-        for light in (&lights).join() {
-            println!("{:#?} {:#?}", light.color, light.time);
+    fn run(&mut self, (clock, lights, identifiers): Self::SystemData) {
+        for (light, id) in (&lights, &identifiers).join() {
+            println!("{}: {:#?}, {:#?}", clock.get_time(), id, light);
         }
     }
 }

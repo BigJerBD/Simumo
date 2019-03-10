@@ -4,13 +4,11 @@ use specs::DispatcherBuilder;
 use crate::systems::unclassified::EventsHookUpdate;
 use crate::systems::unclassified::EventsUpdate;
 use crate::systems::unclassified::SpawnerSystem;
-//use crate::systems::recorders;
 
-//suse crate::systems::loggers::logger_sys::DirectoryStructure;
-//use crate::systems::loggers::LoggerSystem;
-//use crate::systems::loggers::types::NdJsonLogger;
 use crate::systems::renderer::DrawClear;
-use crate::systems::renderer::DrawRectangles;
+use crate::systems::renderer::DrawMap;
+use crate::systems::renderer::DrawTrafficLights;
+use crate::systems::renderer::DrawVehicles;
 
 use crate::systems::controls::LightControl;
 
@@ -31,6 +29,8 @@ pub fn add_ending_systems(dispatcher_builder: &mut DispatcherBuilder) {
 pub fn make_render_dispatcher<'a, 'b>() -> Dispatcher<'a, 'b> {
     DispatcherBuilder::new()
         .with_thread_local(DrawClear)
-        .with_thread_local(DrawRectangles)
+        .with_thread_local(DrawMap)
+        .with_thread_local(DrawTrafficLights)
+        .with_thread_local(DrawVehicles)
         .build()
 }

@@ -1,15 +1,18 @@
-use dim::si::S;
+use std::collections::HashMap;
+
+use dim::si::{S,M};
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
-use piston::event_loop::{EventSettings, Events};
+use piston::event_loop::{Events, EventSettings};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
-use specs::prelude::*;
 use specs::Dispatcher;
+use specs::prelude::*;
 use uuid::Uuid;
 
-use crate::configurations::map;
+
+use crate::ressources::eventsmanagement::EventsManager;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
@@ -18,7 +21,8 @@ use crate::ressources::lane_graph::LaneGraph;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
-use std::collections::HashMap;
+use crate::ressources::lane_graph::IntersectionData;
+use crate::ressources::lane_graph::LaneData;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -31,7 +35,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
-        //Todo: Systems
         let mut world = World::new();
         let window = Self::create_window();
 
@@ -105,13 +108,13 @@ impl<'a, 'b> Simulation<'a, 'b> {
 
         world.add_resource(seed);
 
-        match &config.map {
-            map::Map::OsmGraph(val) => world.add_resource(LaneGraph::from_pyosmgraph(
-                val.longitude,
-                val.latitude,
-                val.zoom,
-            )),
-        };
+        //match &config.map {
+        //    map::Map::OsmGraph(val) => world.add_resource(LaneGraph::from_pyosmgraph(
+        //        val.longitude,
+        //        val.latitude,
+        //        val.zoom,
+        //    )),
+        //};
     }
 
     fn create_ressources(world: &mut World) {
@@ -119,7 +122,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(graphics_handle);
         world.add_resource(clock::Clock::new(0.25 * S));
         world.add_resource(generals::EndTime { val: 12.5 * S });
-        //world.add_resource(EventsManager::new());
+        world.add_resource(EventsManager::new());
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
         //todo make this properly configurable
         //{
@@ -130,27 +133,27 @@ impl<'a, 'b> Simulation<'a, 'b> {
         //    events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
         //}
         //todo remove when not needed anymore
-        //world.add_resource(LaneGraph::new(
-        //    [
-        //        (1, IntersectionData::new(10.0, 10.0)),
-        //        (2, IntersectionData::new(10.0, 30.0)),
-        //        (3, IntersectionData::new(20.0, 20.0)),
-        //        (4, IntersectionData::new(30.0, 20.0)),
-        //    ]
-        //    .to_vec()
-        //    .into_iter(),
-        //    &[
-        //        (1, 3, LaneData::new(None, None, None)),
-        //        (2, 3, LaneData::new(None, None, None)),
-        //        (3, 4, LaneData::new(None, None, None)),
-        //    ],
-        //));
+        world.add_resource(LaneGraph::new(
+            [
+                (1, IntersectionData::new(10.0, 10.0)),
+                (2, IntersectionData::new(50.0, 240.0)),
+                (3, IntersectionData::new(150.0, 100.0)),
+                (4, IntersectionData::new(400.0, 100.0)),
+            ]
+                .to_vec()
+                .into_iter(),
+            &[
+                (1, 3, LaneData::new(Some(3.0 * M), None, None)),
+                (2, 3, LaneData::new(Some(2.5 * M), None, None)),
+                (3, 4, LaneData::new(Some(3.5 * M), None, None)),
+            ],
+        ));
+
     }
 }
 
 fn simulation_ended(ressources: &World) -> bool {
     // if keyboard end event  +
-
     let clock = ressources.read_resource::<clock::Clock>();
     let end_time = ressources.read_resource::<generals::EndTime>();
     clock.get_time() >= end_time.val
