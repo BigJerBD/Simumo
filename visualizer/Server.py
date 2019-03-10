@@ -23,7 +23,7 @@ def send_metric(metric):
 if __name__ == "__main__":
     metrics = [
         {
-            "name": "Sample_Sherbrooke",
+            "name": "Vitesse Automobiles",
             "logName": "sherbrooke_sample",
             "unit": "MeterPerSecond",
             "unitLabel": "mètre par seconde"

@@ -44,6 +44,7 @@ ul {
   border-style: outset;
   padding: 10px;
   vertical-align: top;
+  overflow: auto;
 }
 
 /* For the legende */
@@ -92,6 +93,12 @@ ul {
 .sliderPosition {
   width: 95%;
   margin: auto;
+}
+
+#sliderUnit{
+    text-align: right;
+    margin-right: 60px;
+    font-weight: bold;
 }
 
 /* For the chronological slider */

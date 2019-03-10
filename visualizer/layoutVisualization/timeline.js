@@ -13,4 +13,6 @@ function updateTimeline(min, max)
 		rest: "label",
 		step: (max - min)/10.0
 	});
+
+    document.getElementById("sliderUnit").innerHTML = "sec";
 }
