@@ -1,5 +1,6 @@
 use crate::components::type_prelude::*;
 use crate::metrics::Fdim;
+use crate::systems::renderer::drawableshape::DrawableShape;
 
 use dim::si::{Kilogram, Meter};
 
@@ -34,7 +35,6 @@ pub struct BikeType;
 
 #[simucomponent_data]
 #[storage(VecStorage)]
-pub struct Rectangle {
-    pub width: f64,
-    pub height: f64,
+pub struct Drawer {
+    pub figure: DrawableShape
 }
