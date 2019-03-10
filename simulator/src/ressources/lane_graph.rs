@@ -292,6 +292,10 @@ impl IntersectionData {
             contained_entity: None,
         }
     }
+
+    pub fn position(&self) -> (f64, f64) {
+        self.position
+    }
 }
 
 #[cfg(test)]

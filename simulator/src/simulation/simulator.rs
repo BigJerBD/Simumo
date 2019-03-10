@@ -1,3 +1,4 @@
+use dim::si::M;
 use dim::si::S;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
@@ -15,9 +16,12 @@ use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::generals;
+use crate::ressources::lane_graph::IntersectionData;
+use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::simulation::dispatchers::make_base_dispatcher;
 use crate::simulation::dispatchers::make_render_dispatcher;
+//use std::process::Command;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -95,13 +99,15 @@ impl<'a, 'b> Simulation<'a, 'b> {
 
         world.add_resource(seed);
 
-        match &config.map {
+        // TODO: J'ai commenté ici vu que je suis incapable de tester autrement (problèmes avec Python)
+        // À décommenter éventuellement
+        /*match &config.map {
             map::Map::OsmGraph(val) => world.add_resource(LaneGraph::from_pyosmgraph(
                 val.longitude,
                 val.latitude,
                 val.zoom,
             )),
-        };
+        };*/
     }
 
     fn create_ressources(world: &mut World) {
@@ -115,26 +121,30 @@ impl<'a, 'b> Simulation<'a, 'b> {
         {
             let mut events_manager = world.write_resource::<EventsManager>();
             // Here, for example, trafficlight2 observes trafficlight1
-            events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
+            events_manager.connect("trafficlight01".to_string(), "trafficlight02".to_string());
             // And here, trafficlight1 observes trafficlight2
-            events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
+            events_manager.connect("trafficlight02".to_string(), "trafficlight01".to_string());
         }
-        //todo remove when not needed anymore
-        //world.add_resource(LaneGraph::new(
-        //    [
-        //        (1, IntersectionData::new(10.0, 10.0)),
-        //        (2, IntersectionData::new(10.0, 30.0)),
-        //        (3, IntersectionData::new(20.0, 20.0)),
-        //        (4, IntersectionData::new(30.0, 20.0)),
-        //    ]
-        //    .to_vec()
-        //    .into_iter(),
-        //    &[
-        //        (1, 3, LaneData::new(None, None, None)),
-        //        (2, 3, LaneData::new(None, None, None)),
-        //        (3, 4, LaneData::new(None, None, None)),
-        //    ],
-        //));
+        world.add_resource(clock::Clock::new(0.25 * S));
+        world.add_resource(generals::EndTime { val: 12.5 * S });
+
+        //todo remove this and replace it by a config later one
+        // TODO: J'ai décommenté ici pour avoir un LaneGraph simple de test
+        world.add_resource(LaneGraph::new(
+            [
+                (1, IntersectionData::new(10.0, 10.0)),
+                (2, IntersectionData::new(50.0, 240.0)),
+                (3, IntersectionData::new(150.0, 100.0)),
+                (4, IntersectionData::new(400.0, 100.0)),
+            ]
+            .to_vec()
+            .into_iter(),
+            &[
+                (1, 3, LaneData::new(Some(3.0 * M), None, None)),
+                (2, 3, LaneData::new(Some(2.5 * M), None, None)),
+                (3, 4, LaneData::new(Some(3.5 * M), None, None)),
+            ],
+        ));
     }
 }
 
