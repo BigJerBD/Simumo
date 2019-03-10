@@ -1,19 +1,27 @@
 let minMaxByMetric = {};
-function getMinAndMaxOfLog(log, metric)
+function getMinMaxLogInfo(log, metric)
 {
 	if(minMaxByMetric[metric] == undefined)
 	{
 		let logJson = JSON.parse(log);
-		let min = Number.POSITIVE_INFINITY;
-		let max = Number.NEGATIVE_INFINITY;
+		let minValue = Number.POSITIVE_INFINITY;
+		let maxValue = Number.NEGATIVE_INFINITY;
+        let minTimestamp = Number.POSITIVE_INFINITY;
+		let maxTimestamp = Number.NEGATIVE_INFINITY;
 		logJson.forEach(function(entry) {
+            minTimestamp = Math.min(timestampToSec(entry["timestamp"]), minTimestamp);
+            maxTimestamp = Math.max(timestampToSec(entry["timestamp"]), maxTimestamp);
 			entry["data"].forEach(function(data) {
-				min = Math.min(data["value"], min);
-				max = Math.max(data["value"], max);
+				minValue = Math.min(data["value"], minValue);
+				maxValue = Math.max(data["value"], maxValue);
 			});
 		});
-		minMaxByMetric[metric] = [min,max];
-		return [min,max];
+        let minMaxInfo = {
+            value: [minValue,maxValue],
+            timestamp: [minTimestamp,maxTimestamp]
+        }
+		minMaxByMetric[metric] = minMaxInfo;
+		return minMaxInfo;
 	}
 	else {
 		return minMaxByMetric[metric];
@@ -47,6 +55,12 @@ function secToTimestamp(sec) {
   let nbrMinutes = parseInt((sec - (nbrHours * 3600.0)) / 60.0);
   let nbrSeconds = (sec - (nbrHours * 3600.0)) - (nbrMinutes * 60.0)
   return ("0" + nbrHours).slice(-2) + ":" + ("0" + nbrMinutes).slice(-2) + ":" + ("0" + nbrSeconds).slice(-2);
+}
+
+function timestampToSec(timestamp)
+{
+    let split = timestamp.split(':');
+    return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]);
 }
 
 function switchTabToMap()
@@ -93,7 +107,7 @@ function updateVisualizationBox() {
 		timeValueMax = $("#flat-slider").slider("option", "max");
 	}
 
-	let gradient = []
+  let gradient = []
   let colors = document.getElementById("legendColors").children;
   for (let i = 0, length = colors.length; i < length; i++) {
     gradient.push({
@@ -113,15 +127,17 @@ function updateVisualizationBox() {
       url: urlLog,
       cache: false,
       success: function(log) {
-				let minMaxLog = getMinAndMaxOfLog(log, coloredPointsTab);
-				let minOfLog = parseInt(minMaxLog[0]);
-				let maxOfLog =  Math.ceil(minMaxLog[1]);
+				let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+				let logMinValue = parseInt(minMaxLogInfo.value[0]);
+				let logMaxValue =  Math.ceil(minMaxLogInfo.value[1]);
+                let logMinTimestamp = minMaxLogInfo.timestamp[0];
+                let logMaxTimestamp = minMaxLogInfo.timestamp[1];
 				if(!existTimeline)
 				{
-					updateTimeline(minOfLog, maxOfLog);
+					updateTimeline(logMinTimestamp, logMaxTimestamp);
 				}
-				loadColorGradient(minOfLog, maxOfLog, gradient);
-				let parsedLog = parseLog(log, logUnit, maxOfLog);
+				loadColorGradient(logMinValue, logMaxValue, gradient);
+				let parsedLog = parseLog(log, logUnit, logMaxValue);
 				updateVisualizationLayer(parsedLog, "coloredPoints", gradient);
       }
     });
@@ -132,15 +148,17 @@ function updateVisualizationBox() {
       url: urlLog,
       cache: false,
       success: function(log) {
-				let minMaxLog = getMinAndMaxOfLog(log, coloredPointsTab);
-				let minOfLog = parseInt(minMaxLog[0]);
-				let maxOfLog =  Math.ceil(minMaxLog[1]);
+                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let logMinValue = parseInt(minMaxLogInfo.value[0]);
+                let logMaxValue =  Math.ceil(minMaxLogInfo.value[1]);
+                let logMinTimestamp = minMaxLogInfo.timestamp[0];
+                let logMaxTimestamp = minMaxLogInfo.timestamp[1];
 				if(!existTimeline)
 				{
-					updateTimeline(minOfLog, maxOfLog);
+					updateTimeline(logMinTimestamp, logMaxTimestamp);
 				}
-				loadColorGradient(minOfLog, maxOfLog, gradient);
-				let parsedLog = parseLog(log, logUnit, maxOfLog);
+				loadColorGradient(logMinValue, logMaxValue, gradient);
+				let parsedLog = parseLog(log, logUnit, logMaxValue);
 				updateVisualizationLayer(parsedLog, "heatMap", gradient);
       }
     });
