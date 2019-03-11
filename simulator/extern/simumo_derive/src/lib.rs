@@ -2,17 +2,15 @@ extern crate proc_macro;
 extern crate proc_macro2;
 #[macro_use]
 extern crate quote;
-#[macro_use]
-extern crate itertools;
 extern crate syn;
 
 use proc_macro2::TokenStream;
+use simumo_ser::*;
 use syn::DeriveInput;
 
+#[macro_use]
+mod izip;
 mod simumo_ser;
-
-use simumo_ser::*;
-
 
 /// Custom serialization derivation
 ///
@@ -31,10 +29,10 @@ pub fn simumo_serialize(input: proc_macro::TokenStream) -> proc_macro::TokenStre
             impl Serialize for #name {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok,S::Error>
                 where S: Serializer {
-                    let mut state = serializer.serialize_struct(stringify!(#name), #size)?;
+                    let mut seq = serializer.serialize_seq(Some(#size))?;
                     //expand serialization Tokens
                     #(#ser_block)*
-                    state.end()
+                    seq.end()
                 }
             }
         };
@@ -107,7 +105,7 @@ pub fn simucomponent_base(_metadata: proc_macro::TokenStream, input: proc_macro:
 /// for a basic system in simumo
 #[proc_macro_attribute]
 pub fn simusystem(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                          -> proc_macro::TokenStream {
+                  -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
         #[derive(
@@ -123,7 +121,7 @@ pub fn simusystem(_metadata: proc_macro::TokenStream, input: proc_macro::TokenSt
 /// for a basic simulator ressource
 #[proc_macro_attribute]
 pub fn simuresource(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                  -> proc_macro::TokenStream {
+                    -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
         #[derive(

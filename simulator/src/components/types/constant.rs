@@ -36,5 +36,5 @@ pub struct BikeType;
 #[simucomponent_data]
 #[storage(VecStorage)]
 pub struct Drawer {
-    pub figure: DrawableShape
+    pub figure: DrawableShape,
 }

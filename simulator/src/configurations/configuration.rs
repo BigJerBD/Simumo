@@ -20,11 +20,19 @@ pub struct Configuration {
 }
 
 impl Configuration {
-    pub fn from_path(args_path: &str) -> Result<Self, Box<Error>> {
+    pub fn from_json(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;
         let reader = BufReader::new(file);
         let config = serde_json::from_reader(reader)?;
+        Ok(config)
+    }
+
+    pub fn from_yaml(args_path: &str) -> Result<Self, Box<Error>> {
+        let config_path = Path::new(&args_path);
+        let file = File::open(config_path)?;
+        let reader = BufReader::new(file);
+        let config = serde_yaml::from_reader(reader)?;
         Ok(config)
     }
 }

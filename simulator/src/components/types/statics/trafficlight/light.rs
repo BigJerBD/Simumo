@@ -1,7 +1,7 @@
 extern crate specs;
 use crate::metrics::second_deserialize;
-use crate::systems::renderer::Color;
 use crate::metrics::Fdim;
+use crate::systems::renderer::Color;
 use dim::si::{Second, S};
 use specs::prelude::*;
 use typeinfo::TypeInfo;
@@ -15,11 +15,11 @@ pub enum TrafficLightColor {
 }
 
 impl TrafficLightColor {
-    pub fn get_rendering_color(&self) -> Color {
+    pub fn get_rendering_color(self) -> Color {
         match self {
             TrafficLightColor::RED => Color::RED,
             TrafficLightColor::YELLOW => Color::YELLOW,
-            TrafficLightColor::GREEN => Color::GREEN
+            TrafficLightColor::GREEN => Color::GREEN,
         }
     }
 }

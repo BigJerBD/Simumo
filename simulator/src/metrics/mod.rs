@@ -7,7 +7,7 @@ pub type Fdim = f64;
 pub type Idim = i64;
 pub type Id = String;
 
-/// Function to open file instead of serializing it
+// Function to open file instead of serializing it
 pub fn fdeserialize<'de, D>(deserializer: D) -> Result<Fdim, D::Error>
 where
     D: Deserializer<'de>,
@@ -31,6 +31,8 @@ where
 
 //todo :: reconsider how we could implement those deserialize
 // in a more generic way
+
+// Metrics Deserialiszation
 pub fn second_deserialize<'de, D>(deserializer: D) -> Result<Second<Fdim>, D::Error>
 where
     D: Deserializer<'de>,
@@ -67,3 +69,5 @@ where
 {
     Ok(MeterPerSecond2::new(Fdim::deserialize(deserializer)?))
 }
+
+// Metrics Serialization

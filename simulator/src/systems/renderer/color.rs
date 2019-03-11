@@ -5,7 +5,7 @@ pub enum Color {
     GREENGRASS,
     LIGHTGRAY,
     RED,
-    YELLOW
+    YELLOW,
 }
 
 impl Color {

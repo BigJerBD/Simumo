@@ -1,14 +1,14 @@
-use crate::components::types::constant::Identifier;
 use crate::components::types::constant::Drawer;
+use crate::components::types::constant::Identifier;
+use crate::components::types::dynamic::Position;
 use crate::components::types::statics::trafficlight::Light;
-use crate::components::dynamic::Position;
 use crate::entities::entity_type::Instantiable;
 use crate::metrics::identifier_deserialize;
-use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Circle;
-use specs::World;
+use crate::systems::renderer::drawableshape::DrawableShape;
 use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
+use specs::World;
 
 #[derive(Deserialize, Debug)]
 pub struct LightEntity {
@@ -16,7 +16,7 @@ pub struct LightEntity {
     pub id: Identifier,
     pub light: Light,
     #[serde(default)]
-    pub position: Position
+    pub position: Position,
 }
 
 impl<'a> Instantiable<'a> for LightEntity {
@@ -26,8 +26,8 @@ impl<'a> Instantiable<'a> for LightEntity {
             .with(self.id.clone())
             .with(self.light)
             .with(self.position.clone())
-            .with(Drawer { 
-                figure: DrawableShape::Circle(Circle::new(4.0))
+            .with(Drawer {
+                figure: DrawableShape::Circle(Circle::new(4.0)),
             })
             .build();
     }
@@ -39,8 +39,8 @@ impl<'a> Instantiable<'a> for LightEntity {
         updater.insert(
             entity,
             Drawer {
-                figure: DrawableShape::Circle(Circle::new(4.0))
-            }
+                figure: DrawableShape::Circle(Circle::new(4.0)),
+            },
         );
     }
 }
