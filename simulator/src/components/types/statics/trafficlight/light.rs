@@ -1,7 +1,7 @@
 extern crate specs;
 use crate::metrics::second_deserialize;
-use crate::systems::renderer::Color;
 use crate::metrics::Fdim;
+use crate::systems::renderer::Color;
 use dim::si::{Second, S};
 use specs::prelude::*;
 use typeinfo::TypeInfo;
@@ -19,7 +19,7 @@ impl TrafficLightColor {
         match self {
             TrafficLightColor::RED => Color::RED,
             TrafficLightColor::YELLOW => Color::YELLOW,
-            TrafficLightColor::GREEN => Color::GREEN
+            TrafficLightColor::GREEN => Color::GREEN,
         }
     }
 }

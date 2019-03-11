@@ -11,7 +11,7 @@ use specs::world;
 use crate::metrics::Fdim;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
-use dim::si::{Meter, MeterPerSecond};
+use dim::si::{Meter, MeterPerSecond, M};
 
 use crate::topology::curve::Curve;
 
@@ -61,7 +61,7 @@ impl LaneGraph {
             .get_nodes()
             .unwrap()
             .iter()
-            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon, *lat)))
+            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon + 100.0, *lat + 50.0)))
             .collect();
 
         let edges: Vec<(_, _, _)> = osmgraph
@@ -205,7 +205,7 @@ impl<'a, 'b> LaneEntry<'a, 'b> {
 ///
 /// note :: `width`,`max_speed` and `curve`are options because we
 ///     are not garrenteed yet to have it for everylane
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct LaneData {
     entity_queue: VecDeque<EntityId>,
     //todo :: consider if all the specific data  (width,max_speed,etc)
@@ -279,7 +279,7 @@ impl LaneData {
 /// * `position` - position in longitude latitude
 /// * `contained_entity` - Index referencing to the contained entity
 ///
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct IntersectionData {
     position: (f64, f64),
     contained_entity: Option<EntityId>,

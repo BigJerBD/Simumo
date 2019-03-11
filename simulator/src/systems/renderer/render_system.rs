@@ -1,18 +1,19 @@
-use opengl_graphics::GlGraphics;
-use piston::input::RenderArgs;
-use specs::{ReadExpect, ReadStorage, System, Join, WriteExpect};
-use graphics::*;
 use crate::components::constant::Drawer;
 use crate::components::dynamic::Position;
 use crate::components::dynamic::Speed;
 use crate::components::statics::trafficlight::Light;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
-use crate::systems::renderer::Color;
 use crate::systems::renderer::drawableshape::Drawable;
+use crate::systems::renderer::Color;
+use graphics::*;
+use opengl_graphics::GlGraphics;
 use petgraph::graphmap::Neighbors;
+use piston::input::RenderArgs;
+use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
 
 const ZOOM_FACTOR: f64 = 2.0;
+const EDGE_WIDTH: f64 = 3.0;
 
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
@@ -35,23 +36,24 @@ impl<'a> System<'a> for DrawMap {
 
     fn run(&mut self, (lane_graph, mut g_handle, args): Self::SystemData) {
         for (nodeid, node) in lane_graph.intersections() {
-
             let position_node: (f64, f64) = node.position();
-            let neighbors: Neighbors<'_, u64, petgraph::Directed> = lane_graph.graph.neighbors(*nodeid);
+            let neighbors: Neighbors<'_, u64, petgraph::Directed> =
+                lane_graph.graph.neighbors(*nodeid);
 
             for neighbor in neighbors {
                 let lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
-                let lane_width: f64 = lane.width.unwrap().value_unsafe;
                 let pos_neighbor: (f64, f64) = lane_graph.intersection(neighbor).position();
-                
-                g_handle.draw(args.viewport(), |c, gl| {
 
+                //println!("{:?}", position_node);
+
+                g_handle.draw(args.viewport(), |c, gl| {
                     draw_lane_between_two_points(
                         (position_node.0 * ZOOM_FACTOR, position_node.1 * ZOOM_FACTOR),
                         (pos_neighbor.0 * ZOOM_FACTOR, pos_neighbor.1 * ZOOM_FACTOR),
-                        lane_width,
+                        EDGE_WIDTH,
                         Color::GRAY,
-                        c, gl
+                        c,
+                        gl,
                     );
                 });
             }
@@ -76,7 +78,8 @@ impl<'a> System<'a> for DrawTrafficLights {
                     position.x.value_unsafe * ZOOM_FACTOR,
                     position.y.value_unsafe * ZOOM_FACTOR,
                     light.color.get_rendering_color(),
-                    c, gl
+                    c,
+                    gl,
                 );
             });
         }
@@ -100,7 +103,8 @@ impl<'a> System<'a> for DrawVehicles {
                     position.x.value_unsafe * ZOOM_FACTOR,
                     position.y.value_unsafe * ZOOM_FACTOR,
                     Color::BLACK,
-                    c, gl
+                    c,
+                    gl,
                 );
             });
         }
@@ -112,7 +116,8 @@ fn draw_lane_between_two_points(
     p2: (f64, f64),
     width: f64,
     color: Color,
-    c: Context, gl: &mut GlGraphics
+    c: Context,
+    gl: &mut GlGraphics,
 ) {
     let rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
     let rectangle_width: f64 = width;

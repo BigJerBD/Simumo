@@ -1,5 +1,5 @@
-use crate::components::types::constant::Identifier;
 use crate::components::types::constant::Drawer;
+use crate::components::types::constant::Identifier;
 use crate::components::types::dynamic::Acceleration;
 use crate::components::types::dynamic::Position;
 use crate::components::types::dynamic::Speed;
@@ -7,10 +7,10 @@ use crate::entities::entity_type::Instantiable;
 use crate::metrics::identifier_deserialize;
 use crate::systems::renderer::drawableshape::DrawableShape;
 
-use specs::World;
+use crate::systems::renderer::drawableshape::Rectangle;
 use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
-use crate::systems::renderer::drawableshape::Rectangle;
+use specs::World;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
@@ -37,7 +37,7 @@ impl<'a> Instantiable<'a> for CarEntity {
             .with(self.position.clone())
             .with(self.speed.clone())
             .with(Drawer {
-                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0))
+                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
             })
             .build();
     }
@@ -49,8 +49,8 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(
             entity,
             Drawer {
-                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0))
-            }
+                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
+            },
         );
     }
 }

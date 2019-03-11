@@ -3,8 +3,8 @@ generals:
 
 map:
   type: OsmGraph
-  latitude: 45.40008
-  longitude: -71.89908
+  latitude: -71.89908
+  longitude: 45.40008
   zoom: 1200
 
 
