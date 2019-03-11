@@ -14,7 +14,8 @@ def find_entries_in_log(log, min, max):
     def timestamp_to_sec(timestamp):
         hour, min, sec = timestamp.split(":")
         return (int(hour) * 60 * 60) + (int(min) * 60) + int(sec)
-    if min == '' or max == '':
+
+    if not min or not max:
         return log
     else:
         return [x for x in log if timestamp_to_sec(min) < timestamp_to_sec(x["timestamp"]) < timestamp_to_sec(max)]
