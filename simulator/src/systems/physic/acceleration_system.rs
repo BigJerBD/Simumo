@@ -1,12 +1,10 @@
 use crate::components::dynamic::*;
-use crate::systems::physic::PhysicSystemType;
 
 use crate::ressources::Clock;
 use crate::systems::sys_prelude::*;
 
 #[simusystem]
 pub struct AccelerationSystem;
-impl PhysicSystemType for AccelerationSystem {}
 impl<'a> System<'a> for AccelerationSystem {
     type SystemData = (
         WriteStorage<'a, Speed>,

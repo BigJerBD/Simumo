@@ -21,24 +21,18 @@ def send_metric(metric):
 
 
 if __name__ == "__main__":
-    timeline = {"min": 0, "max": 110}
     metrics = [
         {
-            "name" : "Sample_Sherbrooke",
-            "logName" : "sherbrooke_sample.ndjson",
-            "unit" : "MeterPerSecond",
-            "unitLabel" : "mètre par seconde"
+            "name": "Vitesse Automobiles",
+            "logName": "sherbrooke_sample",
+            "unit": "MeterPerSecond",
+            "unitLabel": "mètre par seconde"
         }
     ]
-    # legend = [
-    #     {"red": 255,"green": 255,"blue" :0},
-    #     {"red": 255, "green": 128, "blue": 0},
-    #     {"red": 255, "green": 0, "blue": 0}
-    # ]
     legend = [
         {"red": 0, "green": 255, "blue": 0},
         {"red": 255, "green": 255, "blue": 0},
         {"red": 255, "green": 0, "blue": 0}
     ]
-    RenderOsmMap.render_visualization("Sherbrooke", timeline, metrics, legend)
+    RenderOsmMap.render_visualization("Sherbrooke", metrics, legend)
     app.run("0.0.0.0")

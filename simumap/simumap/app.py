@@ -13,9 +13,8 @@ def target_location(lon, lat, zoom):
     global __GRAPH__
     try:
         __GRAPH__ = OsmGraph(lon, lat, zoom)
-        return True
     except OverPyException:
-        return False
+        raise Exception("Can't query graph from targeted location")
 
 
 def untarget_location():

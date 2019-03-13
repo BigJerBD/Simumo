@@ -1,7 +1,7 @@
+use dim::si::Second;
+
 use crate::components::type_prelude::*;
 use crate::metrics::Fdim;
-
-use dim::si::Second;
 
 #[simucomponent_base]
 #[derive(Serialize)]
@@ -11,7 +11,6 @@ pub struct LogRecord {
     timestamp: Second<Fdim>,
     record_id: u32,
     record_type: String,
-    #[serde(flatten)]
     log_data: Box<LogWritable>,
 }
 

@@ -1,4 +1,5 @@
-mod control_sys_type;
+mod control_system;
+mod light_control;
 
-pub use self::control_sys_type::ControlSystemType;
-pub use self::control_sys_type::ControlSystems;
+pub use self::control_system::ControlSystem;
+pub use self::light_control::LightControl;

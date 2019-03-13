@@ -1,16 +1,13 @@
 pub mod agents;
 pub mod clock;
 pub mod controls;
-pub mod events;
 pub mod loggers;
 pub mod mobility;
 pub mod physic;
-pub mod print;
 pub mod recorders;
 pub mod renderer;
-pub mod spawners;
-pub mod statics;
+pub mod unclassified;
 
 mod sys_prelude;
-mod system_dependencies;
-mod system_type_definition;
+mod system_type;
+pub use self::system_type::SystemType;
