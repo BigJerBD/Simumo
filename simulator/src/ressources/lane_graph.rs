@@ -11,7 +11,7 @@ use specs::world;
 use crate::metrics::Fdim;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
-use dim::si::{Meter, MeterPerSecond, M};
+use dim::si::{Meter, MeterPerSecond};
 
 use crate::topology::curve::Curve;
 

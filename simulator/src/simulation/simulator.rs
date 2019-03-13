@@ -1,7 +1,5 @@
-use std::cmp;
 use std::collections::HashMap;
-use std::f64::INFINITY;
-use std::f64::NEG_INFINITY;
+use std::f64::NAN;
 
 use dim::si::{M, S};
 use glutin_window::GlutinWindow as Window;
@@ -14,7 +12,6 @@ use specs::prelude::*;
 use specs::Dispatcher;
 use uuid::Uuid;
 
-use crate::configurations::map;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
@@ -169,26 +166,10 @@ fn add_lane_graph(lanegraph: LaneGraph, world: &mut World) {
     //this is quite long we can find interesting way to simplify this
     let padding = 10.0;
     world.add_resource(MapBbox {
-        x1: positions
-            .iter()
-            .map(|v| v.0.clone())
-            .fold(0. / 0., f64::min)
-            + padding,
-        x2: positions
-            .iter()
-            .map(|v| v.0.clone())
-            .fold(0. / 0., f64::max)
-            - padding,
-        y1: positions
-            .iter()
-            .map(|v| v.1.clone())
-            .fold(0. / 0., f64::min)
-            + padding,
-        y2: positions
-            .iter()
-            .map(|v| v.1.clone())
-            .fold(0. / 0., f64::max)
-            - padding,
+        x1: positions.iter().map(|(x, _)| *x).fold(NAN, f64::min) + padding,
+        x2: positions.iter().map(|(x, _)| *x).fold(NAN, f64::max) - padding,
+        y1: positions.iter().map(|(_, y)| *y).fold(NAN, f64::min) + padding,
+        y2: positions.iter().map(|(_, y)| *y).fold(NAN, f64::max) - padding,
     });
     world.add_resource(lanegraph);
 }
