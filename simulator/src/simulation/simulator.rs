@@ -14,12 +14,12 @@ use specs::prelude::*;
 use specs::Dispatcher;
 use uuid::Uuid;
 
+use crate::configurations::generals::EndTime;
 use crate::configurations::map;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
-use crate::ressources::generals;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
@@ -104,14 +104,14 @@ impl<'a, 'b> Simulation<'a, 'b> {
     }
 
     fn create_config_ressource(world: &mut World, config: &Configuration) {
-        let end_time = config.generals.end_time;
+        let end_time = config.generals.end_time.clone(); 
         let seed = if !config.generals.seed.is_empty() {
             Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
         } else {
             Uuid::new_v4()
         };
-
-        world.add_resource(config.generals.end_time);
+        
+        world.add_resource(end_time);
         world.add_resource(seed);
 
         // todo move this crate::configurations::map
@@ -197,6 +197,6 @@ fn add_lane_graph(lanegraph: LaneGraph, world: &mut World) {
 fn simulation_ended(ressources: &World) -> bool {
     // if keyboard end event  +
     let clock = ressources.read_resource::<clock::Clock>();
-    let end_time = ressources.read_resource::<generals::EndTime>();
+    let end_time = ressources.read_resource::<EndTime>();
     clock.get_time() >= end_time.val
 }
