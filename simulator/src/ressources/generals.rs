@@ -3,7 +3,7 @@ use dim::si::{Second, MIN};
 use crate::metrics::second_deserialize;
 use crate::metrics::Fdim;
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize)]
 pub struct EndTime {
     #[serde(deserialize_with = "second_deserialize")]
     pub val: Second<Fdim>,

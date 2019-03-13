@@ -96,7 +96,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
     }
 
     fn create_window() -> Window {
-        WindowSettings::new("Simumo - Visual debugger", [1440, 1440])
+        WindowSettings::new("Simumo - Visual debugger", [1, 1])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
             .build()
@@ -104,12 +104,14 @@ impl<'a, 'b> Simulation<'a, 'b> {
     }
 
     fn create_config_ressource(world: &mut World, config: &Configuration) {
+        let end_time = config.generals.end_time;
         let seed = if !config.generals.seed.is_empty() {
             Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
         } else {
             Uuid::new_v4()
         };
 
+        world.add_resource(config.generals.end_time);
         world.add_resource(seed);
 
         // todo move this crate::configurations::map
@@ -125,7 +127,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
         world.add_resource(graphics_handle);
         world.add_resource(clock::Clock::new(0.25 * S));
-        world.add_resource(generals::EndTime { val: 12.5 * S });
         world.add_resource(EventsManager::new());
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
         //todo make this properly configurable
