@@ -5,6 +5,7 @@ use crate::metrics::Fdim;
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {
+    pub clock_dt: f64,
     pub end_time: EndTime,
     pub seed: String,
 }

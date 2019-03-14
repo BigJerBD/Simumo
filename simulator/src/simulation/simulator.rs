@@ -39,26 +39,22 @@ impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
-        let mut world = World::new();
         let window = Self::create_window();
 
-        //ressources
-        Self::create_config_ressource(&mut world, &config);
-        Self::create_ressources(&mut world);
-
-        let mut system_mapping = HashMap::<String, Vec<String>>::new();
         let mut base_dispatcher_builder = DispatcherBuilder::new();
+        let mut world = World::new();
+        let mut system_mapping = HashMap::<String, Vec<String>>::new();
 
+        Self::create_ressources(&mut world, &config);
+        
         config.systems.declare_systems(&mut system_mapping);
         add_starting_systems(&mut base_dispatcher_builder);
-        config
-            .systems
-            .setup_systems(&mut base_dispatcher_builder, &system_mapping);
+        config.systems.setup_systems(&mut base_dispatcher_builder, &system_mapping);
         add_ending_systems(&mut base_dispatcher_builder);
 
-        let mut render_dispatcher = make_render_dispatcher();
         let mut base_dispatcher = base_dispatcher_builder.build();
-
+        let mut render_dispatcher = make_render_dispatcher();
+        
         base_dispatcher.setup(&mut world.res);
         render_dispatcher.setup(&mut world.res);
 
@@ -103,17 +99,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .unwrap()
     }
 
-    fn create_config_ressource(world: &mut World, config: &Configuration) {
-        let end_time = config.generals.end_time.clone(); 
-        let seed = if !config.generals.seed.is_empty() {
-            Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
-        } else {
-            Uuid::new_v4()
-        };
-        
-        world.add_resource(end_time);
-        world.add_resource(seed);
-
+    fn create_config_ressource(world: &mut World, ) {
         // todo move this crate::configurations::map
         //match &config.map {
         //    map::Map::OsmGraph(val) => add_lane_graph(
@@ -123,11 +109,23 @@ impl<'a, 'b> Simulation<'a, 'b> {
         //};
     }
 
-    fn create_ressources(world: &mut World) {
+    fn create_ressources(world: &mut World, config: &Configuration) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
+        let clock_dt = config.generals.clock_dt.clone();
+        let end_time = config.generals.end_time.clone(); 
+        let seed = if !config.generals.seed.is_empty() {
+            Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
+        } else {
+            Uuid::new_v4()
+        };
+        
+        world.add_resource(end_time);
         world.add_resource(graphics_handle);
-        world.add_resource(clock::Clock::new(0.25 * S));
+        world.add_resource(clock::Clock::new(clock_dt * S)); //Todo: Handle directly second on config.yaml
         world.add_resource(EventsManager::new());
+        world.add_resource(seed);
+        
+
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
         //todo make this properly configurable
         //{

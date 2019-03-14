@@ -1,4 +1,5 @@
 generals:
+  clock_dt: 0.25
   end_time:
     val: 12.5
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
