@@ -5,7 +5,8 @@ use crate::metrics::Fdim;
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {
-    pub clock_dt: f64,
+    #[serde(deserialize_with = "second_deserialize")]
+    pub clock_dt: Second<Fdim>,
     pub end_time: EndTime,
     pub seed: String,
 }
