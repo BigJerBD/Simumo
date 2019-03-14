@@ -11,9 +11,8 @@ use specs::world;
 use crate::metrics::Fdim;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
-use dim::si::{Meter, MeterPerSecond};
-
 use crate::topology::curve::Curve;
+use dim::si::{Meter, MeterPerSecond};
 
 pub type IntersectionId = u64;
 /// used for convenience
