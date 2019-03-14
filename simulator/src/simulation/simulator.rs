@@ -1,9 +1,5 @@
-use std::cmp;
 use std::collections::HashMap;
-use std::f64::INFINITY;
-use std::f64::NEG_INFINITY;
 
-use dim::si::{M, S};
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
 use piston::event_loop::{EventSettings, Events};
@@ -15,15 +11,10 @@ use specs::Dispatcher;
 use uuid::Uuid;
 
 use crate::configurations::generals::EndTime;
-use crate::configurations::map;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
-use crate::ressources::generals::MapBbox;
-use crate::ressources::lane_graph::IntersectionData;
-use crate::ressources::lane_graph::LaneData;
-use crate::ressources::lane_graph::LaneGraph;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;

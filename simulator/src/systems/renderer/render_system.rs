@@ -41,7 +41,7 @@ impl<'a> System<'a> for DrawMap {
                 lane_graph.graph.neighbors(*nodeid);
 
             for neighbor in neighbors {
-                let lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
+                let _lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
                 let pos_neighbor: (f64, f64) = lane_graph.intersection(neighbor).position();
 
                 //println!("{:?}", position_node);

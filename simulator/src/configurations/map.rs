@@ -9,7 +9,6 @@ use crate::ressources::generals;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
-use dim::si::M;
 
 #[derive(Deserialize)]
 struct FileMap {
