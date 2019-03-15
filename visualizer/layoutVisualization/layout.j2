@@ -7,7 +7,6 @@
   <!-- <link rel="stylesheet" href="https://unpkg.com/ol-popup@2.0.0/src/ol-popup.css"> -->
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="jquery-ui-slider-pips.css">
-  <link rel="stylesheet" type="text/css" href="tabs.css" />
   <script src="jquery-3.3.1.min.js"></script>
   <script src="jquery-ui.js"></script>
   <script src="jquery-ui-slider-pips.js"></script>
@@ -52,21 +51,15 @@
 
   </div>
 
-  <div id="content">
+  <div id="visualizations">
     <div id="tabs">
       <ul>
         <li><a href="#" rel="ColoredPoints" class="selected" onclick="loadit(this)">Points colorés</a></li>
         <li><a href="#" rel="HeatMap" onClick="loadit(this)">Heatmap</a></li>
       </ul>
-
-      <div id="VisualizationBox">
-        <div class="MapBox">
-          {% include 'OlMapTemplate.html' %}
-        </div>
-        <div class="OtherVisualisation" visibility="hidden">
-        </div>
-      </div>
-    </div>
+      
+      {% include 'OlMapTemplate.html' %}
+   </div>
   </div>
 
   <br>
@@ -77,3 +70,5 @@
   </div>
   <br>
   <div id="sliderUnit"></div>
+
+</html>
