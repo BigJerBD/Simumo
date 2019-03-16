@@ -5,7 +5,7 @@ extern crate quote;
 extern crate syn;
 
 use proc_macro2::TokenStream;
-use simumo_ser::*;
+use simumo_ser::make_ser_block;
 use syn::DeriveInput;
 
 #[macro_use]
@@ -42,12 +42,13 @@ pub fn simumo_serialize(input: proc_macro::TokenStream) -> proc_macro::TokenStre
     }
 }
 
-
 /// Macro that provide a collection of derivation
 /// for components with the role of Tag
 #[proc_macro_attribute]
-pub fn simucomponent_tag(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                         -> proc_macro::TokenStream {
+pub fn simucomponent_tag(
+    _metadata: proc_macro::TokenStream,
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
 
@@ -67,8 +68,10 @@ pub fn simucomponent_tag(_metadata: proc_macro::TokenStream, input: proc_macro::
 /// Macro that provide a collection of derivation
 /// for components that have the role of data in Simumo
 #[proc_macro_attribute]
-pub fn simucomponent_data(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                          -> proc_macro::TokenStream {
+pub fn simucomponent_data(
+    _metadata: proc_macro::TokenStream,
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
 
@@ -88,8 +91,10 @@ pub fn simucomponent_data(_metadata: proc_macro::TokenStream, input: proc_macro:
 /// Macro that provide a collection of derivation
 /// for a basic component in simumo
 #[proc_macro_attribute]
-pub fn simucomponent_base(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                          -> proc_macro::TokenStream {
+pub fn simucomponent_base(
+    _metadata: proc_macro::TokenStream,
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
         #[derive(
@@ -104,8 +109,10 @@ pub fn simucomponent_base(_metadata: proc_macro::TokenStream, input: proc_macro:
 /// Macro that provide a collection of derivation
 /// for a basic system in simumo
 #[proc_macro_attribute]
-pub fn simusystem(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                  -> proc_macro::TokenStream {
+pub fn simusystem(
+    _metadata: proc_macro::TokenStream,
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
         #[derive(
@@ -120,8 +127,10 @@ pub fn simusystem(_metadata: proc_macro::TokenStream, input: proc_macro::TokenSt
 /// Macro that provide a collection of derivation
 /// for a basic simulator ressource
 #[proc_macro_attribute]
-pub fn simuresource(_metadata: proc_macro::TokenStream, input: proc_macro::TokenStream)
-                    -> proc_macro::TokenStream {
+pub fn simuresource(
+    _metadata: proc_macro::TokenStream,
+    input: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
     let input: TokenStream = input.into();
     let output = quote! {
         #[derive(
@@ -132,4 +141,3 @@ pub fn simuresource(_metadata: proc_macro::TokenStream, input: proc_macro::Token
     };
     output.into()
 }
-

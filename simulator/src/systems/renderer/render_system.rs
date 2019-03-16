@@ -14,6 +14,7 @@ use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
 
 const ZOOM_FACTOR: f64 = 2.0;
 const EDGE_WIDTH: f64 = 3.0;
+const LON_MIN: f64 = -72.0;
 
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
@@ -41,7 +42,7 @@ impl<'a> System<'a> for DrawMap {
                 lane_graph.graph.neighbors(*nodeid);
 
             for neighbor in neighbors {
-                let lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
+                let _lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
                 let pos_neighbor: (f64, f64) = lane_graph.intersection(neighbor).position();
 
                 //println!("{:?}", position_node);

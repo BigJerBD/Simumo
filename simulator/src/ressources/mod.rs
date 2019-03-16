@@ -5,4 +5,3 @@ pub mod lane_graph;
 mod res_prelude;
 
 pub use clock::Clock;
-pub use generals::EndTime;
