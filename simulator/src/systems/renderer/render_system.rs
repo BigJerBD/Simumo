@@ -1,7 +1,9 @@
+use crate::configurations::generals::VisualDebugger;
 use crate::components::constant::Drawer;
 use crate::components::dynamic::Position;
 use crate::components::dynamic::Speed;
 use crate::components::statics::trafficlight::Light;
+use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::drawableshape::Drawable;
@@ -12,9 +14,8 @@ use petgraph::graphmap::Neighbors;
 use piston::input::RenderArgs;
 use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
 
+const EDGE_WIDTH: f64 = 2.0;
 const ZOOM_FACTOR: f64 = 2.0;
-const EDGE_WIDTH: f64 = 3.0;
-const LON_MIN: f64 = -72.0;
 
 pub struct DrawClear;
 impl<'a> System<'a> for DrawClear {
@@ -30,27 +31,36 @@ impl<'a> System<'a> for DrawClear {
 pub struct DrawMap;
 impl<'a> System<'a> for DrawMap {
     type SystemData = (
+        ReadExpect<'a, VisualDebugger>,
+        ReadExpect<'a, MapBbox>,
         ReadExpect<'a, LaneGraph>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
     );
 
-    fn run(&mut self, (lane_graph, mut g_handle, args): Self::SystemData) {
+    fn run(&mut self, (debugger, map_bbox, lane_graph, mut g_handle, args): Self::SystemData) {
         for (nodeid, node) in lane_graph.intersections() {
-            let position_node: (f64, f64) = node.position();
+            let pos_node: (f64, f64) = coordinates_to_window(
+                node.position(),
+                &debugger,
+                &map_bbox,
+            );
+            
             let neighbors: Neighbors<'_, u64, petgraph::Directed> =
                 lane_graph.graph.neighbors(*nodeid);
 
             for neighbor in neighbors {
                 let _lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
-                let pos_neighbor: (f64, f64) = lane_graph.intersection(neighbor).position();
-
-                //println!("{:?}", position_node);
+                let pos_neighbor: (f64, f64) = coordinates_to_window(
+                    lane_graph.intersection(neighbor).position(),
+                    &debugger,
+                    &map_bbox,
+                );
 
                 g_handle.draw(args.viewport(), |c, gl| {
                     draw_lane_between_two_points(
-                        (position_node.0 * ZOOM_FACTOR, position_node.1 * ZOOM_FACTOR),
-                        (pos_neighbor.0 * ZOOM_FACTOR, pos_neighbor.1 * ZOOM_FACTOR),
+                        pos_node,
+                        pos_neighbor,
                         EDGE_WIDTH,
                         Color::GRAY,
                         c,
@@ -128,6 +138,19 @@ fn draw_lane_between_two_points(
         .transform
         .trans(p1.0, p1.1)
         .rot_rad(rectangle_angle)
-        .scale(rectangle_length, rectangle_width * ZOOM_FACTOR);
+        .scale(rectangle_length, rectangle_width);
     rectangle(color.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
+}
+
+fn coordinates_to_window(coord: (f64, f64), debugger: &VisualDebugger, map_bbox: &MapBbox) -> (f64, f64) {
+    let min_lon = map_bbox.x1;
+    let max_lat = map_bbox.y2;
+    let diff_lon: f64 = map_bbox.x2 - map_bbox.x1;
+    let diff_lat: f64 = map_bbox.y2 - map_bbox.y1;
+    let width: f64 = debugger.width;
+    let height: f64 = debugger.height;
+    let (lon, lat) = coord;
+    let x = width * (lon - min_lon) / diff_lon;
+    let y = height * (max_lat - lat) / diff_lat;
+    (x, y)
 }
