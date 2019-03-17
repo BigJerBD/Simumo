@@ -45,8 +45,13 @@ systems:
 
   spawner:
     type: Frequency
+    min: 10
+    max: 20
     locations:
-      - 1
+      - 5872015933
+    destinations:
+      - 1038872991
+    
 
 entities:
   - id: vehicle01

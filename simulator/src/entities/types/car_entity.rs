@@ -3,14 +3,12 @@ use crate::components::types::constant::Identifier;
 use crate::components::types::dynamic::Acceleration;
 use crate::components::types::dynamic::Position;
 use crate::components::types::dynamic::Speed;
-use crate::components::types::spawner::SpawnerType;
 use crate::entities::entity_type::Instantiable;
 use crate::metrics::identifier_deserialize;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
-use specs::World;
+use specs::{Builder, World};
 use specs::prelude::{Entities, LazyUpdate, Read};
-use specs::Builder;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
@@ -25,7 +23,6 @@ pub struct CarEntity {
     pub speed: Speed,
     #[serde(default)]
     pub acceleration: Acceleration,
-    pub spawner: SpawnerType
     //energy_control: EnergyControl,
     //agent_type:
 }
@@ -40,7 +37,6 @@ impl<'a> Instantiable<'a> for CarEntity {
             .with(Drawer {
                 figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
             })
-            .with(self.spawner.clone())
             .build();
     }
     fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>) {
@@ -54,6 +50,5 @@ impl<'a> Instantiable<'a> for CarEntity {
                 figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
             },
         );
-        updater.insert(entity, self.spawner.clone());
     }
 }
