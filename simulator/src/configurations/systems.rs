@@ -9,6 +9,7 @@ use crate::systems::loggers::LoggerSystem;
 use crate::systems::mobility::MobilitySystem;
 use crate::systems::physic::PhysicSystem;
 use crate::systems::recorders::RecorderSystem;
+use crate::systems::spawners::SpawnerSystem;
 use crate::systems::SystemType;
 
 #[derive(Deserialize)]
@@ -20,6 +21,7 @@ pub struct SystemsConfiguration {
     pub mobility: MobilitySystem,
     pub physic: PhysicSystem,
     pub recorders: Vec<RecorderSystem>,
+    pub spawner: SpawnerSystem,
     //pub others : Vec<UnclassifiedSystem>
 }
 

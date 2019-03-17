@@ -6,6 +6,7 @@ generals:
     use: true
     width: 720
     height: 720
+    
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
 # map:\
@@ -41,6 +42,11 @@ systems:
   recorders:
     - capture_freq: 0
       type: CarPositionRecorder
+
+  spawner:
+    type: Frequency
+    locations:
+      - 1
 
 
 
