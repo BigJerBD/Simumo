@@ -1,3 +1,4 @@
+use crate::components::spawner::SpawnerType;
 use crate::entities::entity_type::Instantiable;
 use crate::entities::types::CarEntity;
 use crate::ressources::clock;
@@ -9,9 +10,17 @@ pub struct FrequencySpawner {
     pub locations: Vec<i32>
 }
 impl<'a> System<'a> for FrequencySpawner {
-    type SystemData = (Read<'a, clock::Clock>, Entities<'a>, Read<'a, LazyUpdate>);
+    type SystemData = (
+        Read<'a, clock::Clock>,
+        Entities<'a>,
+        Read<'a, LazyUpdate>,
+        ReadStorage<'a, SpawnerType>,
+    );
 
-    fn run(&mut self, (_clock, entities, updater): Self::SystemData) {
+    fn run(&mut self, (_clock, entities, updater, spawner_types): Self::SystemData) {
+        for (entity, spawner_type) in (&entities, &spawner_types).join() {
+            println!("{:#?}", spawner_type);
+        }
         let json = r#"
             {
                 "id": "spawnedvehicle",
@@ -25,6 +34,10 @@ impl<'a> System<'a> for FrequencySpawner {
                 },
                 "acceleration": {
                     "val": 0.5
+                },
+                "spawner": {
+                    "type": "Frequency",
+                    "period": 1
                 }
             }"#;
         let new_car: CarEntity = serde_json::from_str(json).unwrap();

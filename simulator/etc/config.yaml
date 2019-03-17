@@ -48,8 +48,6 @@ systems:
     locations:
       - 1
 
-
-
 entities:
   - id: vehicle01
     type: vehicle
@@ -58,22 +56,9 @@ entities:
       y: 0
     speed:
       val: 2
-  - id: vehicle02
-    type: vehicle
-    position:
-      x: 0
-      y: 0
-    speed:
-      val: 4
-    acceleration:
-      val: 0.4
-  - id: vehicle03
-    type: vehicle
-    position:
-      x: 0
-      y: 0
-    speed:
-      val: 1.5
+    spawner:
+      type: Frequency
+      period: 1
   - id: trafficlight01
     type: trafficlight
     light:

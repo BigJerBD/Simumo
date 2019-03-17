@@ -24,8 +24,4 @@ impl SystemType for SpawnerSystem {
             SpawnerSystem::Frequency(s) => String::from(s.type_of()),
         }
     }
-
-    fn type_dependencies(&self) -> Vec<String> {
-        vec![]
-    }
 }

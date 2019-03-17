@@ -38,6 +38,7 @@ impl SystemsConfiguration {
         );
         system_mapping.insert(PhysicSystem::typename(), vec![self.physic.system_name()]);
         system_mapping.insert(RecorderSystem::typename(), as_sysname_vec(&self.recorders));
+        system_mapping.insert(SpawnerSystem::typename(), vec![self.spawner.system_name()]);
     }
 
     pub fn setup_systems(
@@ -59,6 +60,7 @@ impl SystemsConfiguration {
         set_all_in_dispatcher(self.recorders, builder, systems);
         info!("Setting in dispatcher : logger");
         self.logger.set_in_dispatcher(builder, systems);
+        self.spawner.set_in_dispatcher(builder, systems);
     }
 }
 
