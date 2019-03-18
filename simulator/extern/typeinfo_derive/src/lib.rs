@@ -13,7 +13,7 @@ pub fn type_info(input: TokenStream) -> TokenStream {
     let tokens = quote! {
 
         impl TypeInfo for #name {
-            const typename : &'static str = stringify!(#name);
+            const TYPENAME : &'static str = stringify!(#name);
         }
     };
     TokenStream::from(tokens)

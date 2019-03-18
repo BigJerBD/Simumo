@@ -1,9 +1,9 @@
 pub trait TypeInfo {
-    const typename: &'static str;
+    const TYPENAME: &'static str;
     fn type_of(&self) -> &'static str {
-        Self::typename
+        Self::TYPENAME
     }
     fn typestring() -> String {
-        String::from(Self::typename)
+        String::from(Self::TYPENAME)
     }
 }

@@ -1,7 +1,13 @@
-use dim::si::Second;
-
-use crate::components::type_prelude::*;
 use crate::metrics::Fdim;
+
+use dim::si::Second;
+use serde::ser::Serialize;
+use serde::ser::Serializer;
+use simumo_derive::simucomponent_base;
+use specs::prelude::{Component, VecStorage};
+use typeinfo::TypeInfo;
+use typeinfo_derive::TypeInfo;
+
 
 #[simucomponent_base]
 #[derive(Serialize)]

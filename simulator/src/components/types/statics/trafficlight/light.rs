@@ -3,9 +3,9 @@ use crate::metrics::second_deserialize;
 use crate::metrics::Fdim;
 use crate::systems::renderer::Color;
 use dim::si::{Second, S};
-use specs::prelude::*;
+use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
-use typeinfo_derive::*;
+use typeinfo_derive::TypeInfo;
 
 #[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TrafficLightColor {

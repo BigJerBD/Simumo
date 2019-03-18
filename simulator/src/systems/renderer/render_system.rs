@@ -6,7 +6,7 @@ use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::drawableshape::Drawable;
 use crate::systems::renderer::Color;
-use graphics::*;
+use graphics::{clear, rectangle, Context, Transformed};
 use opengl_graphics::GlGraphics;
 use petgraph::graphmap::Neighbors;
 use piston::input::RenderArgs;

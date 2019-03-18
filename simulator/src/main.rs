@@ -32,13 +32,11 @@ mod components;
 mod configurations;
 mod entities;
 mod errors;
-mod internal_prelude;
 mod metrics;
 mod osmgraph_api;
 mod ressources;
 mod simulation;
 mod systems;
-mod topology;
 mod types;
 mod util;
 

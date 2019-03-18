@@ -6,7 +6,7 @@ use piston::event_loop::{EventSettings, Events};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
-use specs::prelude::*;
+use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use uuid::Uuid;
 
