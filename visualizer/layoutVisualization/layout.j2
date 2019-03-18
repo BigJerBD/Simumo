@@ -31,7 +31,7 @@
       <h3>Métriques</h3>
       <div class="metricSelectionBox">
         {% for metric in metrics %}
-          <input type="radio" name="metricSelection" style="float:left;" onclick="updateVisualizationBox()" data-logName={{"\"" +metric.logName + "\""}} data-unit={{"\"" +metric.unit + "\""}} }>
+          <input type="radio" name="metricSelection" style="float:left;" onclick="updateVisualizationBox()" data-logPath={{"\"" +metric.logName + "\""}} data-unit={{"\"" +metric.unit + "\""}} }>
           <div style="float:left;">{{metric.name + '(' +metric.unitLabel + ')'}}</div>
           <br>
         {% endfor %}
@@ -57,7 +57,7 @@
         <li><a href="#" rel="ColoredPoints" class="selected" onclick="loadit(this)">Points colorés</a></li>
         <li><a href="#" rel="HeatMap" onClick="loadit(this)">Heatmap</a></li>
       </ul>
-      
+
       {% include 'OlMapTemplate.html' %}
    </div>
   </div>
