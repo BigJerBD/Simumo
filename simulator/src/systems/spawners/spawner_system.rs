@@ -1,7 +1,11 @@
 use crate::entities::entity_type::Instantiable;
 use crate::entities::types::CarEntity;
 use crate::ressources::clock;
-use crate::systems::sys_prelude::*;
+
+use specs::prelude::{Entities, LazyUpdate, Read, ReadStorage, System, Write, WriteStorage, Join};
+use simumo_derive::simusystem;
+use typeinfo::TypeInfo;
+use typeinfo_derive::TypeInfo;
 
 #[simusystem]
 #[derive(Default)]

@@ -6,6 +6,8 @@ pub struct Point2D {
     y: f32,
 }
 
+pub type Vec2D = Point2D;
+
 impl Point2D {
     pub fn new(x: f32, y: f32) -> Self {
         Point2D { x, y }
