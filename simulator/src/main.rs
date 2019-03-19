@@ -37,8 +37,6 @@ mod osmgraph_api;
 mod ressources;
 mod simulation;
 mod systems;
-mod types;
-mod util;
 
 fn main() {
     env_logger::init();

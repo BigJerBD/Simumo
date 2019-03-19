@@ -330,6 +330,8 @@ mod tests {
         )
     }
 
+
+
     #[test]
     fn push_valid() {
         let mut graph = lane_map_triangle();
