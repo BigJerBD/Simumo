@@ -8,6 +8,7 @@ use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::drawableshape::Drawable;
 use crate::systems::renderer::Color;
+use crate::util::measure;
 use graphics::*;
 use opengl_graphics::GlGraphics;
 use petgraph::graphmap::Neighbors;
@@ -100,6 +101,8 @@ impl<'a> System<'a> for DrawTrafficLights {
 pub struct DrawVehicles;
 impl<'a> System<'a> for DrawVehicles {
     type SystemData = (
+        ReadExpect<'a, VisualDebugger>,
+        ReadExpect<'a, MapBbox>,
         ReadStorage<'a, Position>,
         ReadStorage<'a, Speed>,
         ReadStorage<'a, Drawer>,
@@ -107,12 +110,18 @@ impl<'a> System<'a> for DrawVehicles {
         ReadExpect<'a, RenderArgs>,
     );
 
-    fn run(&mut self, (positions, speeds, drawers, mut g_handle, args): Self::SystemData) {
+    fn run(&mut self, (debugger, map_bbox, positions, speeds, drawers, mut g_handle, args): Self::SystemData) {
         for (position, _speed, drawer) in (&positions, &speeds, &drawers).join() {
+            measure(position.y.value_unsafe, position.x.value_unsafe);
+            let pos_vehicle: (f64, f64) = coordinates_to_window(
+                (position.x.value_unsafe, position.y.value_unsafe),
+                &debugger,
+                &map_bbox,
+            );
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(
-                    position.x.value_unsafe * ZOOM_FACTOR,
-                    position.y.value_unsafe * ZOOM_FACTOR,
+                    pos_vehicle.0,
+                    pos_vehicle.1,
                     Color::BLACK,
                     c,
                     gl,

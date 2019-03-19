@@ -47,23 +47,26 @@ systems:
     type: Frequency
     min: 10
     max: 20
-    locations:
+    start_locations:
       - 5872015933
-    destinations:
+      - 81474235
+      - 4291399599
+      - 4738061547
+      - 81591074
+      - 64010518
+      - 3646823269
+      - 110285457
+      - 255785981
+      - 2004727123
+      - 3728506124
+      - 115677165
+      - 115690440
+      - 120943775
+    end_locations:
       - 1038872991
-    
+      - 4272197702
 
 entities:
-  - id: vehicle01
-    type: vehicle
-    position:
-      x: 0
-      y: 0
-    speed:
-      val: 2
-    spawner:
-      type: Frequency
-      period: 1
   - id: trafficlight01
     type: trafficlight
     light:
