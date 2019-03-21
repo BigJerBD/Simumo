@@ -19,7 +19,8 @@ def render_ol_map(map_output_path, city):
     template = template_env.get_template("OlMapTemplate.j2")
     map_rendered = template.render(initialLocation="\"" + city + "\"")
     with open(map_output_path + "/OlMapTemplate.js", "w") as text_file:
-        print(map_rendered, file=text_file)
+        map_rendered = template.render(initialLocation="\"" + city + "\"")
+        text_file.write(map_rendered.encode('utf-8').decode())
     os.remove(map_output_path + "/OlMapTemplate.j2")
 
 
@@ -35,9 +36,10 @@ def render_layout(map_output_path, metrics, legend):
     # - the legend of the metrics si the one requested (not done for now)
     template_env = jinja2.Environment(loader=jinja2.FileSystemLoader(map_output_path))
     template = template_env.get_template('layout.j2')
-    map_rendered = template.render(metrics=metrics, legend=legend)
+
     with open(map_output_path + "/layout.html", "w") as text_file:
-        print(map_rendered, file=text_file)
+        map_rendered = template.render(metrics=metrics, legend=legend)
+        text_file.write(map_rendered.encode('utf-8').decode())
     os.remove(map_output_path + '/layout.j2')
 
 

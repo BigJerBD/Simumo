@@ -63,13 +63,6 @@ function timestampToSec(timestamp)
     return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]);
 }
 
-function switchTabToMap()
-{
-	let visualizationBox = document.getElementById('VisualizationBox');
-	visualizationBox.children[0].style.visibility = 'visible';
-	visualizationBox.children[1].style.visibility = 'hidden';
-}
-
 function updateVisualizationBox() {
   $("body").css("cursor", "wait");
   let metrics = document.getElementsByName('metricSelection');
@@ -96,12 +89,9 @@ function updateVisualizationBox() {
 	let timeValueMax = NaN;
 
   let existTimeline = $('#flat-slider').attr('class') != 'unintialized';
-	if(!existTimeline)
+	if(existTimeline)
 	{
-		$('#flat-slider').attr('class', 'initialized');
-	}
-	else {
-		timeValueBegin = $('#flat-slider').slider("option", "values")[0];
+        timeValueBegin = $('#flat-slider').slider("option", "values")[0];
 		timeValueEnd = $('#flat-slider').slider("option", "values")[1];
 		timeValueMin = $("#flat-slider").slider("option", "min");
 		timeValueMax = $("#flat-slider").slider("option", "max");
@@ -122,7 +112,6 @@ function updateVisualizationBox() {
 						: "/logs/" + logName + "?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd);
 
   if (coloredPointsTab.className == "selected") {
-    switchTabToMap();
     $.ajax({
       url: urlLog,
       cache: false,
@@ -143,7 +132,6 @@ function updateVisualizationBox() {
     });
 
   } else if (heatMapTab.className == "selected") {
-    switchTabToMap();
     $.ajax({
       url: urlLog,
       cache: false,
@@ -163,7 +151,6 @@ function updateVisualizationBox() {
       }
     });
   }
-
 
   $("body").css("cursor", "default");
 }
