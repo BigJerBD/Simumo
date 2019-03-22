@@ -21,17 +21,16 @@ def find_entries_in_log(log, min, max):
         return [x for x in log if timestamp_to_sec(min) < timestamp_to_sec(x["timestamp"]) < timestamp_to_sec(max)]
 
 
-def get_logs_in_range(metric, min, max):
-    if metric in parsed_logs.keys():
-        entries = find_entries_in_log(parsed_logs[metric], min, max)
+def get_logs_in_range(logPath, min, max):
+    if logPath in parsed_logs.keys():
+        entries = find_entries_in_log(parsed_logs[logPath], min, max)
         return json.dumps(entries, sort_keys=True, indent=4)
     else:
-        log_path = "logs/" + metric + ".ndjson"
-        log = Path(log_path)
+        log = Path(logPath)
         if log.is_file():
-            parsed_log = parse_log(log_path)
-            parsed_logs[metric] = parsed_log
+            parsed_log = parse_log(logPath)
+            parsed_logs[logPath] = parsed_log
             entries = find_entries_in_log(parsed_log, min, max)
             return json.dumps(entries, sort_keys=True, indent=4)
         else:
-            return []
+            return ""

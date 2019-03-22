@@ -77,7 +77,7 @@ function updateVisualizationBox() {
 	{
 		return;
 	}
-	let logName = selectedMetric.getAttribute('data-logName');
+	let logPath = selectedMetric.getAttribute('data-logPath');
 	let logUnit = selectedMetric.getAttribute('data-unit');
 
   let coloredPointsTab = document.getElementById('tabs').getElementsByTagName("a")[0];
@@ -108,8 +108,8 @@ function updateVisualizationBox() {
   }
 
 	let urlLog = !existTimeline
-	          ? "/logs/" + logName
-						: "/logs/" + logName + "?min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd);
+	          ? "/logs?logPath=" + logPath
+			  : "/logs?logPath=" + logPath + "&min=" + secToTimestamp(timeValueBegin) + "&max=" + secToTimestamp(timeValueEnd);
 
   if (coloredPointsTab.className == "selected") {
     $.ajax({
