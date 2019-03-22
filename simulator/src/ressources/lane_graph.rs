@@ -8,10 +8,10 @@ use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
 use specs::world;
 
-use crate::metrics::Fdim;
+use crate::commons::metrics::Fdim;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
-use crate::ressources::curve::Curve;
+use crate::commons::Curve;
 use dim::si::{Meter, MeterPerSecond};
 
 pub type IntersectionId = u64;

@@ -1,7 +1,7 @@
-use super::super::simumo_component::LogDataEntry;
-use crate::metrics::Fdim;
+use crate::commons::LogDataEntry;
+use crate::commons::metrics::Fdim;
 use crate::systems::renderer::drawableshape::DrawableShape;
-use crate::metrics::{kilogram_deserialize, meter_deserialize};
+use crate::commons::metrics::{kilogram_deserialize, meter_deserialize};
 
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;

@@ -1,5 +1,5 @@
 use crate::components::constant::Drawer;
-use crate::components::dynamic::Position;
+use crate::components::Position;
 use crate::components::dynamic::Speed;
 use crate::components::statics::trafficlight::Light;
 use crate::ressources::lane_graph::LaneData;
@@ -75,8 +75,8 @@ impl<'a> System<'a> for DrawTrafficLights {
         for (position, light, drawer) in (&positions, &lights, &drawers).join() {
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(
-                    position.x.value_unsafe * ZOOM_FACTOR,
-                    position.y.value_unsafe * ZOOM_FACTOR,
+                    position.val.x.value_unsafe * ZOOM_FACTOR,
+                    position.val.y.value_unsafe * ZOOM_FACTOR,
                     light.color.get_rendering_color(),
                     c,
                     gl,
@@ -100,8 +100,8 @@ impl<'a> System<'a> for DrawVehicles {
         for (position, _speed, drawer) in (&positions, &speeds, &drawers).join() {
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(
-                    position.x.value_unsafe * ZOOM_FACTOR,
-                    position.y.value_unsafe * ZOOM_FACTOR,
+                    position.val.x.value_unsafe * ZOOM_FACTOR,
+                    position.val.y.value_unsafe * ZOOM_FACTOR,
                     Color::BLACK,
                     c,
                     gl,

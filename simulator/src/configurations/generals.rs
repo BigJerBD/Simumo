@@ -1,7 +1,7 @@
 use dim::si::{Second, MIN};
 
-use crate::metrics::second_deserialize;
-use crate::metrics::Fdim;
+use crate::commons::metrics::second_deserialize;
+use crate::commons::metrics::Fdim;
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {

@@ -4,8 +4,8 @@ type Fdef = f64;
 
 #[derive(Clone, Copy, PartialEq, Default, Debug)]
 pub struct Point2D {
-    x: Fdef,
-    y: Fdef,
+    pub x: Fdef,
+    pub y: Fdef,
 }
 
 pub type Vec2D = Point2D;

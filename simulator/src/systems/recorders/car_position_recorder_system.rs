@@ -1,5 +1,5 @@
 use crate::components::constant::CarType;
-use crate::components::dynamic::Position;
+use crate::components::Position;
 use crate::components::log_record::LogRecord;
 use crate::ressources;
 

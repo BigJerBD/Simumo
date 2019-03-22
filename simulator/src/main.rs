@@ -9,6 +9,8 @@ extern crate specs_derive;
 #[macro_use]
 extern crate log;
 extern crate env_logger;
+#[macro_use]
+extern crate lazy_static;
 
 extern crate argparse;
 extern crate csv;
@@ -32,7 +34,7 @@ mod components;
 mod configurations;
 mod entities;
 mod errors;
-mod metrics;
+mod commons;
 mod osmgraph_api;
 mod ressources;
 mod simulation;

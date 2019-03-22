@@ -1,6 +1,6 @@
 extern crate specs;
-use crate::metrics::second_deserialize;
-use crate::metrics::Fdim;
+use crate::commons::metrics::second_deserialize;
+use crate::commons::metrics::Fdim;
 use crate::systems::renderer::Color;
 use dim::si::{Second, S};
 use specs::prelude::{Component, VecStorage};

@@ -1,7 +1,4 @@
-mod point2d;
-
-use crate::metrics::CartesianCoord;
-use self::point2d::Point2D;
+use crate::commons::point2d::Point2D;
 use std::ops::Sub;
 
 type Fdef = f64;
