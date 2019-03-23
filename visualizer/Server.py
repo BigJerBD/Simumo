@@ -25,7 +25,7 @@ def send_metric():
 
 
 if __name__ == "__main__":
-    with open(sys.argv[1], 'r') as stream:
+    with open(sys.argv[1], 'rt', encoding='utf8') as stream:
         try:
             config = yaml.load(stream)
             directoryPath = config['logs']['directory']
