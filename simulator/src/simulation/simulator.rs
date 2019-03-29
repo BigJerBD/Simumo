@@ -84,6 +84,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         println!("Showing results log...");
     }
 
+    ///Create the visual debugger
     fn create_window() -> Window {
         WindowSettings::new("Simumo - Visual debugger", [1280, 720])
             .opengl(Self::OPENGL_VERSION)
@@ -92,19 +93,20 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .unwrap()
     }
 
+    ///Create default world's ressources and config's ressources
     fn create_ressources(world: &mut World, config: &Configuration) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
-        let clock_dt = config.generals.clock_dt.clone();
         let end_time = config.generals.end_time.clone();
         let seed = if !config.generals.seed.is_empty() {
             Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
         } else {
             Uuid::new_v4()
         };
+
         config.map.forward_ressources(world);
         world.add_resource(end_time);
         world.add_resource(graphics_handle);
-        world.add_resource(clock::Clock::new(clock_dt)); //Todo: Handle directly second on config.yaml
+        world.add_resource(clock::Clock::new(config.generals.clock_dt));
         world.add_resource(EventsManager::new());
         world.add_resource(seed);
         // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)

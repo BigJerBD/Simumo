@@ -1,3 +1,5 @@
+/*! Represent the map on different type. */
+
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
@@ -10,18 +12,14 @@ use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 
-#[derive(Deserialize)]
-struct FileMap {
-    edges: HashMap<u64, u64>,
-    nodes: HashMap<u64, (f64, f64)>,
-}
-
+///Define different type of map.
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Map {
     FileMap {
         path: String,
     },
+    ///Constructed from Open Street Map API.
     OsmGraph {
         longitude: f64,
         latitude: f64,
@@ -29,11 +27,19 @@ pub enum Map {
     },
 }
 
+///Represent the structure of a file map.
+#[derive(Deserialize)]
+struct FileMap {
+    edges: HashMap<u64, u64>,
+    nodes: HashMap<u64, (f64, f64)>,
+}
+
 impl Map {
+    ///Create world ressources depending on type.
     pub fn forward_ressources(&self, world: &mut World) {
         match self {
             Map::FileMap { path } => {
-                create_ressource_lanegraph(lanemap_from_path(path.to_string()), world)
+                create_ressource_lanegraph(lanemap_from_file_map(path.to_string()), world)
             }
             Map::OsmGraph {
                 longitude,
@@ -47,7 +53,7 @@ impl Map {
     }
 }
 
-fn lanemap_from_path(path: String) -> LaneGraph {
+fn lanemap_from_file_map(path: String) -> LaneGraph {
     let path = Path::new(&path);
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
@@ -62,6 +68,7 @@ fn lanemap_from_path(path: String) -> LaneGraph {
     )
 }
 
+///Create the graph that will be display the in visual debugger
 fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
     let positions: Vec<(f64, f64)> = lanegraph
         .intersections

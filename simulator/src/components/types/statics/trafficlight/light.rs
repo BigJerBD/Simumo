@@ -1,4 +1,6 @@
-extern crate specs;
+/*!  Declare a traffic light as component. */
+
+extern crate specs; //Why is that crate declare here and also in main? 
 use crate::metrics::second_deserialize;
 use crate::metrics::Fdim;
 use crate::systems::renderer::Color;
@@ -7,6 +9,7 @@ use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
+///Declare what color a traffic light can be.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TrafficLightColor {
     RED,
@@ -15,6 +18,7 @@ pub enum TrafficLightColor {
 }
 
 impl TrafficLightColor {
+    ///Return the color render.
     pub fn get_rendering_color(self) -> Color {
         match self {
             TrafficLightColor::RED => Color::RED,
@@ -38,6 +42,7 @@ pub struct Light {
 }
 
 impl Light {
+    ///Create a light containing the given value.
     pub fn new(
         color: TrafficLightColor,
         max_green_time: Second<Fdim>,
