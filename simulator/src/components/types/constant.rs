@@ -1,3 +1,5 @@
+/*! Define a constant component. */
+
 use super::super::simumo_component::LogDataEntry;
 use crate::metrics::Fdim;
 use crate::systems::renderer::drawableshape::DrawableShape;

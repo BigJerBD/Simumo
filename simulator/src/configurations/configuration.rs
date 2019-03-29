@@ -1,3 +1,5 @@
+/*! Contain all configurations */
+
 use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
@@ -9,8 +11,7 @@ use super::systems::SystemsConfiguration;
 use crate::entities::entity_type::EntityType;
 
 /// Represent the root level configuration.
-///
-/// Todo: Can't handle empty field in serialization.
+// Todo: Can't handle empty field in serialization.
 #[derive(Deserialize)]
 pub struct Configuration {
     pub generals: GeneralConfigurations,
@@ -20,6 +21,7 @@ pub struct Configuration {
 }
 
 impl Configuration {
+///import config from json file.
     pub fn from_json(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;
@@ -28,6 +30,7 @@ impl Configuration {
         Ok(config)
     }
 
+///import config from yaml file.
     pub fn from_yaml(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;

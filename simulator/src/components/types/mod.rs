@@ -1,3 +1,4 @@
+/*! Define component types.*/
 pub mod agents;
 pub mod constant;
 pub mod controls;

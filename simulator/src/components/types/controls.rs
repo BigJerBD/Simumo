@@ -1,3 +1,5 @@
+/*! Define a control component. */
+
 use super::super::simumo_component::LogDataEntry;
 
 use serde::ser::Serialize;

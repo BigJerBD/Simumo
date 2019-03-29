@@ -1,3 +1,5 @@
+/*! Define a log recorder . */
+
 use crate::metrics::Fdim;
 
 use dim::si::Second;
@@ -21,6 +23,7 @@ pub struct LogRecord {
 }
 
 impl LogRecord {
+    ///Create a new log record containing the given value.
     pub fn new(
         timestamp: Second<Fdim>,
         record_id: u32,
@@ -34,11 +37,13 @@ impl LogRecord {
             log_data,
         }
     }
+    ///Return current type.
     pub fn get_type(&self) -> &String {
         &self.record_type
     }
 }
 
+///Makes the timestamp in the log record serializable. 
 #[allow(clippy::trivially_copy_pass_by_ref)]
 fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
 where
