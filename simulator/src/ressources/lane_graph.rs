@@ -60,7 +60,7 @@ impl LaneGraph {
             .get_nodes()
             .unwrap()
             .iter()
-            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon + 100.0, *lat + 50.0)))
+            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon, *lat)))
             .collect();
 
         let edges: Vec<(_, _, _)> = osmgraph

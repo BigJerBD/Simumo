@@ -44,8 +44,6 @@ impl<'a> System<'a> for DrawMap {
                 let _lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
                 let pos_neighbor: (f64, f64) = lane_graph.intersection(neighbor).position();
 
-                //println!("{:?}", position_node);
-
                 g_handle.draw(args.viewport(), |c, gl| {
                     draw_lane_between_two_points(
                         (position_node.0 * ZOOM_FACTOR, position_node.1 * ZOOM_FACTOR),
@@ -122,7 +120,6 @@ fn draw_lane_between_two_points(
     let rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
     let rectangle_width: f64 = width;
     let rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
-
     let transform = c
         .transform
         .trans(p1.0, p1.1)

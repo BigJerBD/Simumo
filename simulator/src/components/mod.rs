@@ -1,3 +1,5 @@
+/*! Define components use in the simulator. A component's definition
+ */
 pub mod types;
 pub mod position;
 

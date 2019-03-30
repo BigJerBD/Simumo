@@ -1,3 +1,5 @@
+/*! Define the control components. */
+
 use crate::commons::LogDataEntry;
 
 use serde::ser::Serialize;

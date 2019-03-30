@@ -1,3 +1,5 @@
+/*! Represent systems from the configuration file.*/
+
 use std::collections::HashMap;
 
 use specs::DispatcherBuilder;
@@ -38,6 +40,7 @@ impl SystemsConfiguration {
         system_mapping.insert(RecorderSystem::typename(), as_sysname_vec(&self.recorders));
     }
 
+    ///Setup all systems in the simulator
     pub fn setup_systems(
         self,
         builder: &mut DispatcherBuilder,
@@ -60,7 +63,7 @@ impl SystemsConfiguration {
     }
 }
 
-/// used for convenience
+/// used for convenience to set a system in the simulator dispatcher
 fn set_all_in_dispatcher<T: SystemType>(
     systems: Vec<T>,
     builder: &mut DispatcherBuilder,

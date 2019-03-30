@@ -30,7 +30,6 @@ impl Default for Position {
     }
 }
 
-//todo this might be useless and removed
 impl<'de> Deserialize<'de> for Position {
     fn deserialize<D>(deserializer: D) -> Result<Position, D::Error>
 
@@ -49,8 +48,6 @@ impl<'de> Deserialize<'de> for Position {
 impl Serialize for Position {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where
         S: Serializer {
-        // todo this function should be somewhere else
-        // its a transformation of a record, it could be something configurable
         let pcoord= PolarCoord::from_cartesian(&self.val);
         let mut strct = serializer.serialize_struct("position", 2)?;
         strct.serialize_field("x", &pcoord.1)?;

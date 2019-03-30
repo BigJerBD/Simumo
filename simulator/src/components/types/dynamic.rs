@@ -1,3 +1,5 @@
+/*! Define a dynamic component. */
+
 use dim::si::{MeterPerSecond, MeterPerSecond2};
 use dim::si::{MPS, MPS2};
 use serde::ser::Serialize;
@@ -13,10 +15,18 @@ use crate::commons::metrics::Fdim;
 use crate::commons::metrics::meterpersecond2_deserialize;
 use crate::commons::metrics::meterpersecond_deserialize;
 
+
+///Direction of the component. 0=East, 90=North, 180=West, 270=South
 #[simucomponent_data]
 #[storage(VecStorage)]
 pub struct Angle {
     pub val: Fdim,
+}
+
+impl Default for Angle {
+    fn default() -> Self {
+        Self { val: 0.0}
+    }
 }
 
 #[simucomponent_data]

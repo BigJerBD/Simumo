@@ -1,3 +1,5 @@
+/*! Define the agents component. */
+
 use crate::commons::LogDataEntry;
 
 use serde::ser::Serialize;
@@ -7,7 +9,6 @@ use simumo_derive::{simucomponent_data, SimumoSerialize};
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
-
 
 #[simucomponent_data]
 #[storage(VecStorage)]

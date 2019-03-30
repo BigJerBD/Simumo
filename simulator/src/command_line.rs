@@ -1,11 +1,17 @@
+/*!
+ Handle all CLI input for the simulator.
+ */
+
 use argparse::{ArgumentParser, Store};
 
+///Wrap the command line arguments.
 #[derive(Default)]
 pub struct CommandLineArguments {
-    pub configuration_path: String, // change this for Path data. See Configurations as example
+    pub configuration_file_path: String,
 }
 
 impl CommandLineArguments {
+///This function will parse every options specify in CLI.
     pub fn parse() -> Self {
         let mut options = Self::default();
         {
@@ -13,7 +19,7 @@ impl CommandLineArguments {
             let mut parser = ArgumentParser::new();
             parser.set_description("Command-line options");
             parser
-                .refer(&mut options.configuration_path)
+                .refer(&mut options.configuration_file_path)
                 .add_option(&["-c"], Store, "Json configuration file path")
                 .required();
 

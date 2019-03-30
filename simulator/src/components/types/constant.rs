@@ -1,3 +1,5 @@
+/*! Define constant components. */
+
 use crate::commons::LogDataEntry;
 use crate::commons::metrics::Fdim;
 use crate::systems::renderer::drawableshape::DrawableShape;
