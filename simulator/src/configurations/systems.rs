@@ -7,7 +7,6 @@ use specs::DispatcherBuilder;
 use crate::systems::agents::AgentSystem;
 use crate::systems::clock::ClockSystem;
 use crate::systems::controls::ControlSystem;
-use crate::systems::loggers::LoggerSystem;
 use crate::systems::mobility::MobilitySystem;
 use crate::systems::physic::PhysicSystem;
 use crate::systems::recorders::RecorderSystem;
@@ -19,7 +18,6 @@ pub struct SystemsConfiguration {
     pub agents: Vec<AgentSystem>,
     pub clock: ClockSystem,
     pub controls: Vec<ControlSystem>,
-    pub logger: LoggerSystem,
     pub mobility: MobilitySystem,
     pub physic: PhysicSystem,
     pub recorders: Vec<RecorderSystem>,
@@ -33,7 +31,6 @@ impl SystemsConfiguration {
         system_mapping.insert(AgentSystem::typename(), as_sysname_vec(&self.agents));
         system_mapping.insert(ClockSystem::typename(), vec![self.clock.system_name()]);
         system_mapping.insert(ControlSystem::typename(), as_sysname_vec(&self.controls));
-        system_mapping.insert(LoggerSystem::typename(), vec![self.logger.system_name()]);
         system_mapping.insert(
             MobilitySystem::typename(),
             vec![self.mobility.system_name()],
