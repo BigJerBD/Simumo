@@ -10,14 +10,10 @@ pub fn geolocation_to_world_position(_geolocation: Geolocation) -> Position {
     }
 }
 
-pub fn measure(lat: f64, lon: f64) -> f64 {
-    //let d2r: f64 = lon.to_radians();
-    const PI: f64 = std::f64::consts::PI;
+pub fn polar_coordinates_to_cartesian(coords: (f64, f64)) -> (f64, f64) {
+    let (lon, lat) = coords;
     const R: f64 = 6_378_137.;
-    let lon: f64 = 0.0;
-    let x: f64 = R * lat.to_radians().cos() * lon.to_radians().cos();
-    let y: f64 = R * lat.to_radians().cos() * lon.to_radians().sin();
-    println!("{} {}", lon, x);
-    println!("{} {}", lat, y);
-    1000.
+    let x: f64 = R * lon.to_radians();// * lat.to_radians().cos();
+    let y: f64 = R * lat.to_radians();
+    (x, y)
 }

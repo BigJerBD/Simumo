@@ -70,10 +70,10 @@ fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
         .collect();
 
     world.add_resource(generals::MapBbox {
-        x1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
-        x2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
-        y1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
-        y2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
+        lon1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
+        lon2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
+        lat1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
+        lat2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
     });
     world.add_resource(lanegraph);
 }
