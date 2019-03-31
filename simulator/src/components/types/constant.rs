@@ -2,9 +2,10 @@
 
 use super::super::simumo_component::LogDataEntry;
 use crate::metrics::Fdim;
-use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::metrics::{kilogram_deserialize, meter_deserialize};
+use crate::systems::renderer::drawableshape::DrawableShape;
 
+use dim::si::{Kilogram, Meter};
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;
 use serde::ser::Serializer;
@@ -12,7 +13,6 @@ use simumo_derive::{simucomponent_data, simucomponent_tag, SimumoSerialize};
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
-use dim::si::{Kilogram, Meter};
 
 #[simucomponent_data]
 #[storage(VecStorage)]

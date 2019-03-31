@@ -2,8 +2,8 @@ use crate::components::dynamic::Position;
 use crate::components::types::dynamic::Speed;
 use crate::ressources::Clock;
 
-use specs::prelude::{Read, ReadStorage, System, WriteStorage, Join};
 use simumo_derive::simusystem;
+use specs::prelude::{Join, Read, ReadStorage, System, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 

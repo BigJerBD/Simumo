@@ -95,7 +95,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .build()
             .unwrap()
     }
-
+//
     ///Create default world's ressources and config's ressources
     fn create_ressources(world: &mut World, config: &Configuration) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
