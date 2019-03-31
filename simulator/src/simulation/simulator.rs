@@ -6,7 +6,7 @@ use piston::event_loop::{EventSettings, Events};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
-use specs::prelude::*;
+use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use uuid::Uuid;
 
@@ -96,9 +96,9 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .unwrap()
     }
 
+    ///Create default world's ressources and config's ressources
     fn create_ressources(world: &mut World, config: &Configuration) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
-        let clock_dt = config.generals.clock_dt.clone();
         let end_time = config.generals.end_time.clone();
         let debugger = config.generals.debugger.clone();
         let seed = if !config.generals.seed.is_empty() {
@@ -106,10 +106,11 @@ impl<'a, 'b> Simulation<'a, 'b> {
         } else {
             Uuid::new_v4()
         };
+
         config.map.forward_ressources(world);
         world.add_resource(end_time);
         world.add_resource(graphics_handle);
-        world.add_resource(clock::Clock::new(clock_dt)); //Todo: Handle directly second on config.yaml
+        world.add_resource(clock::Clock::new(config.generals.clock_dt));
         world.add_resource(EventsManager::new());
         world.add_resource(debugger);
         world.add_resource(seed);

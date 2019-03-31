@@ -1,17 +1,20 @@
-use dim::si::{Second, MIN};
+/*! Define general configuration. */
 
+use dim::si::{Second, MIN};
 use crate::metrics::second_deserialize;
 use crate::metrics::Fdim;
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {
     #[serde(deserialize_with = "second_deserialize")]
+    ///Represent the step ins second between each tick of clock.
     pub clock_dt: Second<Fdim>,
     pub end_time: EndTime,
     pub debugger: VisualDebugger,
     pub seed: String,
 }
 
+///Represent the ending time of the simulator.
 #[derive(Clone, Deserialize)]
 pub struct VisualDebugger {
     #[serde(rename = "use")]

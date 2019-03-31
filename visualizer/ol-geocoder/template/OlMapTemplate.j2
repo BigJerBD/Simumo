@@ -71,6 +71,19 @@ let lastFeaturesSelected = [];
     }});
 })(window, document);
 
+//OpenLayers does not resize relative size map, so we need to update the
+//map div height and call map.udpateSize()
+function updateMapSize(){
+    if(olMap)
+    {
+        $('#map').height(0.6 * $(this).height());
+        $('#map').width($(this).width());
+        olMap.updateSize();
+    }
+}
+$(window).resize( updateMapSize);
+window.onload = updateMapSize;
+
 function componentToHex(c) {
     let hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;

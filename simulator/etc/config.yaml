@@ -9,7 +9,7 @@ generals:
     
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-# map:\
+# map:
 #   type: OsmGraph
 #   latitude: -71.89908
 #   longitude: 45.40008

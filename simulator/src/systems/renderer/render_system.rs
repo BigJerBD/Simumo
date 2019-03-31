@@ -9,7 +9,7 @@ use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::drawableshape::Drawable;
 use crate::systems::renderer::Color;
 use crate::util::polar_coordinates_to_cartesian;
-use graphics::*;
+use graphics::{clear, rectangle, Context, Transformed};
 use opengl_graphics::GlGraphics;
 use petgraph::graphmap::Neighbors;
 use piston::input::RenderArgs;

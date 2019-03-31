@@ -1,3 +1,10 @@
+/*!
+ A simulator for computing data of  traffic routes.
+ Using this program will allow you to generate metrics of your choice.
+
+ For help, add option -h in CLI.
+ */
+
 #![allow(dead_code)]
 #![allow(clippy::type_complexity)]
 #[macro_use]
@@ -32,20 +39,19 @@ mod components;
 mod configurations;
 mod entities;
 mod errors;
-mod internal_prelude;
 mod metrics;
 mod osmgraph_api;
 mod ressources;
 mod simulation;
 mod systems;
-mod topology;
 mod types;
 mod util;
 
+///Main handle all inputs such as configuration file and CLI arguments then create the simulator.
 fn main() {
     env_logger::init();
     let args = command_line::CommandLineArguments::parse();
-    let config = configurations::Configuration::from_yaml(&args.configuration_path).unwrap();
+    let config = configurations::Configuration::from_yaml(&args.configuration_file_path).unwrap();
 
     let mut simulation = simulation::Simulation::from_config(config);
     simulation.run_simulation();

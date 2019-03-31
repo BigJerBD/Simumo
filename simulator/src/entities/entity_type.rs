@@ -1,4 +1,4 @@
-use crate::entities::entity_prelude::*;
+use specs::prelude::{Entities, LazyUpdate, Read, World};
 use crate::entities::types::CarEntity;
 use crate::entities::types::LightEntity;
 

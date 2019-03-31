@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use serde::Deserialize;
-use serde::Deserializer;
-
 use crate::components::log_record::LogRecord;
 use crate::ressources::clock;
 use crate::systems::loggers::LoggerType;
-use crate::systems::sys_prelude::*;
+
+use serde::Deserialize;
+use serde::Deserializer;
+use specs::prelude::{Read, System, WriteStorage, Join};
 
 /// LoggerSys that can be specialised with a
 /// specific Logger

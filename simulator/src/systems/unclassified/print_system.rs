@@ -1,12 +1,15 @@
 use specs::{Join, Read, ReadStorage, System};
 
-use crate::components::statics::trafficlight::*;
+use crate::components::statics::trafficlight::Light;
 use crate::components::types::constant::Identifier;
 use crate::ressources::clock;
 use crate::systems::mobility::MobilitySystem;
-use crate::systems::sys_prelude::*;
 use crate::systems::system_type::DispatcherBuilderHook;
 use crate::systems::system_type::SystemType;
+
+use simumo_derive::simusystem;
+use typeinfo::TypeInfo;
+use typeinfo_derive::TypeInfo;
 
 #[simusystem]
 pub struct PrintSystem;

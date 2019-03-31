@@ -169,3 +169,29 @@ fn get_segment_length(points: &[CurvePoint<Point2D>], i: usize, param: f32) -> f
 
     p1.distance(p0) * param
 }
+
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn over_distance_gives_final_point() {
+        let line = Curve::new(vec![Geolocation(0.0, 0.0), Geolocation(10.0, 15.0)]);
+
+        assert_eq!(
+            line.get_location_at_distance_along_curve(1.0),
+            Point2D::new(10.0, 10.0)
+        );
+    }
+
+    #[test]
+    fn mid_distance_gives_mid_points() {
+        let line = Curve::new(vec![Geolocation(0.0, 0.0), Geolocation(3.0, 4.0)]);
+
+        assert_eq!(
+            line.get_location_at_distance_along_curve(0.5),
+            Point2D::new(1.5, 2.0)
+        );
+    }
+}
