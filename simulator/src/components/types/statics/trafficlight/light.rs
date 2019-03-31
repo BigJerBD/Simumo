@@ -18,12 +18,11 @@ pub enum TrafficLightColor {
 }
 
 impl TrafficLightColor {
-    ///Return the color render.
-    pub fn get_rendering_color(self) -> Color {
+    pub fn get_rendering_color(&self) -> Color {
         match self {
             TrafficLightColor::RED => Color::RED,
             TrafficLightColor::YELLOW => Color::YELLOW,
-            TrafficLightColor::GREEN => Color::GREEN,
+            TrafficLightColor::GREEN => Color::GREEN
         }
     }
 }

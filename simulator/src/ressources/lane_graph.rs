@@ -16,7 +16,7 @@ use dim::si::{Meter, MeterPerSecond};
 
 pub type IntersectionId = u64;
 /// used for convenience
-type NodeId = IntersectionId;
+pub type NodeId = IntersectionId;
 
 /// The Identifier of the entities in the graph
 /// it uses the entities ID of specs
