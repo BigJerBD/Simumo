@@ -47,7 +47,9 @@ impl<'a> System<'a> for DrawMap {
                 &debugger,
                 &map_bbox,
             );
-            println!("{} {} {} {}", node.position().0, node.position().1, pos_node.0, pos_node.1);
+
+            //todo replace this into a log
+            //println!("{} {} {} {}", node.position().0, node.position().1, pos_node.0, pos_node.1);
             
             let neighbors: Neighbors<'_, u64, petgraph::Directed> =
                 lane_graph.graph.neighbors(*nodeid);

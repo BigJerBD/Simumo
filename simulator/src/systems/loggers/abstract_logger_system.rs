@@ -7,7 +7,7 @@ use crate::systems::loggers::LoggerType;
 
 use serde::Deserialize;
 use serde::Deserializer;
-use specs::prelude::{Read, System, WriteStorage, Join};
+use specs::prelude::{Join, Read, System, WriteStorage};
 
 /// LoggerSys that can be specialised with a
 /// specific Logger

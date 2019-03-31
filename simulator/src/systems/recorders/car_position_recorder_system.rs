@@ -3,8 +3,8 @@ use crate::components::dynamic::Position;
 use crate::components::log_record::LogRecord;
 use crate::ressources;
 
-use specs::prelude::{Entities, LazyUpdate, Read, ReadStorage, System, Join};
 use simumo_derive::simusystem;
+use specs::prelude::{Entities, Join, LazyUpdate, Read, ReadStorage, System};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
