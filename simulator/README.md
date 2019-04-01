@@ -26,7 +26,7 @@ First of all, you need to setup your virtual environnement because we use our ow
 if you are on __Linux__
 run
 ```
-make-dev
+make dev
 ```
 This will setup your virtual environnement.
 
