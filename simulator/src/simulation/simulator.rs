@@ -16,6 +16,8 @@ use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
+use crate::ressources::random::Random;
+use crate::ressources::random::SeedableRng;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
@@ -106,6 +108,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         } else {
             Uuid::new_v4()
         };
+        let random = Random::from_uuid(&seed);
 
         config.map.forward_ressources(world);
         world.add_resource(end_time);
@@ -114,6 +117,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(EventsManager::new());
         world.add_resource(debugger);
         world.add_resource(seed);
+        world.add_resource(random);
     }
 }
 

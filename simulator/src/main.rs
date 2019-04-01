@@ -26,7 +26,6 @@ extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
 extern crate proc_macro2;
-extern crate rand;
 extern crate serde;
 extern crate simumo_derive;
 extern crate specs;

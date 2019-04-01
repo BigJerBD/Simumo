@@ -9,7 +9,7 @@ use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
 use specs::{Builder, World};
 use specs::prelude::{Entities, LazyUpdate, Read};
-use dim::si::{M, MPS, MPS2};
+use dim::si::{M, MPS};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
