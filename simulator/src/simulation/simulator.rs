@@ -11,6 +11,7 @@ use specs::Dispatcher;
 use uuid::Uuid;
 
 use crate::configurations::generals::EndTime;
+use crate::configurations::generals::VisualDebugger;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
@@ -18,6 +19,7 @@ use crate::ressources::eventsmanagement::EventsManager;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
+//use std::process::Command;
 
 pub struct Simulation<'a, 'b> {
     world: World,
@@ -30,7 +32,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
-        let window = Self::create_window();
+        let window = Self::create_window(&config.generals.debugger);
 
         let mut base_dispatcher_builder = DispatcherBuilder::new();
         let mut world = World::new();
@@ -84,19 +86,21 @@ impl<'a, 'b> Simulation<'a, 'b> {
         println!("Showing results log...");
     }
 
-    ///Create the visual debugger
-    fn create_window() -> Window {
-        WindowSettings::new("Simumo - Visual debugger", [1280, 720])
+    fn create_window(debugger: &VisualDebugger) -> Window {
+        let width: f64 = debugger.width;
+        let height: f64 = debugger.height;
+        WindowSettings::new("Simumo - Visual debugger", [width, height])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
             .build()
             .unwrap()
     }
-
+    //
     ///Create default world's ressources and config's ressources
     fn create_ressources(world: &mut World, config: &Configuration) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
         let end_time = config.generals.end_time.clone();
+        let debugger = config.generals.debugger.clone();
         let seed = if !config.generals.seed.is_empty() {
             Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
         } else {
@@ -108,17 +112,8 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(graphics_handle);
         world.add_resource(clock::Clock::new(config.generals.clock_dt));
         world.add_resource(EventsManager::new());
+        world.add_resource(debugger);
         world.add_resource(seed);
-        // For every entity, we define the entity it has to listen to, if any (this will be in a configuration file)
-        //todo make this properly configurable
-        //{
-        //    let mut events_manager = world.write_resource::<EventsManager>();
-        //    // Here, for example, trafficlight2 observes trafficlight1
-        //    events_manager.connect("trafficlight1".to_string(), "trafficlight2".to_string());
-        //    // And here, trafficlight1 observes trafficlight2
-        //    events_manager.connect("trafficlight2".to_string(), "trafficlight1".to_string());
-        //}
-        //todo remove when not needed anymore
     }
 }
 

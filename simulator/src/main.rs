@@ -1,9 +1,9 @@
 /*!
- A simulator for computing data of  traffic routes.
- Using this program will allow you to generate metrics of your choice.
+A simulator for computing data of  traffic routes.
+Using this program will allow you to generate metrics of your choice.
 
- For help, add option -h in CLI.
- */
+For help, add option -h in CLI.
+*/
 
 #![allow(dead_code)]
 #![allow(clippy::type_complexity)]
@@ -37,10 +37,10 @@ extern crate typeinfo_derive;
 extern crate uuid;
 
 mod command_line;
+mod commons;
 mod components;
 mod configurations;
 mod entities;
-mod commons;
 mod osmgraph_api;
 mod ressources;
 mod simulation;

@@ -1,6 +1,6 @@
 /*!
- Handle all CLI input for the simulator.
- */
+Handle all CLI input for the simulator.
+*/
 
 use argparse::{ArgumentParser, Store};
 
@@ -11,7 +11,7 @@ pub struct CommandLineArguments {
 }
 
 impl CommandLineArguments {
-///This function will parse every options specify in CLI.
+    ///This function will parse every options specify in CLI.
     pub fn parse() -> Self {
         let mut options = Self::default();
         {

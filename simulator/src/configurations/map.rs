@@ -48,16 +48,12 @@ impl Map {
                 latitude,
                 zoom,
             } => {
-                let pos = polarfloat_to_cartesian(*latitude, *longitude);
-                create_ressource_lanegraph(
-                    LaneGraph::from_pyosmgraph(pos.0,pos.1, *zoom),
-                    world,
-                )
+                let pos = polarfloat_to_cartesiantuple(*latitude, *longitude);
+                create_ressource_lanegraph(LaneGraph::from_pyosmgraph(pos.0, pos.1, *zoom), world)
             }
         }
     }
 }
-
 
 fn lanemap_from_file_map(path: String) -> LaneGraph {
     let path = Path::new(&path);
@@ -66,12 +62,10 @@ fn lanemap_from_file_map(path: String) -> LaneGraph {
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
     LaneGraph::new(
-        map.nodes
-            .iter()
-            .map(|(id, (lon, lat))| {
-                let pos = polarfloat_to_cartesian(*lat, *lon);
-                (*id,IntersectionData::new(pos.0,pos.1))
-            }),
+        map.nodes.iter().map(|(id, (lon, lat))| {
+            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+            (*id, IntersectionData::new(pos.0, pos.1))
+        }),
         map.edges
             .iter()
             .map(|(from, to)| (*from, *to, LaneData::new(None, None, None))),
@@ -97,8 +91,8 @@ fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
 }
 
 /// for convenience
-fn polarfloat_to_cartesian(lat: f64, lon: f64) -> (f64,f64) {
+fn polarfloat_to_cartesiantuple(lat: f64, lon: f64) -> (f64, f64) {
     let polar = PolarCoord::from_float(lat, lon);
     let cart = CartesianCoord::from_polar(&polar);
-    (cart.x.value_unsafe,cart.y.value_unsafe)
+    (cart.x.value_unsafe, cart.y.value_unsafe)
 }

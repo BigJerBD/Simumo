@@ -1,15 +1,12 @@
 use std::ops::Sub;
 
-use dim::si::{M, Meter};
+use dim::si::{Meter, M};
 
 use crate::commons::metrics::Fdim;
 use crate::commons::Point2D;
 
-
-
-
 lazy_static! {
-    static ref EARTH_RADIUS : Fdef =  6371.0088 * M;
+    static ref EARTH_RADIUS: Fdef = 6371.0088 * M;
 }
 const PI: Fdim = std::f64::consts::PI;
 
@@ -18,7 +15,6 @@ type Fdef = Meter<Fdim>;
 type Angle = Fdim;
 type Lon = Angle;
 type Lat = Angle;
-
 
 /// represent a coordinate
 /// using the earth's longitude and latitude
@@ -35,10 +31,7 @@ impl PolarCoord {
     }
 
     pub fn from_float(lat: Fdim, lon: Fdim) -> Self {
-        Self(
-            lat,
-            lon,
-        )
+        Self(lat, lon)
     }
 
     pub fn from_point(Point2D { x, y }: &Point2D) -> Self {
@@ -54,23 +47,18 @@ impl Sub for PolarCoord {
     }
 }
 
-
-
 /// represent a coordinate
 /// using a flat X and Y surface
 ///
-#[derive(Clone,Debug)]
-pub struct CartesianCoord{
-    pub x : Fdef,
-    pub y : Fdef
+#[derive(Clone, Debug)]
+pub struct CartesianCoord {
+    pub x: Fdef,
+    pub y: Fdef,
 }
 
 impl CartesianCoord {
-    pub fn new(x : Fdef, y : Fdef) -> Self {
-        Self {
-            x,
-            y
-        }
+    pub fn new(x: Fdef, y: Fdef) -> Self {
+        Self { x, y }
     }
 
     pub fn from_polar(coord: &PolarCoord) -> Self {
@@ -81,10 +69,7 @@ impl CartesianCoord {
     }
 
     pub fn from_float(x: Fdim, y: Fdim) -> Self {
-        Self::new(
-            Fdef::new(x),
-            Fdef::new(y),
-        )
+        Self::new(Fdef::new(x), Fdef::new(y))
     }
 
     pub fn from_point(Point2D { x, y }: &Point2D) -> Self {
@@ -101,14 +86,9 @@ impl Sub for CartesianCoord {
 
 impl Default for CartesianCoord {
     fn default() -> Self {
-        Self::from_float(
-            0.0,
-            0.0,
-        )
+        Self::from_float(0.0, 0.0)
     }
 }
-
-
 
 #[cfg(test)]
 mod test {

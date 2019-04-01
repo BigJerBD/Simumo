@@ -9,14 +9,14 @@ use petgraph::IntoWeightedEdge;
 use specs::world;
 
 use crate::commons::metrics::Fdim;
+use crate::commons::Curve;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
-use crate::commons::Curve;
 use dim::si::{Meter, MeterPerSecond};
 
 pub type IntersectionId = u64;
 /// used for convenience
-type NodeId = IntersectionId;
+pub type NodeId = IntersectionId;
 
 /// The Identifier of the entities in the graph
 /// it uses the entities ID of specs
@@ -329,8 +329,6 @@ mod tests {
             ],
         )
     }
-
-
 
     #[test]
     fn push_valid() {

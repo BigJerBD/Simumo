@@ -1,10 +1,10 @@
-use specs::prelude::{Entities, LazyUpdate, Read, World};
 use crate::entities::types::CarEntity;
 use crate::entities::types::LightEntity;
+use specs::prelude::{Entities, LazyUpdate, Read, World};
 
 pub trait Instantiable<'a> {
     fn create(&self, world: &mut World);
-    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>);
+    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>);
 }
 
 #[derive(Deserialize, Debug)]
@@ -23,7 +23,7 @@ impl<'a> Instantiable<'a> for EntityType {
             EntityType::LightEntity(light) => light.create(world),
         }
     }
-    fn spawn(&self, entities: &Entities<'a>, updater: Read<'a, LazyUpdate>) {
+    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
         match self {
             EntityType::CarEntity(car) => car.spawn(entities, updater),
             EntityType::LightEntity(light) => light.spawn(entities, updater),

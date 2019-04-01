@@ -1,5 +1,3 @@
-
-
 pub trait SimumoSerialize {}
 
 ///used by simumo derive to write custom log

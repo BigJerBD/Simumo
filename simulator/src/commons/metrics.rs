@@ -1,9 +1,9 @@
-
-
 use crate::components::constant::Identifier;
 use dim::si::{Kilogram, Meter, MeterPerSecond, MeterPerSecond2, Second};
 use serde::de::Deserialize;
 use serde::Deserializer;
+
+//todo :: the deserialize should probably be removed in the future
 
 pub type Fdim = f64;
 pub type Idim = i64;

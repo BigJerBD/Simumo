@@ -1,4 +1,5 @@
-use crate::commons::point2d::Point2D;
+use super::percentage::Percentage;
+use super::point2d::Point2D;
 use std::ops::Sub;
 
 type Fdef = f64;
@@ -33,67 +34,30 @@ impl<T: Sub> CurvePoint<T> {
 #[derive(Clone, Debug)]
 pub struct Curve {
     points: Vec<CurvePoint<Point2D>>,
-    reparam_table: Vec<CurvePoint<Fdef>>,
 }
 
 impl Curve {
     pub fn new(points: Vec<Point2D>) -> Self {
-        let mut reparam_table = vec![];
-        let mut acc: Fdef = 0.0;
+        let mut points: Vec<_> = points.iter().map(|p| CurvePoint::new(0.0, *p)).collect();
 
-        let num_segments = if is_looped(&points) {
-            points.len()
-        } else {
-            points.len() - 1
-        };
-        let steps_per_segment = 10;
-
-        let points: Vec<_> = points
-            .iter()
-            .map(|p| CurvePoint::new(0.0, *p))
-            .collect();
-
-        for i in 0..num_segments {
-            for step in 0..steps_per_segment {
-                let param = step as Fdef / steps_per_segment as Fdef;
-                let segment_length: Fdef = if step == 0 {
-                        0.0
-                    } else {
-                        get_segment_length(&points, i, param)
-                    };
-
-                reparam_table.push(CurvePoint::new(
-                    segment_length + acc,
-                    i as Fdef + param));
-            }
-            acc += get_segment_length(&points, i, 1.0);
+        let length = get_total_length(&points);
+        let mut acc = 0.0;
+        for i in 1..points.len() {
+            acc += points[i].out_val.distance(points[i - 1].out_val);
+            points[i].in_val = acc / length;
         }
 
-        reparam_table.push(CurvePoint::new(acc,
-                                           num_segments as Fdef));
-
-        Curve {
-            points,
-            reparam_table,
-        }
+        Curve { points }
     }
 
-    pub fn get_location_at_distance_along_curve(&self, distance: Fdef) -> Point2D {
-        let param = eval(&self.reparam_table, distance);
-        eval(&self.points, param)
+    pub fn get_location_at_distance_along_curve(&self, distance: Percentage) -> Point2D {
+        eval(&self.points, distance.value())
     }
-}
-
-fn is_looped<T: PartialEq>(points: &[T]) -> bool {
-    if points.len() < 2 {
-        return false;
-    }
-    points.first().unwrap() == points.last().unwrap()
 }
 
 fn eval<T>(points: &[CurvePoint<T>], in_val: Fdef) -> T
-    where
-        T: Sub + Clone + Lerp + PartialEq,
+where
+    T: Sub + Clone + Lerp + PartialEq,
 {
     let num_points = points.len();
     let last_i = num_points - 1;
@@ -132,7 +96,17 @@ fn eval<T>(points: &[CurvePoint<T>], in_val: Fdef) -> T
     }
 }
 
-fn get_point_index_for_input_value<T: Sub>(points: &[CurvePoint<T>], in_val: Fdef) -> Option<usize> {
+fn is_looped<T: PartialEq>(points: &[T]) -> bool {
+    if points.len() < 2 {
+        return false;
+    }
+    points.first().unwrap() == points.last().unwrap()
+}
+
+fn get_point_index_for_input_value<T: Sub>(
+    points: &[CurvePoint<T>],
+    in_val: Fdef,
+) -> Option<usize> {
     let num_points = points.len();
     let last_i = num_points - 1;
 
@@ -160,6 +134,14 @@ fn get_point_index_for_input_value<T: Sub>(points: &[CurvePoint<T>], in_val: Fde
     Some(min_i)
 }
 
+fn get_total_length(points: &[CurvePoint<Point2D>]) -> Fdef {
+    let mut acc = 0.0f64;
+    for i in 1..points.len() {
+        acc += points[i].out_val.distance(points[i - 1].out_val);
+    }
+    acc
+}
+
 fn get_segment_length(points: &[CurvePoint<Point2D>], i: usize, param: Fdef) -> Fdef {
     let p0 = points[i].out_val;
     let p1 = if i == points.len() - 1 {
@@ -171,7 +153,6 @@ fn get_segment_length(points: &[CurvePoint<Point2D>], i: usize, param: Fdef) -> 
     p1.distance(p0) * param
 }
 
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -181,8 +162,8 @@ mod test {
         let line = Curve::new(vec![Point2D::new(0.0, 0.0), Point2D::new(10.0, 15.0)]);
 
         assert_eq!(
-            line.get_location_at_distance_along_curve(1.0),
-            Point2D::new(10.0, 10.0)
+            line.get_location_at_distance_along_curve(Percentage::new(1.0).unwrap()),
+            Point2D::new(10.0, 15.0)
         );
     }
 
@@ -191,7 +172,7 @@ mod test {
         let line = Curve::new(vec![Point2D::new(0.0, 0.0), Point2D::new(3.0, 4.0)]);
 
         assert_eq!(
-            line.get_location_at_distance_along_curve(0.5),
+            line.get_location_at_distance_along_curve(Percentage::new(0.5).unwrap()),
             Point2D::new(1.5, 2.0)
         );
     }

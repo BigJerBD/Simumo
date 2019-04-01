@@ -1,8 +1,8 @@
 /*! Define general configuration. */
 
-use dim::si::{Second, MIN};
 use crate::commons::metrics::second_deserialize;
 use crate::commons::metrics::Fdim;
+use dim::si::{Second, MIN};
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {
@@ -10,11 +10,19 @@ pub struct GeneralConfigurations {
     ///Represent the step ins second between each tick of clock.
     pub clock_dt: Second<Fdim>,
     pub end_time: EndTime,
-    ///A unique seed will be generate if there is no seed in the configuration file.
+    pub debugger: VisualDebugger,
     pub seed: String,
 }
 
 ///Represent the ending time of the simulator.
+#[derive(Clone, Deserialize)]
+pub struct VisualDebugger {
+    #[serde(rename = "use")]
+    pub on: bool,
+    pub width: f64,
+    pub height: f64,
+}
+
 #[derive(Clone, Deserialize)]
 pub struct EndTime {
     #[serde(deserialize_with = "second_deserialize")]

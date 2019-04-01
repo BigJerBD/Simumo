@@ -1,7 +1,6 @@
 pub mod drawableshape;
 
-mod color;
-pub use color::Color;
+pub mod color;
 
 mod render_system;
 pub use render_system::DrawClear;

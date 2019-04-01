@@ -1,20 +1,15 @@
-use specs::Dispatcher;
-use specs::DispatcherBuilder;
-
-use crate::systems::unclassified::EventsHookUpdate;
-use crate::systems::unclassified::EventsUpdate;
-use crate::systems::unclassified::SpawnerSystem;
-
+use crate::systems::controls::LightControl;
 use crate::systems::renderer::DrawClear;
 use crate::systems::renderer::DrawMap;
 use crate::systems::renderer::DrawTrafficLights;
 use crate::systems::renderer::DrawVehicles;
-
-use crate::systems::controls::LightControl;
+use crate::systems::unclassified::EventsHookUpdate;
+use crate::systems::unclassified::EventsUpdate;
+use specs::Dispatcher;
+use specs::DispatcherBuilder;
 
 pub fn add_starting_systems(dispatcher_builder: &mut DispatcherBuilder) {
     dispatcher_builder.add_barrier();
-    dispatcher_builder.add(SpawnerSystem, "spawner_system", &[]);
     dispatcher_builder.add(EventsHookUpdate, "eventshook_system", &[]);
     dispatcher_builder.add(LightControl, "color_update", &[]);
     dispatcher_builder.add_barrier();

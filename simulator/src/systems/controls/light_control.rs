@@ -4,11 +4,11 @@ use crate::components::types::statics::trafficlight::TrafficLightColor;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::{Event, EventsManager};
 
-use specs::prelude::{Read, ReadStorage, System, Write, WriteStorage, Join};
+use dim::si::S;
 use simumo_derive::simusystem;
+use specs::prelude::{Join, Read, ReadStorage, System, Write, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
-use dim::si::S;
 
 #[simusystem]
 pub struct LightControl;

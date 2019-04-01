@@ -2,6 +2,11 @@ generals:
   clock_dt: 0.25
   end_time:
     val: 12.5
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
 # map:
@@ -34,36 +39,32 @@ systems:
   physic:
     type: Acceleration
 
-  recorders:
-    - capture_freq: 0
-      type: CarPositionRecorder
+  recorders: []
 
-
+  spawner:
+    type: Frequency
+    min: 10
+    max: 20
+    start_locations:
+      - 5872015933
+      - 81474235
+      - 4291399599
+      - 4738061547
+      - 81591074
+      - 64010518
+      - 3646823269
+      - 110285457
+      - 255785981
+      - 2004727123
+      - 3728506124
+      - 115677165
+      - 115690440
+      - 120943775
+    end_locations:
+      - 1038872991
+      - 4272197702
 
 entities:
-  - id: vehicle01
-    type: vehicle
-    position:
-      x: 0
-      y: 0
-    speed:
-      val: 2
-  - id: vehicle02
-    type: vehicle
-    position:
-      x: 0
-      y: 0
-    speed:
-      val: 4
-    acceleration:
-      val: 0.4
-  - id: vehicle03
-    type: vehicle
-    position:
-      x: 0
-      y: 0
-    speed:
-      val: 1.5
   - id: trafficlight01
     type: trafficlight
     light:
@@ -71,9 +72,8 @@ entities:
       max_green_time: 5
       max_yellow_time: 1.5
       time: 3.5
-    position:
-      x: 150
-      y: 100
+    position: [-71.9103753, 45.4103252]
+    observable: trafficlight02
   - id: trafficlight02
     type: trafficlight
     light:
@@ -81,6 +81,5 @@ entities:
       max_green_time: 3
       max_yellow_time: 1
       time: 0
-    position:
-      x: 400
-      y: 100
+    position: [-71.9047379, 45.410244]
+    observable: trafficlight01

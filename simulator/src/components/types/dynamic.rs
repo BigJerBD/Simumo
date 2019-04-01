@@ -3,18 +3,17 @@
 use dim::si::{MeterPerSecond, MeterPerSecond2};
 use dim::si::{MPS, MPS2};
 use serde::ser::Serialize;
-use serde::ser::Serializer;
 use serde::ser::SerializeSeq;
+use serde::ser::Serializer;
 use simumo_derive::{simucomponent_data, SimumoSerialize};
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
-use crate::commons::LogDataEntry;
-use crate::commons::metrics::Fdim;
 use crate::commons::metrics::meterpersecond2_deserialize;
 use crate::commons::metrics::meterpersecond_deserialize;
-
+use crate::commons::metrics::Fdim;
+use crate::commons::LogDataEntry;
 
 ///Direction of the component. 0=East, 90=North, 180=West, 270=South
 #[simucomponent_data]
@@ -25,7 +24,7 @@ pub struct Angle {
 
 impl Default for Angle {
     fn default() -> Self {
-        Self { val: 0.0}
+        Self { val: 0.0 }
     }
 }
 

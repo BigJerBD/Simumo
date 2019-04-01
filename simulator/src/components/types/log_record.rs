@@ -10,7 +10,6 @@ use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
-
 #[simucomponent_base]
 #[derive(Serialize)]
 #[storage(VecStorage)]
