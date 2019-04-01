@@ -6,6 +6,7 @@ use piston::event_loop::{EventSettings, Events};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
+use rand::Rng;
 use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use uuid::Uuid;
@@ -108,7 +109,10 @@ impl<'a, 'b> Simulation<'a, 'b> {
         } else {
             Uuid::new_v4()
         };
-        let random = Random::from_uuid(&seed);
+        let mut random = Random::from_uuid(&seed);
+        let x: f64 = random.get_rng().gen::<f64>();
+        let y: f64 = random.get_rng().gen::<f64>();
+        println!("{} {}", x, y);
 
         config.map.forward_ressources(world);
         world.add_resource(end_time);

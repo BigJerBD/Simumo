@@ -1,10 +1,14 @@
 pub use rand::SeedableRng;
+use rand::StdRng;
 use uuid::Uuid;
 
 const N: usize = 32;
+
+#[derive(Clone)]
 pub struct RandomSeed(pub [u8; N]);
 pub struct Random {
-    seed: RandomSeed
+    seed: RandomSeed,
+    rng: StdRng
 }
 
 impl Random {
@@ -14,6 +18,10 @@ impl Random {
         let mut bytes: [u8; N] = [0; N];
         bytes.copy_from_slice(uuid_str.as_bytes());
         Self::from_seed(RandomSeed(bytes.clone()))
+    }
+
+    pub fn get_rng(&mut self) -> &mut StdRng {
+        &mut self.rng
     }
 }
 
@@ -34,7 +42,8 @@ impl SeedableRng for Random {
 
     fn from_seed(seed: RandomSeed) -> Random {
         Random {
-            seed
+            seed: seed.clone(),
+            rng: SeedableRng::from_seed(seed.0)
         }
     }
 }
