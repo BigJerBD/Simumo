@@ -1,11 +1,9 @@
 pub use rand::SeedableRng;
-use rand::StdRng;
+use rand::rngs::StdRng;
 use uuid::Uuid;
 
 const N: usize = 32;
 
-#[derive(Clone)]
-pub struct RandomSeed(pub [u8; N]);
 pub struct Random {
     seed: RandomSeed,
     rng: StdRng
@@ -24,6 +22,15 @@ impl Random {
         &mut self.rng
     }
 }
+
+impl Default for Random {
+    fn default() -> Random {
+        Random::from_uuid(&Uuid::new_v4())
+    }
+}
+
+#[derive(Clone)]
+pub struct RandomSeed(pub [u8; N]);
 
 impl Default for RandomSeed {
     fn default() -> RandomSeed {

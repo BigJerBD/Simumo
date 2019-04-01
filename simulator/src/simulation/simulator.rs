@@ -110,9 +110,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
             Uuid::new_v4()
         };
         let mut random = Random::from_uuid(&seed);
-        let x: f64 = random.get_rng().gen::<f64>();
-        let y: f64 = random.get_rng().gen::<f64>();
-        println!("{} {}", x, y);
 
         config.map.forward_ressources(world);
         world.add_resource(end_time);
@@ -120,7 +117,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(clock::Clock::new(config.generals.clock_dt));
         world.add_resource(EventsManager::new());
         world.add_resource(debugger);
-        world.add_resource(seed);
         world.add_resource(random);
     }
 }
