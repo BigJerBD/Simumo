@@ -1,8 +1,8 @@
 /*! Define general configuration. */
 
+use crate::commons::metrics::second_deserialize;
+use crate::commons::metrics::Fdim;
 use dim::si::{Second, MIN};
-use crate::metrics::second_deserialize;
-use crate::metrics::Fdim;
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {
@@ -20,7 +20,7 @@ pub struct VisualDebugger {
     #[serde(rename = "use")]
     pub on: bool,
     pub width: f64,
-    pub height: f64
+    pub height: f64,
 }
 
 #[derive(Clone, Deserialize)]

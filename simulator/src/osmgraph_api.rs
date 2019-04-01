@@ -15,9 +15,9 @@ pub trait OsmGraphApi {
     /// Query that graph at a specified location
     ///
     /// # Arguments
-    /// * `lon`  - longitude
+    /// * `lon`  - longitude(
     /// * `lat`  - latitude
-    /// * `zoom` - size of the bonding
+    /// * `zoom` - size of the bonding(
     ///
     fn query_graph(lon: f64, lat: f64, zoom: i64) -> Result<Box<Self>, Self::ErrorType>;
 

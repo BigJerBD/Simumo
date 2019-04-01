@@ -1,6 +1,6 @@
-/*! Define a log recorder . */
+/*! Define a log record . */
 
-use crate::metrics::Fdim;
+use crate::commons::metrics::Fdim;
 
 use dim::si::Second;
 use serde::ser::Serialize;
@@ -42,7 +42,7 @@ impl LogRecord {
     }
 }
 
-///Makes the timestamp in the log record serializable. 
+///Makes the timestamp in the log record serializable.
 #[allow(clippy::trivially_copy_pass_by_ref)]
 fn timestamp_serialize<S>(x: &Second<Fdim>, s: S) -> Result<S::Ok, S::Error>
 where

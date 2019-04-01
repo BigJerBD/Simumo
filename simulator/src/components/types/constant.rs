@@ -1,8 +1,8 @@
-/*! Define a constant component. */
+/*! Define constant components. */
 
-use super::super::simumo_component::LogDataEntry;
-use crate::metrics::Fdim;
-use crate::metrics::{kilogram_deserialize, meter_deserialize};
+use crate::commons::metrics::Fdim;
+use crate::commons::metrics::{kilogram_deserialize, meter_deserialize};
+use crate::commons::LogDataEntry;
 use crate::systems::renderer::drawableshape::DrawableShape;
 
 use dim::si::{Kilogram, Meter};

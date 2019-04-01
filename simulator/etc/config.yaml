@@ -6,7 +6,7 @@ generals:
     use: true
     width: 720
     height: 720
-    
+
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
 # map:
@@ -39,9 +39,7 @@ systems:
   physic:
     type: Acceleration
 
-  recorders:
-    - capture_freq: 0
-      type: CarPositionRecorder
+  recorders: []
 
   spawner:
     type: Frequency
@@ -74,9 +72,7 @@ entities:
       max_green_time: 5
       max_yellow_time: 1.5
       time: 3.5
-    position:
-      x: 150
-      y: 100
+    position: [-71.9103753, 45.4103252]
     observable: trafficlight02
   - id: trafficlight02
     type: trafficlight
@@ -85,7 +81,5 @@ entities:
       max_green_time: 3
       max_yellow_time: 1
       time: 0
-    position:
-      x: 400
-      y: 100
+    position: [-71.9047379, 45.410244]
     observable: trafficlight01

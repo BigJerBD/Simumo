@@ -1,6 +1,6 @@
-/*! Define a accelerating agent. */
+/*! Define the agents component. */
 
-use super::super::simumo_component::LogDataEntry;
+use crate::commons::LogDataEntry;
 
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;

@@ -1,6 +1,6 @@
-use crate::systems::system_type::SystemType;
-use crate::systems::system_type::DispatcherBuilderHook;
 use crate::systems::spawners::FrequencySpawner;
+use crate::systems::system_type::DispatcherBuilderHook;
+use crate::systems::system_type::SystemType;
 use typeinfo::TypeInfo;
 
 #[derive(Deserialize)]

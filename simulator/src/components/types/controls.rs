@@ -1,6 +1,6 @@
-/*! Define a control component. */
+/*! Define the control components. */
 
-use super::super::simumo_component::LogDataEntry;
+use crate::commons::LogDataEntry;
 
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;

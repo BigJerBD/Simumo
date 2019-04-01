@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 
+type Fdef = f64;
+
 #[derive(Debug)]
 pub struct OutOfRange;
 
@@ -12,12 +14,12 @@ impl Display for OutOfRange {
     }
 }
 
-pub struct Percentage(f32);
+pub struct Percentage(f64);
 
 impl Percentage {
-    pub fn new(value: f32) -> Result<Percentage, OutOfRange> {
-        const LOWER: f32 = 0.0;
-        const UPPER: f32 = 100.0;
+    pub fn new(value: Fdef) -> Result<Percentage, OutOfRange> {
+        const LOWER: Fdef = 0.0;
+        const UPPER: Fdef = 100.0;
 
         if value >= LOWER && value <= UPPER {
             Ok(Percentage(value))
@@ -26,7 +28,7 @@ impl Percentage {
         }
     }
 
-    pub fn value(&self) -> f32 {
+    pub fn value(&self) -> Fdef {
         self.0
     }
 }

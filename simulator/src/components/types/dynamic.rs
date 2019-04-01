@@ -1,11 +1,7 @@
 /*! Define a dynamic component. */
 
-use crate::components::simumo_component::LogDataEntry;
-use crate::metrics::Fdim;
-use crate::metrics::{meter_deserialize, meterpersecond2_deserialize, meterpersecond_deserialize};
-
-use dim::si::{Meter, MeterPerSecond, MeterPerSecond2};
-use dim::si::{M, MPS, MPS2};
+use dim::si::{MeterPerSecond, MeterPerSecond2};
+use dim::si::{MPS, MPS2};
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;
 use serde::ser::Serializer;
@@ -14,27 +10,10 @@ use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
-/// Position on the map of the component.
-#[simucomponent_data]
-#[storage(VecStorage)]
-pub struct Position {
-    #[simumo_metric]
-    #[serde(deserialize_with = "meter_deserialize")]
-    pub x: Meter<Fdim>,
-    #[simumo_metric]
-    #[serde(deserialize_with = "meter_deserialize")]
-    pub y: Meter<Fdim>,
-}
-
-impl Default for Position {
-    fn default() -> Self {
-        Self {
-            x: 0.0 * M,
-            y: 0.0 * M,
-        }
-    }
-}
-
+use crate::commons::metrics::meterpersecond2_deserialize;
+use crate::commons::metrics::meterpersecond_deserialize;
+use crate::commons::metrics::Fdim;
+use crate::commons::LogDataEntry;
 
 ///Direction of the component. 0=East, 90=North, 180=West, 270=South
 #[simucomponent_data]
@@ -45,7 +24,7 @@ pub struct Angle {
 
 impl Default for Angle {
     fn default() -> Self {
-        Self { val: 0.0}
+        Self { val: 0.0 }
     }
 }
 

@@ -21,7 +21,7 @@ pub struct Configuration {
 }
 
 impl Configuration {
-///import config from json file.
+    ///import config from json file.
     pub fn from_json(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;
@@ -30,7 +30,7 @@ impl Configuration {
         Ok(config)
     }
 
-///import config from yaml file.
+    ///import config from yaml file.
     pub fn from_yaml(args_path: &str) -> Result<Self, Box<Error>> {
         let config_path = Path::new(&args_path);
         let file = File::open(config_path)?;

@@ -1,35 +1,32 @@
-mod point2d;
-mod percentage;
-
-use crate::types::Geolocation;
-use percentage::Percentage;
-use point2d::Point2D;
+use super::percentage::Percentage;
+use super::point2d::Point2D;
 use std::ops::Sub;
 
+type Fdef = f64;
+
 trait Lerp {
-    fn lerp(a: Self, b: Self, t: f32) -> Self;
+    fn lerp(a: Self, b: Self, t: Fdef) -> Self;
 }
 
-impl Lerp for f32 {
-    fn lerp(a: Self, b: Self, t: f32) -> Self {
+impl Lerp for Fdef {
+    fn lerp(a: Self, b: Self, t: Fdef) -> Self {
         a * (1.0 - t) + b * t
     }
 }
 
 impl Lerp for Point2D {
-    fn lerp(a: Self, b: Self, t: f32) -> Self {
+    fn lerp(a: Self, b: Self, t: Fdef) -> Self {
         a + ((b - a) * t)
     }
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct CurvePoint<T> {
-    in_val: f32,
+    in_val: Fdef,
     out_val: T,
 }
-
 impl<T: Sub> CurvePoint<T> {
-    fn new(in_val: f32, out_val: T) -> Self {
+    fn new(in_val: Fdef, out_val: T) -> Self {
         CurvePoint { in_val, out_val }
     }
 }
@@ -40,11 +37,8 @@ pub struct Curve {
 }
 
 impl Curve {
-    pub fn new(points: Vec<Geolocation>) -> Self {
-        let mut points: Vec<_> = points
-            .iter()
-            .map(|p| CurvePoint::new(0.0, Point2D::new(p.0, p.1)))
-            .collect();
+    pub fn new(points: Vec<Point2D>) -> Self {
+        let mut points: Vec<_> = points.iter().map(|p| CurvePoint::new(0.0, *p)).collect();
 
         let length = get_total_length(&points);
         let mut acc = 0.0;
@@ -61,7 +55,7 @@ impl Curve {
     }
 }
 
-fn eval<T>(points: &[CurvePoint<T>], in_val: f32) -> T
+fn eval<T>(points: &[CurvePoint<T>], in_val: Fdef) -> T
 where
     T: Sub + Clone + Lerp + PartialEq,
 {
@@ -109,7 +103,10 @@ fn is_looped<T: PartialEq>(points: &[T]) -> bool {
     points.first().unwrap() == points.last().unwrap()
 }
 
-fn get_point_index_for_input_value<T: Sub>(points: &[CurvePoint<T>], in_val: f32) -> Option<usize> {
+fn get_point_index_for_input_value<T: Sub>(
+    points: &[CurvePoint<T>],
+    in_val: Fdef,
+) -> Option<usize> {
     let num_points = points.len();
     let last_i = num_points - 1;
 
@@ -137,15 +134,15 @@ fn get_point_index_for_input_value<T: Sub>(points: &[CurvePoint<T>], in_val: f32
     Some(min_i)
 }
 
-fn get_total_length(points: &[CurvePoint<Point2D>]) -> f32 {
-    let mut acc = 0.0;
+fn get_total_length(points: &[CurvePoint<Point2D>]) -> Fdef {
+    let mut acc = 0.0f64;
     for i in 1..points.len() {
         acc += points[i].out_val.distance(points[i - 1].out_val);
     }
     acc
 }
 
-fn get_segment_length(points: &[CurvePoint<Point2D>], i: usize, param: f32) -> f32 {
+fn get_segment_length(points: &[CurvePoint<Point2D>], i: usize, param: Fdef) -> Fdef {
     let p0 = points[i].out_val;
     let p1 = if i == points.len() - 1 {
         points[0].out_val
@@ -162,7 +159,7 @@ mod test {
 
     #[test]
     fn over_distance_gives_final_point() {
-        let line = Curve::new(vec![Geolocation(0.0, 0.0), Geolocation(10.0, 15.0)]);
+        let line = Curve::new(vec![Point2D::new(0.0, 0.0), Point2D::new(10.0, 15.0)]);
 
         assert_eq!(
             line.get_location_at_distance_along_curve(Percentage::new(1.0).unwrap()),
@@ -172,7 +169,7 @@ mod test {
 
     #[test]
     fn mid_distance_gives_mid_points() {
-        let line = Curve::new(vec![Geolocation(0.0, 0.0), Geolocation(3.0, 4.0)]);
+        let line = Curve::new(vec![Point2D::new(0.0, 0.0), Point2D::new(3.0, 4.0)]);
 
         assert_eq!(
             line.get_location_at_distance_along_curve(Percentage::new(0.5).unwrap()),

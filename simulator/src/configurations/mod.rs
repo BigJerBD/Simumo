@@ -5,4 +5,4 @@ pub mod generals;
 pub mod map;
 pub mod systems;
 
-pub use self::configuration::Configuration; // Todo : this should be remove (I think).
+pub use self::configuration::Configuration;
