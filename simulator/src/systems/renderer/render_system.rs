@@ -23,7 +23,7 @@ impl<'a> System<'a> for DrawClear {
 
     fn run(&mut self, (mut g_handle, args): Self::SystemData) {
         g_handle.draw(args.viewport(), |_, gl| {
-            clear(Color::GRESSFOREST.get(), gl);
+            clear(Color::GREENFOREST.get(), gl);
         });
     }
 }

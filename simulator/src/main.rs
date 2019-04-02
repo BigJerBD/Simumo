@@ -45,12 +45,22 @@ mod ressources;
 mod simulation;
 mod systems;
 
+use std::fs;
+use std::io::Result;
+
 ///Main handle all inputs such as configuration file and CLI arguments then create the simulator.
 fn main() {
+    create_build_directory();
+
     env_logger::init();
     let args = command_line::CommandLineArguments::parse();
     let config = configurations::Configuration::from_yaml(&args.configuration_file_path).unwrap();
 
     let mut simulation = simulation::Simulation::from_config(config);
     simulation.run_simulation();
+}
+
+fn create_build_directory() -> Result<()> {
+    fs::create_dir_all("build")?;
+    Ok(())
 }
