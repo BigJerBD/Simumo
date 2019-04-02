@@ -1,8 +1,10 @@
 use super::percentage::Percentage;
 use super::point2d::Point2D;
-use std::ops::Sub;
+use dim::si::Meter;
+use dim::Dimensioned;
 
 type Fdef = f64;
+type Distance = Meter<Fdef>;
 
 trait Lerp {
     fn lerp(a: Self, b: Self, t: Fdef) -> Self;
@@ -20,79 +22,145 @@ impl Lerp for Point2D {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct CurvePoint<T> {
-    in_val: Fdef,
-    out_val: T,
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub struct CurvePoint {
+    percentage: Percentage,
+    point: Point2D,
 }
-impl<T: Sub> CurvePoint<T> {
-    fn new(in_val: Fdef, out_val: T) -> Self {
-        CurvePoint { in_val, out_val }
+
+impl CurvePoint {
+    fn new(percentage: Percentage, point: Point2D) -> Self {
+        CurvePoint { percentage, point }
+    }
+
+    pub fn percentage(&self) -> Percentage {
+        self.percentage
+    }
+
+    pub fn point(&self) -> Point2D {
+        self.point
     }
 }
 
 #[derive(Clone, Debug)]
 pub struct Curve {
-    points: Vec<CurvePoint<Point2D>>,
+    length: Distance,
+    points: Vec<CurvePoint>,
 }
 
 impl Curve {
     pub fn new(points: Vec<Point2D>) -> Self {
-        let mut points: Vec<_> = points.iter().map(|p| CurvePoint::new(0.0, *p)).collect();
-
         let length = get_total_length(&points);
+        let mut points: Vec<_> = points
+            .iter()
+            .map(|p| CurvePoint::new(Percentage::lower(), *p))
+            .collect();
+
         let mut acc = 0.0;
         for i in 1..points.len() {
-            acc += points[i].out_val.distance(points[i - 1].out_val);
-            points[i].in_val = acc / length;
+            acc += points[i].point().distance(points[i - 1].point());
+            points[i].percentage = Percentage::new_clamp(acc / length);
         }
 
-        Curve { points }
+        let length = Distance::new(length);
+
+        Curve { length, points }
     }
 
-    pub fn get_location_at_distance_along_curve(&self, distance: Percentage) -> Point2D {
-        eval(&self.points, distance.value())
+    pub fn length(&self) -> Distance {
+        self.length
     }
-}
 
-fn eval<T>(points: &[CurvePoint<T>], in_val: Fdef) -> T
-where
-    T: Sub + Clone + Lerp + PartialEq,
-{
-    let num_points = points.len();
-    let last_i = num_points - 1;
+    pub fn distance_to_percentage(&self, distance: Distance) -> Percentage {
+        let p = distance.value_unsafe() / self.length().value_unsafe();
+        Percentage::new_clamp(p)
+    }
 
-    let i = match get_point_index_for_input_value(points, in_val) {
-        None => return points.first().unwrap().out_val.clone(),
-        Some(i) => {
-            if i == last_i {
-                if !is_looped(points) {
-                    return points[last_i].out_val.clone();
-                } else if in_val >= points[last_i].in_val {
-                    return points.first().unwrap().out_val.clone();
+    pub fn percentage_to_distance(&self, percentage: Percentage) -> Distance {
+        percentage.value() * self.length()
+    }
+
+    pub fn get_location_at_distance(&self, distance: Distance) -> CurvePoint {
+        let p = self.distance_to_percentage(distance);
+        self.get_location_at_percentage(p)
+    }
+
+    pub fn get_location_at_percentage(&self, percentage: Percentage) -> CurvePoint {
+        let num_points = self.points.len();
+        let last_i = num_points - 1;
+
+        let i = match self.get_point_index_for_input_value(percentage) {
+            None => return *self.points.first().unwrap(),
+            Some(i) => {
+                if i == last_i {
+                    if !is_looped(&self.points) {
+                        return self.points[last_i];
+                    } else if percentage >= self.points[last_i].percentage() {
+                        return *self.points.first().unwrap();
+                    }
                 }
+                i
             }
-            i
+        };
+
+        let is_loop_segment = is_looped(&self.points) && i == last_i;
+        let next_i = if is_loop_segment { 0 } else { i + 1 };
+
+        let prev = &self.points[i];
+        let next = &self.points[next_i];
+
+        let diff = if is_loop_segment {
+            0.0
+        } else {
+            next.percentage().value() - prev.percentage().value()
+        };
+
+        if diff > 0.0 {
+            let alpha = (percentage.value() - prev.percentage().value()) / diff;
+            let point = Lerp::lerp(prev.point(), next.point(), alpha);
+            CurvePoint::new(percentage, point)
+        } else {
+            self.points[i]
         }
-    };
+    }
 
-    let is_loop_segment = is_looped(points) && i == last_i;
-    let next_i = if is_loop_segment { 0 } else { i + 1 };
+    fn get_point_index_for_input_value(&self, percentage: Percentage) -> Option<usize> {
+        let num_points = self.points.len();
+        let last_i = num_points - 1;
 
-    let prev = &points[i];
-    let next = &points[next_i];
+        if percentage < self.points.first().unwrap().percentage() {
+            return None;
+        }
 
-    let diff = if is_loop_segment {
-        0.0
-    } else {
-        next.in_val - prev.in_val
-    };
+        if percentage >= self.points[last_i].percentage() {
+            return Some(last_i);
+        }
 
-    if diff > 0.0 {
-        let alpha = (in_val - prev.in_val) / diff;
-        Lerp::lerp(prev.out_val.clone(), next.out_val.clone(), alpha)
-    } else {
-        points[i].out_val.clone()
+        let mut min_i = 0;
+        let mut max_i = num_points;
+
+        while max_i - min_i > 1 {
+            let mid = (min_i + max_i) / 2;
+
+            if self.points[mid].percentage() <= percentage {
+                min_i = mid;
+            } else {
+                max_i = mid;
+            }
+        }
+
+        Some(min_i)
+    }
+
+    fn get_segment_length(&self, i: usize, param: Fdef) -> Fdef {
+        let p0 = self.points[i].point();
+        let p1 = if i == self.points.len() - 1 {
+            self.points[0].point()
+        } else {
+            self.points[i + 1].point()
+        };
+
+        p1.distance(p0) * param
     }
 }
 
@@ -103,54 +171,12 @@ fn is_looped<T: PartialEq>(points: &[T]) -> bool {
     points.first().unwrap() == points.last().unwrap()
 }
 
-fn get_point_index_for_input_value<T: Sub>(
-    points: &[CurvePoint<T>],
-    in_val: Fdef,
-) -> Option<usize> {
-    let num_points = points.len();
-    let last_i = num_points - 1;
-
-    if in_val < points.first().unwrap().in_val {
-        return None;
-    }
-
-    if in_val >= points[last_i].in_val {
-        return Some(last_i);
-    }
-
-    let mut min_i = 0;
-    let mut max_i = num_points;
-
-    while max_i - min_i > 1 {
-        let mid = (min_i + max_i) / 2;
-
-        if points[mid].in_val <= in_val {
-            min_i = mid;
-        } else {
-            max_i = mid;
-        }
-    }
-
-    Some(min_i)
-}
-
-fn get_total_length(points: &[CurvePoint<Point2D>]) -> Fdef {
+fn get_total_length(points: &[Point2D]) -> Fdef {
     let mut acc = 0.0f64;
     for i in 1..points.len() {
-        acc += points[i].out_val.distance(points[i - 1].out_val);
+        acc += points[i].distance(points[i - 1]);
     }
     acc
-}
-
-fn get_segment_length(points: &[CurvePoint<Point2D>], i: usize, param: Fdef) -> Fdef {
-    let p0 = points[i].out_val;
-    let p1 = if i == points.len() - 1 {
-        points[0].out_val
-    } else {
-        points[i + 1].out_val
-    };
-
-    p1.distance(p0) * param
 }
 
 #[cfg(test)]
@@ -162,8 +188,8 @@ mod test {
         let line = Curve::new(vec![Point2D::new(0.0, 0.0), Point2D::new(10.0, 15.0)]);
 
         assert_eq!(
-            line.get_location_at_distance_along_curve(Percentage::new(1.0).unwrap()),
-            Point2D::new(10.0, 15.0)
+            line.get_location_at_percentage(Percentage::new(1.0).unwrap()),
+            CurvePoint::new(Percentage::new_clamp(1.0), Point2D::new(10.0, 15.0))
         );
     }
 
@@ -172,8 +198,8 @@ mod test {
         let line = Curve::new(vec![Point2D::new(0.0, 0.0), Point2D::new(3.0, 4.0)]);
 
         assert_eq!(
-            line.get_location_at_distance_along_curve(Percentage::new(0.5).unwrap()),
-            Point2D::new(1.5, 2.0)
+            line.get_location_at_percentage(Percentage::new(0.5).unwrap()),
+            CurvePoint::new(Percentage::new_clamp(0.5), Point2D::new(1.5, 2.0))
         );
     }
 }
