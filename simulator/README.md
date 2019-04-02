@@ -76,7 +76,7 @@ At the moment, the simulator only has unit test.
 
 ### And coding style tests
 
-All unit test are create within a module. 
+All unit test are created within a module. 
 
 ```
 See lane_graph.rs tests as example.

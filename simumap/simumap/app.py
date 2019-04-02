@@ -4,7 +4,6 @@ from overpy.exception import OverPyException
 __GRAPH__ = None
 
 
-
 def target_location(lon, lat, zoom):
     """
     set the location to get info from the OSM Graph
@@ -32,8 +31,13 @@ def get_nodes():
     :return: {ID:(x,y)}
     """
     global __GRAPH__
+    edges = [[k, v] for k, v in og.graph.edges().keys()]
+    #todo :: could be calculated once
+    connected_node = {k for k, _ in edges}.union(k for _, k in edges)
+
     if __GRAPH__:
-        return __GRAPH__.pos
+        return {k: v for k, v in og.pos.items()
+                if k in connected_node}
     else:
         return []
 

@@ -43,24 +43,39 @@ class FlatList(JSONEncoder):
         result = result.replace('"##<', "").replace('>##"', "")
         return result
 
+
 """
 execution
 """
 
 
 def to_json_graph(lon, lat, zoom):
+    print("fetching the graph")
     og = OsmGraph(lon, lat, zoom)
+    # for verification
+    print("showing the graph")
+    show_graph_plt(og, lon, lat)
+    return make_json_graph(og)
 
+def make_json_graph(og):
+    edges = [[k, v] for k, v in og.graph.edges().keys()]
+    connected_node = {k for k, _ in edges}.union(k for _, k in edges)
     return {
-        "nodes": {k: OneLineList(v) for k, v in og.pos.items()},
-        "edges": {k: v for k, v in og.graph.edges.keys()}
+        "nodes": {k: OneLineList(v) for k, v in og.pos.items()
+                  if k in connected_node},
+        "edges": [OneLineList([k, v]) for k, v in edges]
     }
+
+def show_graph_plt(og, lon, lat):
+    og.draw_graph()
+    plt.show()
 
 
 def execute(args):
     with open(args.path, "w") as file:
         data = to_json_graph(args.lon, args.lat, args.zoom)
-        file.write(json.dumps(data, indent=4,cls=FlatList))
+        print("logging ")
+        file.write(json.dumps(data, indent=4, cls=FlatList))
 
 
 if __name__ == "__main__":

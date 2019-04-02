@@ -1,0 +1,48 @@
+generals:
+  clock_dt: 0.25
+  end_time:
+    val: 12.5
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+map:
+  type: FileMap
+  path: etc/tokyo_graph.json
+
+systems:
+  agents:
+    - type: Accelerating
+
+  clock:
+    type: StandardClock
+
+  controls: []
+
+  logger:
+    type: CsvLogger
+    directory: "log_results"
+    files: []
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+  recorders: []
+
+  spawner:
+    type: Frequency
+    min: 10
+    max: 20
+    start_locations:
+      - 31337279
+    end_locations:
+      - 31337279
+
+
+entities: []
