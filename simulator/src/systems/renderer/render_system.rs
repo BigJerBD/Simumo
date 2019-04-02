@@ -23,7 +23,7 @@ impl<'a> System<'a> for DrawClear {
 
     fn run(&mut self, (mut g_handle, args): Self::SystemData) {
         g_handle.draw(args.viewport(), |_, gl| {
-            clear(Color::GREENGRASS.get(), gl);
+            clear(Color::GRESSFOREST.get(), gl);
         });
     }
 }
@@ -66,7 +66,7 @@ impl<'a> System<'a> for DrawMap {
                         pos_node,
                         pos_neighbor,
                         EDGE_WIDTH,
-                        Color::GRAY,
+                        Color::LIGHTGRAY,
                         c,
                         gl,
                     );

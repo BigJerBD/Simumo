@@ -32,7 +32,7 @@ pub enum Map {
 ///Represent the structure of a file map.
 #[derive(Deserialize)]
 struct FileMap {
-    edges: HashMap<u64, u64>,
+    edges: Vec<(u64, u64)>,
     nodes: HashMap<u64, (f64, f64)>,
 }
 
