@@ -1,9 +1,9 @@
 /*!  Declare a traffic light as component. */
 
-extern crate specs; //Why is that crate declare here and also in main? 
-use crate::metrics::second_deserialize;
-use crate::metrics::Fdim;
-use crate::systems::renderer::Color;
+extern crate specs;
+use crate::commons::metrics::second_deserialize;
+use crate::commons::metrics::Fdim;
+use crate::systems::renderer::color::Color;
 use dim::si::{Second, S};
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
@@ -18,11 +18,11 @@ pub enum TrafficLightColor {
 }
 
 impl TrafficLightColor {
-    pub fn get_rendering_color(&self) -> Color {
+    pub fn get_rendering_color(self) -> Color {
         match self {
             TrafficLightColor::RED => Color::RED,
             TrafficLightColor::YELLOW => Color::YELLOW,
-            TrafficLightColor::GREEN => Color::GREEN
+            TrafficLightColor::GREEN => Color::GREEN,
         }
     }
 }

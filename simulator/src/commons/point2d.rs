@@ -1,19 +1,21 @@
 use std::ops::{Add, Mul, Sub};
 
+type Fdef = f64;
+
 #[derive(Clone, Copy, PartialEq, Default, Debug)]
 pub struct Point2D {
-    x: f32,
-    y: f32,
+    pub x: Fdef,
+    pub y: Fdef,
 }
 
 pub type Vec2D = Point2D;
 
 impl Point2D {
-    pub fn new(x: f32, y: f32) -> Self {
+    pub fn new(x: Fdef, y: Fdef) -> Self {
         Point2D { x, y }
     }
 
-    pub fn distance(self, other: Self) -> f32 {
+    pub fn distance(self, other: Self) -> Fdef {
         let Point2D { x, y } = other - self;
         (x.powi(2) + y.powi(2)).sqrt()
     }
@@ -35,10 +37,10 @@ impl Add for Point2D {
     }
 }
 
-impl Mul<f32> for Point2D {
+impl Mul<Fdef> for Point2D {
     type Output = Self;
 
-    fn mul(self, amount: f32) -> Self {
+    fn mul(self, amount: Fdef) -> Self {
         Self::Output::new(self.x * amount, self.y * amount)
     }
 }

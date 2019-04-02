@@ -1,9 +1,9 @@
-use crate::components::dynamic::Position;
 use crate::components::types::dynamic::Speed;
+use crate::components::Position;
 use crate::ressources::Clock;
 
-use specs::prelude::{Read, ReadStorage, System, WriteStorage, Join};
 use simumo_derive::simusystem;
+use specs::prelude::{Join, Read, ReadStorage, System, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
@@ -18,8 +18,8 @@ impl<'a> System<'a> for StandardMobilitySystem {
 
     fn run(&mut self, (mut pos, vel, clock): Self::SystemData) {
         for (pos, vel) in (&mut pos, &vel).join() {
-            pos.x += vel.val * clock.dt;
-            pos.y += vel.val * clock.dt;
+            pos.val.x += vel.val * clock.dt;
+            pos.val.y += vel.val * clock.dt;
         }
     }
 }

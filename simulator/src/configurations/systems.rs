@@ -43,7 +43,7 @@ impl SystemsConfiguration {
         system_mapping.insert(SpawnerSystem::typename(), vec![self.spawner.system_name()]);
     }
 
-///Will setup all systems use in the simulator.
+    ///Setup all systems in the simulator
     pub fn setup_systems(
         self,
         builder: &mut DispatcherBuilder,
@@ -67,8 +67,8 @@ impl SystemsConfiguration {
     }
 }
 
-/// used for convenience
-fn set_all_in_dispatcher<T: SystemType>( //Todo : à fat quoi cette fonction là?
+/// used for convenience to set a system in the simulator dispatcher
+fn set_all_in_dispatcher<T: SystemType>(
     systems: Vec<T>,
     builder: &mut DispatcherBuilder,
     sys_mapping: &HashMap<String, Vec<String>>,

@@ -1,15 +1,15 @@
+use crate::commons::CartesianCoord;
+use crate::commons::PolarCoord;
+use crate::components::types::constant::CarType;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
-use crate::components::types::dynamic::Acceleration;
-use crate::components::types::dynamic::Position;
 use crate::components::types::dynamic::Speed;
+use crate::components::Position;
 use crate::entities::entity_type::Instantiable;
-use crate::metrics::identifier_deserialize;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
-use specs::{Builder, World};
-use specs::prelude::{Entities, LazyUpdate, Read};
-use dim::si::{M, MPS};
+use dim::si::MPS;
+use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
@@ -28,16 +28,18 @@ pub struct CarEntity {
 }
 
 impl<'a> Instantiable<'a> for CarEntity {
+    // NOTE :: a create car is converted to the cartesian referential
+    //         BUT a spawned one is already on the cartesian referential
     fn create(&self, world: &mut World) {
         world
             .create_entity()
             .with(Identifier(self.id.clone()))
             .with(Position {
-                x: self.position.0 * M,
-                y: self.position.1 * M,
+                val: polarfloat_to_cartesian(self.position.1, self.position.0),
             })
+            .with(CarType)
             .with(Speed {
-                val: self.speed * MPS
+                val: self.speed * MPS,
             })
             .with(Drawer {
                 figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
@@ -50,15 +52,16 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(
             entity,
             Position {
-                x: self.position.0 * M,
-                y: self.position.1 * M,
-            }
+                val: CartesianCoord::from_float(self.position.0, self.position.1),
+            },
         );
+        updater.insert(entity, CarType);
         updater.insert(
             entity,
             Speed {
-                val: self.speed * MPS
-            });
+                val: self.speed * MPS,
+            },
+        );
         updater.insert(
             entity,
             Drawer {
@@ -66,4 +69,10 @@ impl<'a> Instantiable<'a> for CarEntity {
             },
         );
     }
+}
+
+/// for convenience
+fn polarfloat_to_cartesian(lat: f64, lon: f64) -> CartesianCoord {
+    let polar = PolarCoord::from_float(lat, lon);
+    CartesianCoord::from_polar(&polar)
 }

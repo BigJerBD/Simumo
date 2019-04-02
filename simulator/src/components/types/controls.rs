@@ -1,6 +1,6 @@
-/*! Define a control component. */
+/*! Define the control components. */
 
-use super::super::simumo_component::LogDataEntry;
+use crate::commons::LogDataEntry;
 
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;
@@ -9,7 +9,6 @@ use simumo_derive::{simucomponent_data, SimumoSerialize};
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
-
 
 #[simucomponent_data]
 #[storage(VecStorage)]

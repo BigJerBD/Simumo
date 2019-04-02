@@ -1,7 +1,7 @@
 use crate::ressources;
 
-use specs::prelude::{System, Write};
 use simumo_derive::simusystem;
+use specs::prelude::{System, Write};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 

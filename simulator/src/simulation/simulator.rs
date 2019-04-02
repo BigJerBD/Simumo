@@ -6,7 +6,6 @@ use piston::event_loop::{EventSettings, Events};
 use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
-use rand::Rng;
 use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use uuid::Uuid;
@@ -18,7 +17,6 @@ use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
 use crate::ressources::random::Random;
-use crate::ressources::random::SeedableRng;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
@@ -98,7 +96,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
             .build()
             .unwrap()
     }
-
+    //
     ///Create default world's ressources and config's ressources
     fn create_ressources(world: &mut World, config: &Configuration) {
         let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
@@ -109,7 +107,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         } else {
             Uuid::new_v4()
         };
-        let mut random = Random::from_uuid(&seed);
+        let random = Random::from_uuid(&seed);
 
         config.map.forward_ressources(world);
         world.add_resource(end_time);

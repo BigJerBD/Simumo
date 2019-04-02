@@ -7,6 +7,8 @@ use std::path::Path;
 
 use specs::World;
 
+use crate::commons::CartesianCoord;
+use crate::commons::PolarCoord;
 use crate::ressources::generals;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
@@ -45,10 +47,10 @@ impl Map {
                 longitude,
                 latitude,
                 zoom,
-            } => create_ressource_lanegraph(
-                LaneGraph::from_pyosmgraph(*longitude, *latitude, *zoom),
-                world,
-            ),
+            } => {
+                let pos = polarfloat_to_cartesiantuple(*latitude, *longitude);
+                create_ressource_lanegraph(LaneGraph::from_pyosmgraph(pos.0, pos.1, *zoom), world)
+            }
         }
     }
 }
@@ -58,10 +60,12 @@ fn lanemap_from_file_map(path: String) -> LaneGraph {
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
+
     LaneGraph::new(
-        map.nodes
-            .iter()
-            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon, *lat))),
+        map.nodes.iter().map(|(id, (lon, lat))| {
+            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+            (*id, IntersectionData::new(pos.0, pos.1))
+        }),
         map.edges
             .iter()
             .map(|(from, to)| (*from, *to, LaneData::new(None, None, None))),
@@ -76,11 +80,19 @@ fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
         .map(|v| v.position())
         .collect();
 
-    world.add_resource(generals::MapBbox {
-        lon1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
-        lon2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
-        lat1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
-        lat2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
-    });
+    let bbox = generals::MapBbox {
+        x1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
+        x2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
+        y1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
+        y2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
+    };
+    world.add_resource(bbox);
     world.add_resource(lanegraph);
+}
+
+/// for convenience
+fn polarfloat_to_cartesiantuple(lat: f64, lon: f64) -> (f64, f64) {
+    let polar = PolarCoord::from_float(lat, lon);
+    let cart = CartesianCoord::from_polar(&polar);
+    (cart.x.value_unsafe, cart.y.value_unsafe)
 }

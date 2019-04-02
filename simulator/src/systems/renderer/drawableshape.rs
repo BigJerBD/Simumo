@@ -1,4 +1,4 @@
-use crate::systems::renderer::Color;
+use crate::systems::renderer::color::Color;
 use graphics::ellipse;
 use graphics::rectangle;
 use graphics::Context;

@@ -1,8 +1,8 @@
 use crate::components::agents::AcceleratingAgent;
 use crate::components::controls::EnergyControl;
 
-use specs::prelude::{System, WriteStorage, Join};
 use simumo_derive::simusystem;
+use specs::prelude::{Join, System, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 

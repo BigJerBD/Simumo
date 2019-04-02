@@ -1,6 +1,6 @@
-use specs::prelude::{Entities, LazyUpdate, Read, World};
 use crate::entities::types::CarEntity;
 use crate::entities::types::LightEntity;
+use specs::prelude::{Entities, LazyUpdate, Read, World};
 
 pub trait Instantiable<'a> {
     fn create(&self, world: &mut World);

@@ -8,10 +8,10 @@ use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
 use specs::world;
 
-use crate::metrics::Fdim;
+use crate::commons::metrics::Fdim;
+use crate::commons::Curve;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
-use crate::ressources::curve::Curve;
 use dim::si::{Meter, MeterPerSecond};
 
 pub type IntersectionId = u64;
@@ -60,7 +60,7 @@ impl LaneGraph {
             .get_nodes()
             .unwrap()
             .iter()
-            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon + 100.0, *lat + 50.0)))
+            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon, *lat)))
             .collect();
 
         let edges: Vec<(_, _, _)> = osmgraph

@@ -1,30 +1,32 @@
+use crate::commons::CartesianCoord;
+use crate::commons::PolarCoord;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
-use crate::components::types::dynamic::Position;
 use crate::components::types::statics::trafficlight::Light;
+use crate::components::Position;
 use crate::entities::entity_type::Instantiable;
-use crate::metrics::identifier_deserialize;
 use crate::ressources::eventsmanagement::EventsManager;
 use crate::systems::renderer::drawableshape::Circle;
 use crate::systems::renderer::drawableshape::DrawableShape;
-use specs::World;
 use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
+use specs::World;
 
 #[derive(Deserialize, Debug)]
 pub struct LightEntity {
-    #[serde(deserialize_with = "identifier_deserialize")]
-    pub id: Identifier,
+    pub id: String,
+    //todo :: we should make a deserializable light
+    // it would split the behaviour of the config and the simulation
     pub light: Light,
     #[serde(default)]
-    pub position: Position,
+    pub position: (f64, f64),
     pub observable: String,
 }
 
 impl LightEntity {
     fn connect_to_observable(&self, world: &mut World, id_observable: String) {
         let mut events_manager = world.write_resource::<EventsManager>();
-        events_manager.connect(id_observable, self.id.0.clone());
+        events_manager.connect(id_observable, self.id.clone());
     }
 }
 
@@ -33,9 +35,11 @@ impl<'a> Instantiable<'a> for LightEntity {
         self.connect_to_observable(world, self.observable.clone());
         world
             .create_entity()
-            .with(self.id.clone())
+            .with(Identifier(self.id.clone()))
             .with(self.light)
-            .with(self.position.clone())
+            .with(Position {
+                val: polarfloat_to_cartesian(self.position.1, self.position.0),
+            })
             .with(Drawer {
                 figure: DrawableShape::Circle(Circle::new(4.0)),
             })
@@ -43,9 +47,14 @@ impl<'a> Instantiable<'a> for LightEntity {
     }
     fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
         let entity = entities.create();
-        updater.insert(entity, self.id.clone());
+        updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(entity, self.light);
-        updater.insert(entity, self.position.clone());
+        updater.insert(
+            entity,
+            Position {
+                val: CartesianCoord::from_float(self.position.0, self.position.1),
+            },
+        );
         updater.insert(
             entity,
             Drawer {
@@ -53,4 +62,10 @@ impl<'a> Instantiable<'a> for LightEntity {
             },
         );
     }
+}
+
+/// for convenience
+fn polarfloat_to_cartesian(lat: f64, lon: f64) -> CartesianCoord {
+    let polar = PolarCoord::from_float(lat, lon);
+    CartesianCoord::from_polar(&polar)
 }
