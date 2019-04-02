@@ -1,3 +1,6 @@
+use crate::commons::CartesianCoord;
+use crate::commons::PolarCoord;
+use crate::components::types::constant::CarType;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
 use crate::components::types::dynamic::Speed;
@@ -5,17 +8,8 @@ use crate::components::Position;
 use crate::entities::entity_type::Instantiable;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
-
-use crate::commons::CartesianCoord;
-use crate::commons::PolarCoord;
-use crate::components::types::constant::CarType;
 use dim::si::MPS;
-use specs::prelude::{Entities, LazyUpdate, Read};
-use specs::Builder;
-use specs::World;
-
-///todo :: it is possible to provide a single
-/// creation statement by putting all Component in a single iterator (or vector)
+use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
