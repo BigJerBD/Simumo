@@ -15,25 +15,10 @@ extern crate serde_derive;
 extern crate specs_derive;
 #[macro_use]
 extern crate log;
-extern crate env_logger;
 #[macro_use]
 extern crate lazy_static;
-
-extern crate argparse;
-extern crate csv;
 extern crate dimensioned as dim;
-extern crate glutin_window;
-extern crate graphics;
-extern crate opengl_graphics;
-extern crate piston;
-extern crate piston_window;
-extern crate proc_macro2;
-extern crate serde;
-extern crate simumo_derive;
-extern crate specs;
-extern crate typeinfo;
-extern crate typeinfo_derive;
-extern crate uuid;
+
 
 mod command_line;
 mod commons;

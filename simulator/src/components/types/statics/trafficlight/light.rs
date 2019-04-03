@@ -1,6 +1,5 @@
 /*!  Declare a traffic light as component. */
 
-extern crate specs;
 use crate::commons::metrics::second_deserialize;
 use crate::commons::metrics::Fdim;
 use crate::systems::renderer::color::Color;
