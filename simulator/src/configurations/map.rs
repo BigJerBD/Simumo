@@ -9,6 +9,8 @@ use specs::World;
 
 use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
+use crate::osmgraph_api::OsmGraphApi;
+use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::generals;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
@@ -39,33 +41,58 @@ struct FileMap {
 impl Map {
     ///Create world ressources depending on type.
     pub fn forward_ressources(&self, world: &mut World) {
-        match self {
-            Map::FileMap { path } => {
-                create_ressource_lanegraph(lanemap_from_file_map(path.to_string()), world)
-            }
+        let lanegraph = match self {
+            Map::FileMap { path } => lanegraph_from_filemap(path.to_string()),
             Map::OsmGraph {
                 longitude,
                 latitude,
                 zoom,
-            } => {
-                let pos = polarfloat_to_cartesiantuple(*latitude, *longitude);
-                create_ressource_lanegraph(LaneGraph::from_pyosmgraph(pos.0, pos.1, *zoom), world)
-            }
-        }
+            } => lanegraph_from_pyosmgraph(*latitude, *longitude, *zoom)
+        };
+        create_ressource_lanegraph(lanegraph, world);
     }
 }
 
-fn lanemap_from_file_map(path: String) -> LaneGraph {
+pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
+    let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom)
+        .unwrap();
+
+    let nodes: Vec<(_, _)> = osmgraph
+        .get_nodes()
+        .unwrap()
+        .iter()
+        .map(|(id, (lon, lat))| {
+            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+            (*id, IntersectionData::new(pos.0, pos.1))
+        })
+        .collect();
+
+    let edges: Vec<(_, _, _)> = osmgraph
+        .get_edges()
+        .unwrap()
+        .iter()
+        // todo :: replace the none by the valid values
+        .map(|(from, to)| (*from, *to, LaneData::new(None, None, None)))
+        .collect();
+
+    LaneGraph::new(nodes.into_iter(), edges.into_iter())
+}
+
+
+fn lanegraph_from_filemap(path: String) -> LaneGraph {
     let path = Path::new(&path);
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
     LaneGraph::new(
-        map.nodes.iter().map(|(id, (lon, lat))| {
-            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
-            (*id, IntersectionData::new(pos.0, pos.1))
-        }),
+        map
+            .nodes
+            .iter()
+            .map(|(id, (lon, lat))| {
+                let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+                (*id, IntersectionData::new(pos.0, pos.1))
+            }),
         map.edges
             .iter()
             .map(|(from, to)| (*from, *to, LaneData::new(None, None, None))),

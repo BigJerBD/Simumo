@@ -9,15 +9,15 @@ generals:
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-# map:
-#   type: OsmGraph
-#   latitude: -71.89908
-#   longitude: 45.40008
-#   zoom: 1200
-
 map:
-  type: FileMap
-  path: etc/sherbrooke_graph.json
+  type: OsmGraph
+  latitude: 45.40008
+  longitude: -71.89908
+  zoom: 1200
+
+#map:
+#  type: FileMap
+#  path: etc/sherbrooke_graph.json
 
 systems:
   agents:

@@ -50,30 +50,6 @@ impl LaneGraph {
         }
     }
 
-    /// Uses the osmgraph api to make the graph
-    ///
-    /// todo :: find a way to make this function more generic?
-    pub fn from_pyosmgraph(lon: f64, lat: f64, zoom: i64) -> Self {
-        let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
-
-        let nodes: Vec<(_, _)> = osmgraph
-            .get_nodes()
-            .unwrap()
-            .iter()
-            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon, *lat)))
-            .collect();
-
-        let edges: Vec<(_, _, _)> = osmgraph
-            .get_edges()
-            .unwrap()
-            .iter()
-            // todo :: replace the none by the valid values
-            .map(|(from, to)| (*from, *to, LaneData::new(None, None, None)))
-            .collect();
-
-        Self::new(nodes.into_iter(), edges.into_iter())
-    }
-
     /// Take the entity in front of the lane `from`
     /// and put it at the back of the lane `to`
     ///

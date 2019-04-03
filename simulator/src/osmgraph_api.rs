@@ -26,7 +26,7 @@ pub trait OsmGraphApi {
     /// Get the adjacendies of the queried graph
     fn get_adjacencies(&self) -> Result<HashMap<NodeId, Vec<NodeId>>, Self::ErrorType>;
     /// Get the edges of the queried graph
-    fn get_edges(&self) -> Result<HashMap<NodeId, NodeId>, Self::ErrorType>;
+    fn get_edges(&self) -> Result<Vec<(NodeId, NodeId)>, Self::ErrorType>;
 }
 
 /// Python OsmGraphAPI
@@ -52,8 +52,8 @@ impl PythonOsmGraphApi {
             &format!(
                 "{}.target_location({}, {}, {})",
                 Self::MODULE_NAME,
-                lon,
                 lat,
+                lon,
                 zoom
             ),
             None,
@@ -66,7 +66,7 @@ impl PythonOsmGraphApi {
 impl OsmGraphApi for PythonOsmGraphApi {
     type ErrorType = PyErr;
 
-    fn query_graph(lon: f64, lat: f64, zoom: i64) -> Result<Box<Self>, PyErr> {
+    fn query_graph(lat: f64, lon: f64, zoom: i64) -> Result<Box<Self>, PyErr> {
         let gil = Python::acquire_gil();
 
         let locals = {
@@ -77,7 +77,7 @@ impl OsmGraphApi for PythonOsmGraphApi {
             locals
         };
         let result = Self { gil, locals };
-        result.target_location(lon, lat, zoom)?;
+        result.target_location(lat, lon, zoom)?;
         Ok(Box::new(result))
     }
 
@@ -121,7 +121,7 @@ impl OsmGraphApi for PythonOsmGraphApi {
             .collect::<Result<HashMap<_, _>, _>>()
     }
 
-    fn get_edges(&self) -> Result<HashMap<NodeId, NodeId>, PyErr> {
+    fn get_edges(&self) -> Result<Vec<(NodeId, NodeId)>, PyErr> {
         let py = self.gil.python();
         let res: Vec<(PyObject, PyObject)> = py
             .eval(
@@ -137,6 +137,6 @@ impl OsmGraphApi for PythonOsmGraphApi {
                 let end: NodeId = x.1.extract(py)?;
                 Ok((beg, end))
             })
-            .collect::<Result<HashMap<_, _>, _>>()
+            .collect::<Result<Vec<(_, _)>,_>>()
     }
 }
