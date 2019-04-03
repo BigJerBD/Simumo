@@ -3,6 +3,9 @@ use crate::entities::types::CarEntity;
 use crate::ressources::clock;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::ressources::random::Random;
+use petgraph::Graph;
+use petgraph::algo::astar;
+use petgraph::visit::{IntoEdges, Visitable};
 use rand::distributions::{Normal, Distribution};
 use rand::Rng;
 use simumo_derive::simusystem;
@@ -32,9 +35,16 @@ impl<'a> System<'a> for FrequencySpawner {
         let num_cars_to_spawn = random.get_rng().gen_range(self.min, self.max);
         for i in 1..num_cars_to_spawn {
             let position = self.get_random_start_location(&mut random, &lane_graph);
-            debug!("vehicule spawned at : x={} y={}", position.0, position.1);
             let destination = self.get_random_end_location(&mut random, &lane_graph);
             let speed = normal_dist.sample(random.get_rng());
+            /*let path = astar(
+                &lane_graph,
+                position,
+                |finish| finish == destination,
+                |e| *e.weight(),
+                |_| 0
+            );
+            println!("{:#?}", path);*/
             let new_car: CarEntity = CarEntity {
                 id: "randomid".to_string(),
                 position,

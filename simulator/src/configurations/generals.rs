@@ -2,6 +2,7 @@
 
 use crate::commons::metrics::second_deserialize;
 use crate::commons::metrics::Fdim;
+use crate::configurations::debugger::VisualDebugger;
 use dim::si::{Second, MIN};
 
 #[derive(Deserialize)]
@@ -12,15 +13,6 @@ pub struct GeneralConfigurations {
     pub end_time: EndTime,
     pub debugger: VisualDebugger,
     pub seed: String,
-}
-
-///Represent the ending time of the simulator.
-#[derive(Clone, Deserialize)]
-pub struct VisualDebugger {
-    #[serde(rename = "use")]
-    pub on: bool,
-    pub width: f64,
-    pub height: f64,
 }
 
 #[derive(Clone, Deserialize)]

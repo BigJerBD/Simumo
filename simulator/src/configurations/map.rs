@@ -5,11 +5,9 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
-use specs::World;
-
 use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
-use crate::ressources::generals;
+use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
@@ -37,11 +35,12 @@ struct FileMap {
 }
 
 impl Map {
-    ///Create world ressources depending on type.
-    pub fn forward_ressources(&self, world: &mut World) {
+    pub fn forward_ressources(&self) -> (LaneGraph, MapBbox) {
         match self {
             Map::FileMap { path } => {
-                create_ressource_lanegraph(lanemap_from_file_map(path.to_string()), world)
+                let lane_graph: LaneGraph = lanemap_from_file_map(path.to_string());
+                let bbox: MapBbox = compute_bounding_box(&lane_graph);
+                (lane_graph, bbox)
             }
             Map::OsmGraph {
                 longitude,
@@ -49,7 +48,9 @@ impl Map {
                 zoom,
             } => {
                 let pos = polarfloat_to_cartesiantuple(*latitude, *longitude);
-                create_ressource_lanegraph(LaneGraph::from_pyosmgraph(pos.0, pos.1, *zoom), world)
+                let lane_graph: LaneGraph = LaneGraph::from_pyosmgraph(pos.0, pos.1, *zoom);
+                let bbox: MapBbox = compute_bounding_box(&lane_graph);
+                (lane_graph, bbox)
             }
         }
     }
@@ -73,21 +74,19 @@ fn lanemap_from_file_map(path: String) -> LaneGraph {
 }
 
 ///Create the graph that will be display the in visual debugger
-fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
+fn compute_bounding_box(lanegraph: &LaneGraph) -> MapBbox {
     let positions: Vec<(f64, f64)> = lanegraph
         .intersections
         .values()
         .map(|v| v.position())
         .collect();
 
-    let bbox = generals::MapBbox {
+    MapBbox {
         x1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
         x2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
         y1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
         y2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
-    };
-    world.add_resource(bbox);
-    world.add_resource(lanegraph);
+    }
 }
 
 /// for convenience

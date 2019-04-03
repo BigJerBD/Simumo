@@ -2,7 +2,7 @@ use crate::components::constant::Drawer;
 use crate::components::statics::trafficlight::Light;
 use crate::components::types::constant::CarType;
 use crate::components::Position;
-use crate::configurations::generals::VisualDebugger;
+use crate::configurations::debugger::VisualDebugger;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;

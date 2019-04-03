@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::path::Path;
 
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
@@ -12,11 +11,13 @@ use specs::Dispatcher;
 use uuid::Uuid;
 
 use crate::configurations::generals::EndTime;
-use crate::configurations::generals::VisualDebugger;
+use crate::configurations::debugger::VisualDebugger;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
 use crate::ressources::eventsmanagement::EventsManager;
+use crate::ressources::generals::MapBbox;
+use crate::ressources::lane_graph::LaneGraph;
 use crate::ressources::random::Random;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
@@ -36,12 +37,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
     pub fn from_config(config: Configuration) -> Self {
         let width: f64 = config.generals.debugger.width;
         let height: f64 = config.generals.debugger.height;
-
         let window = Self::create_window(width, height);
-        //let img = Image::new().rect(square(0.0, 0.0, 200.0));
-        //img.save("build/testimage.png").unwrap();
-        //image::save_buffer(&Path::new("build/testimage.png"), img, 800, 600, image::RGBA(8));
-        create_background_image(width, height);
 
         let mut base_dispatcher_builder = DispatcherBuilder::new();
         let mut world = World::new();
@@ -115,7 +111,11 @@ impl<'a, 'b> Simulation<'a, 'b> {
         };
         let random = Random::from_uuid(&seed);
 
-        config.map.forward_ressources(world);
+        let (lane_graph, bbox): (LaneGraph, MapBbox) = config.map.forward_ressources();
+        debugger.create_background_image(&lane_graph);
+
+        world.add_resource(lane_graph);
+        world.add_resource(bbox);
         world.add_resource(end_time);
         world.add_resource(graphics_handle);
         world.add_resource(clock::Clock::new(config.generals.clock_dt));
@@ -130,79 +130,4 @@ fn simulation_ended(ressources: &World) -> bool {
     let clock = ressources.read_resource::<clock::Clock>();
     let end_time = ressources.read_resource::<EndTime>();
     clock.get_time() >= end_time.val
-}
-
-fn create_background_image(width: f64, height: f64) {
-    let width: u32 = width as u32;
-    let height: u32 = height as u32;
-    let path = Path::new("build/background.png");
-    /*
-    extern crate image;
-    extern crate imageproc;
-    use image::{Rgba, RgbaImage};
-    use imageproc::drawing::draw_filled_rect_mut;
-    let color_bg = Rgba([51u8, 135u8, 31u8, 255u8]);
-    let color_street = Rgba([255u8, 0u8, 0u8, 127u8]);
-    let mut img = RgbaImage::new(width, height);
-    // Draw background color
-    draw_filled_rect_mut(
-        &mut img,
-        imageproc::rect::Rect::at(0, 0).of_size(width, height),
-        color_bg
-    );
-    // Draw streets
-    draw_filled_rect_mut(
-        &mut img,
-        imageproc::rect::Rect::at(50, 50).of_size(50, 50),
-        color_street
-    );
-    img.save(path).unwrap();*/
-    use graphics::*;
-    use graphics_buffer::*;
-    let color_bg = [0.2, 0.53, 0.12, 1.0];
-    let street_bg = [0.75, 0.75, 0.75, 1.0];
-    let mut buffer = RenderBuffer::new(width, height);
-    buffer.clear(color_bg);
-
-    let p1: (f64, f64) = (3.0, 20.0);
-    let p2: (f64, f64) = (120.0, 400.0);
-    let width = 3.0;
-    let rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
-    let rectangle_width: f64 = width;
-    let rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
-    let transform = IDENTITY
-        .trans(p1.0, p1.1)
-        .rot_rad(rectangle_angle)
-        .scale(rectangle_length, rectangle_width);
-    rectangle(
-        street_bg,
-        rectangle::square(0.0, 0.0, 1.0),
-        transform,
-        &mut buffer,
-    );
-
-    // Big red circle
-    /*ellipse(
-        [1.0, 0.0, 0.0, 0.7],
-        [0.0, 0.0, 100.0, 100.0],
-        IDENTITY,
-        &mut buffer,
-    );
-    // Small blue circle
-    ellipse(
-        [0.0, 0.0, 1.0, 0.7],
-        [0.0, 0.0, 50.0, 50.0],
-        IDENTITY,
-        &mut buffer,
-    );
-    // Small green circle
-    ellipse(
-        [0.0, 1.0, 0.0, 0.7],
-        [50.0, 50.0, 50.0, 50.0],
-        IDENTITY,
-        &mut buffer,
-    );*/
-
-    // Save the buffer
-    buffer.save("build/circles.png").unwrap();
 }
