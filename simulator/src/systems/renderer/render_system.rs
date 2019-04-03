@@ -5,13 +5,11 @@ use crate::components::Position;
 use crate::configurations::debugger::point_to_window;
 use crate::configurations::debugger::VisualDebugger;
 use crate::ressources::generals::MapBbox;
-use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
 use crate::systems::renderer::drawableshape::Drawable;
 use graphics::{clear, rectangle, Context, Transformed};
 use opengl_graphics::GlGraphics;
-use petgraph::graphmap::Neighbors;
 use piston::input::RenderArgs;
 use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
 
@@ -41,38 +39,22 @@ impl<'a> System<'a> for DrawMap {
     );
 
     fn run(&mut self, (debugger, map_bbox, lane_graph, mut g_handle, args): Self::SystemData) {
-        //polar_coordinates_to_cartesian
-        //TODO:: replace this algorithm to simply interate between all edges
-        for (nodeid, node) in lane_graph.intersections() {
-            let pos_node: (f64, f64) = point_to_window(node.position(), &debugger, &map_bbox);
-
-            let neighbors: Neighbors<'_, u64, petgraph::Directed> =
-                lane_graph.graph.neighbors(*nodeid);
-
-            for neighbor in neighbors {
-                let _lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
-
-                let pos_neighbor: (f64, f64) = point_to_window(
-                    lane_graph.intersection(neighbor).position(),
-                    &debugger,
-                    &map_bbox,
+        let mut edges = lane_graph.lanes().all_edges();
+        while let Some(edge) = edges.next() {
+            let node1 = lane_graph.intersection(edge.0);
+            let node2 = lane_graph.intersection(edge.1);
+            let pos_node1: (f64, f64) = point_to_window(node1.position(), &debugger, &map_bbox);
+            let pos_node2: (f64, f64) = point_to_window(node2.position(), &debugger, &map_bbox);
+            g_handle.draw(args.viewport(), |c, gl| {
+                draw_lane_between_two_points(
+                    pos_node1,
+                    pos_node2,
+                    EDGE_WIDTH,
+                    Color::LIGHTGRAY,
+                    c,
+                    gl,
                 );
-
-                debug!(
-                    "lane rendering: x1={} y1={} x2={} y2={}",
-                    pos_node.0, pos_node.1, pos_neighbor.0, pos_neighbor.1
-                );
-                g_handle.draw(args.viewport(), |c, gl| {
-                    draw_lane_between_two_points(
-                        pos_node,
-                        pos_neighbor,
-                        EDGE_WIDTH,
-                        Color::LIGHTGRAY,
-                        c,
-                        gl,
-                    );
-                });
-            }
+            });
         }
     }
 }
