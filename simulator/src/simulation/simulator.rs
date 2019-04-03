@@ -112,7 +112,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         let random = Random::from_uuid(&seed);
 
         let (lane_graph, bbox): (LaneGraph, MapBbox) = config.map.forward_ressources();
-        debugger.create_background_image(&lane_graph);
+        debugger.create_background_image(&lane_graph, &bbox);
 
         world.add_resource(lane_graph);
         world.add_resource(bbox);

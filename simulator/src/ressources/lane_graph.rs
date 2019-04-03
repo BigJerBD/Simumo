@@ -364,5 +364,4 @@ mod tests {
         assert!(graph.lane_between((1, 3)).queue().is_empty());
         assert!(graph.lane_between((2, 3)).queue().is_empty());
     }
-
 }

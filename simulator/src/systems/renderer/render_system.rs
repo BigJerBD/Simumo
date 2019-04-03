@@ -2,6 +2,7 @@ use crate::components::constant::Drawer;
 use crate::components::statics::trafficlight::Light;
 use crate::components::types::constant::CarType;
 use crate::components::Position;
+use crate::configurations::debugger::point_to_window;
 use crate::configurations::debugger::VisualDebugger;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneData;
@@ -163,16 +164,3 @@ fn pos_to_window(pos: &Position, debugger: &VisualDebugger, map_bbox: &MapBbox) 
     )
 }
 
-fn point_to_window(
-    (x, y): (f64, f64),
-    debugger: &VisualDebugger,
-    map_bbox: &MapBbox,
-) -> (f64, f64) {
-    let diff_x: f64 = map_bbox.x2 - map_bbox.x1;
-    let diff_y: f64 = map_bbox.y2 - map_bbox.y1;
-    let width: f64 = debugger.width;
-    let height: f64 = debugger.height;
-    let xpx = width * (x - map_bbox.x1) / diff_x;
-    let ypx = height * (map_bbox.y2 - y) / diff_y;
-    (xpx, ypx)
-}
