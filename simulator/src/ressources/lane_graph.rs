@@ -5,7 +5,12 @@ use std::ops::IndexMut;
 
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
+use petgraph::graphmap::Neighbors;
 use petgraph::IntoWeightedEdge;
+use petgraph::visit::GraphBase;
+use petgraph::visit::IntoEdges;
+use petgraph::visit::IntoEdgeReferences;
+use petgraph::visit::IntoNeighbors;
 use specs::world;
 
 use crate::commons::metrics::Fdim;
@@ -155,6 +160,35 @@ impl LaneGraph {
         }
     }
 }
+
+/*impl GraphBase for LaneGraph {
+    type EdgeId = LaneData;
+    type NodeId = NodeId;
+}
+
+impl IntoEdges for LaneGraph {
+    type Edges = Vec<LaneData>;
+
+    fn edges(self, nodeid: Self::NodeId) -> Self::Edges {
+        let neighbors: Neighbors<'_, u64, petgraph::Directed> =
+            self.graph.neighbors(*nodeid);
+        let edges: Self::Edges = neighbors
+            .iter()
+            .map(|n| self.lane_between((*nodeid, n)))
+            .collect();
+        edges
+    }
+}
+
+impl IntoNeighbors for LaneGraph {
+    type Neighbors = Vec<Self::NodeId>;
+
+    fn neighbors(self, nodeid: Self::NodeId) -> Self::Neighbors {
+        let neighbors: Self::Neighbors = 
+            self.graph.neighbors(*nodeid).collect();
+        neighbors
+    }
+}*/
 
 /// Access Entry that allows to modify the LaneMap while keeping its integrity
 ///

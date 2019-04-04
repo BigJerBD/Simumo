@@ -1,3 +1,5 @@
+use image::Rgba;
+
 pub enum Color {
     BLACK,
     GRAY,
@@ -23,5 +25,25 @@ impl Color {
             Color::RED => [1.0, 0.0, 0.0, 1.0],
             Color::YELLOW => [1.0, 1.0, 0.0, 1.0],
         }
+    }
+    pub fn r(&self) -> f32 {
+        self.get()[0]
+    }
+    pub fn g(&self) -> f32 {
+        self.get()[1]
+    }
+    pub fn b(&self) -> f32 {
+        self.get()[2]
+    }
+    pub fn a(&self) -> f32 {
+        self.get()[3]
+    }
+    pub fn as_rgba(&self) -> Rgba<u8> {
+        Rgba([
+            (self.r() * 255.) as u8,
+            (self.g() * 255.) as u8,
+            (self.b() * 255.) as u8,
+            (self.a() * 255.) as u8,
+        ])
     }
 }

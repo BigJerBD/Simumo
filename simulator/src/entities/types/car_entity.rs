@@ -1,5 +1,6 @@
 use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
+use crate::components::agents::Destination;
 use crate::components::types::constant::CarType;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
@@ -20,6 +21,8 @@ pub struct CarEntity {
     #[serde(default)]
     pub position: (f64, f64),
     #[serde(default)]
+    pub destination: (f64, f64),
+    #[serde(default)]
     pub speed: f64,
     #[serde(default)]
     pub acceleration: f64,
@@ -29,7 +32,7 @@ pub struct CarEntity {
 
 impl<'a> Instantiable<'a> for CarEntity {
     // NOTE :: a create car is converted to the cartesian referential
-    //         BUT a spawned one is already on the cartesian referential
+    // but a spawned one is already on the cartesian referential
     fn create(&self, world: &mut World) {
         world
             .create_entity()
@@ -37,6 +40,9 @@ impl<'a> Instantiable<'a> for CarEntity {
             .with(Position {
                 val: polarfloat_to_cartesian(self.position.1, self.position.0),
             })
+            /*.with(Destination {
+                val: polarfloat_to_cartesian(self.destination.1, self.destination.0),
+            })*/
             .with(CarType)
             .with(Speed {
                 val: self.speed * MPS,
@@ -55,6 +61,12 @@ impl<'a> Instantiable<'a> for CarEntity {
                 val: CartesianCoord::from_float(self.position.0, self.position.1),
             },
         );
+        /*updater.insert(
+            entity,
+            Destination {
+                val: CartesianCoord::from_float(self.destination.0, self.destination.1),
+            },
+        );*/
         updater.insert(entity, CarType);
         updater.insert(
             entity,

@@ -1,3 +1,4 @@
+extern crate graphics;
 use crate::components::constant::Drawer;
 use crate::components::statics::trafficlight::Light;
 use crate::components::types::constant::CarType;
@@ -8,10 +9,14 @@ use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
 use crate::systems::renderer::drawableshape::Drawable;
-use graphics::{clear, rectangle, Context, Transformed};
+use graphics::{clear, rectangle, Image, Context, Transformed};
+use graphics::DrawState;
+use graphics::rectangle::square;
 use opengl_graphics::GlGraphics;
+use piston_window::Texture;
 use piston::input::RenderArgs;
 use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
+use std::path::Path;
 
 const EDGE_WIDTH: f64 = 2.0;
 
@@ -39,6 +44,9 @@ impl<'a> System<'a> for DrawMap {
     );
 
     fn run(&mut self, (debugger, map_bbox, lane_graph, mut g_handle, args): Self::SystemData) {
+        //let image   = Image::new();
+        //let texture = Texture::from_path(Path::new("bg.png")).unwrap();
+
         let mut edges = lane_graph.lanes().all_edges();
         while let Some(edge) = edges.next() {
             let node1 = lane_graph.intersection(edge.0);
@@ -54,6 +62,7 @@ impl<'a> System<'a> for DrawMap {
                     c,
                     gl,
                 );
+                //image.draw(&texture, DrawState::new(), c.transform, gl);
             });
         }
     }
@@ -145,4 +154,3 @@ fn pos_to_window(pos: &Position, debugger: &VisualDebugger, map_bbox: &MapBbox) 
         map_bbox,
     )
 }
-

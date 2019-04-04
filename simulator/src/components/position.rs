@@ -21,7 +21,7 @@ pub struct Position {
 impl Default for Position {
     fn default() -> Self {
         Self {
-            val: CartesianCoord::from_float(0.0, 0.0),
+            val: CartesianCoord::default(),
         }
     }
 }

@@ -48,6 +48,7 @@ impl<'a> System<'a> for FrequencySpawner {
             let new_car: CarEntity = CarEntity {
                 id: "randomid".to_string(),
                 position,
+                destination,
                 speed,
                 acceleration: 0.0,
             };
