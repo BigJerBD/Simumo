@@ -137,6 +137,6 @@ impl OsmGraphApi for PythonOsmGraphApi {
                 let end: NodeId = x.1.extract(py)?;
                 Ok((beg, end))
             })
-            .collect::<Result<Vec<(_, _)>,_>>()
+            .collect::<Result<Vec<(_, _)>, _>>()
     }
 }

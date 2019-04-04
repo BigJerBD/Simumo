@@ -1,7 +1,10 @@
+use dim::si::Meter;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
+use std::ops::Add;
 
 type Fdef = f64;
+type Distance = Meter<Fdef>;
 
 #[derive(Debug)]
 pub struct OutOfRange;
@@ -49,5 +52,13 @@ impl Percentage {
 
     pub fn value(self) -> Fdef {
         self.0
+    }
+}
+
+impl Add for Percentage {
+    type Output = Self;
+
+    fn add(self, other: Percentage) -> Self::Output {
+        Percentage::new_clamp(self.value() + other.value())
     }
 }

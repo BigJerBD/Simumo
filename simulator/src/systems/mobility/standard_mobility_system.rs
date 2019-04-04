@@ -1,10 +1,10 @@
 use crate::components::types::dynamic::Speed;
 use crate::components::Position;
-use crate::ressources::Clock;
 use crate::ressources::lane_graph::LaneGraph;
+use crate::ressources::Clock;
 
 use simumo_derive::simusystem;
-use specs::prelude::{Join, Read, ReadStorage, ReadExpect, System, WriteStorage};
+use specs::prelude::{Join, Read, ReadExpect, ReadStorage, System, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
@@ -23,9 +23,8 @@ impl<'a> System<'a> for StandardMobilitySystem {
             // TODO: Tweak Curve to not need so many converstions
             let (edge, percentage) = pos.val;
             let curve = &lane_graph.lane_between(edge).curve;
-            let mut distance = curve.percentage_to_distance(percentage);
-            distance += vel.val * clock.dt;
-            pos.val.1 = curve.distance_to_percentage(distance);
+            let mut progress = curve.percentage_to_progress(percentage);
+            progress += vel.val * clock.dt;
         }
     }
 }

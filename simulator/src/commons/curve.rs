@@ -1,5 +1,6 @@
 use super::percentage::Percentage;
 use super::point2d::Point2D;
+use super::Progress;
 use dim::si::Meter;
 use dim::Dimensioned;
 
@@ -24,17 +25,17 @@ impl Lerp for Point2D {
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct CurvePoint {
-    percentage: Percentage,
+    progress: Progress,
     point: Point2D,
 }
 
 impl CurvePoint {
-    fn new(percentage: Percentage, point: Point2D) -> Self {
-        CurvePoint { percentage, point }
+    fn new(progress: Progress, point: Point2D) -> Self {
+        CurvePoint { progress, point }
     }
 
-    pub fn percentage(&self) -> Percentage {
-        self.percentage
+    pub fn progress(&self) -> Progress {
+        self.progress
     }
 
     pub fn point(&self) -> Point2D {
@@ -51,19 +52,19 @@ pub struct Curve {
 impl Curve {
     pub fn new(points: Vec<Point2D>) -> Self {
         assert!(!points.is_empty());
-        let length = get_total_length(&points);
+
+        let length = Distance::new(get_total_length(&points));
+
         let mut points: Vec<_> = points
             .iter()
-            .map(|p| CurvePoint::new(Percentage::lower(), *p))
+            .map(|p| CurvePoint::new(Progress::new(Percentage::lower(), length), *p))
             .collect();
 
         let mut acc = 0.0;
         for i in 1..points.len() {
             acc += points[i].point().distance(points[i - 1].point());
-            points[i].percentage = Percentage::new_clamp(acc / length);
+            points[i].progress += Distance::new(acc);
         }
-
-        let length = Distance::new(length);
 
         Curve { length, points }
     }
@@ -72,18 +73,19 @@ impl Curve {
         self.length
     }
 
-    pub fn distance_to_percentage(&self, distance: Distance) -> Percentage {
-        let p = distance.value_unsafe() / self.length().value_unsafe();
-        Percentage::new_clamp(p)
+    pub fn distance_to_progress(&self, distance: Distance) -> Progress {
+        let p = distance / self.length();
+        let percentage = Percentage::new_clamp(*p.value_unsafe());
+        Progress::new(percentage, percentage.value() * self.length())
     }
 
-    pub fn percentage_to_distance(&self, percentage: Percentage) -> Distance {
-        percentage.value() * self.length()
+    pub fn percentage_to_progress(&self, percentage: Percentage) -> Progress {
+        Progress::new(percentage, percentage.value() * self.length())
     }
 
     pub fn get_location_at_distance(&self, distance: Distance) -> CurvePoint {
-        let p = self.distance_to_percentage(distance);
-        self.get_location_at_percentage(p)
+        let perc = self.distance_to_progress(distance);
+        self.get_location_at_percentage(perc.percentage())
     }
 
     pub fn get_location_at_percentage(&self, percentage: Percentage) -> CurvePoint {
@@ -96,7 +98,7 @@ impl Curve {
                 if i == last_i {
                     if !is_looped(&self.points) {
                         return self.points[last_i];
-                    } else if percentage >= self.points[last_i].percentage() {
+                    } else if percentage >= self.points[last_i].progress().percentage() {
                         return *self.points.first().unwrap();
                     }
                 }
@@ -113,13 +115,14 @@ impl Curve {
         let diff = if is_loop_segment {
             0.0
         } else {
-            next.percentage().value() - prev.percentage().value()
+            next.progress().percentage().value() - prev.progress().percentage().value()
         };
 
         if diff > 0.0 {
-            let alpha = (percentage.value() - prev.percentage().value()) / diff;
+            let alpha = (percentage.value() - prev.progress().percentage().value()) / diff;
             let point = Lerp::lerp(prev.point(), next.point(), alpha);
-            CurvePoint::new(percentage, point)
+            let distance = percentage.value() * self.length();
+            CurvePoint::new(Progress::new(percentage, distance), point)
         } else {
             self.points[i]
         }
@@ -129,11 +132,11 @@ impl Curve {
         let num_points = self.points.len();
         let last_i = num_points - 1;
 
-        if percentage < self.points.first().unwrap().percentage() {
+        if percentage < self.points.first().unwrap().progress().percentage() {
             return None;
         }
 
-        if percentage >= self.points[last_i].percentage() {
+        if percentage >= self.points[last_i].progress().percentage() {
             return Some(last_i);
         }
 
@@ -143,7 +146,7 @@ impl Curve {
         while max_i - min_i > 1 {
             let mid = (min_i + max_i) / 2;
 
-            if self.points[mid].percentage() <= percentage {
+            if self.points[mid].progress().percentage() <= percentage {
                 min_i = mid;
             } else {
                 max_i = mid;
@@ -190,7 +193,10 @@ mod test {
 
         assert_eq!(
             line.get_location_at_percentage(Percentage::new(1.0).unwrap()),
-            CurvePoint::new(Percentage::new_clamp(1.0), Point2D::new(10.0, 15.0))
+            CurvePoint::new(
+                Progress::new(Percentage::new_clamp(1.0), Distance::new(18.02)),
+                Point2D::new(10.0, 15.0)
+            )
         );
     }
 
@@ -200,7 +206,10 @@ mod test {
 
         assert_eq!(
             line.get_location_at_percentage(Percentage::new(0.5).unwrap()),
-            CurvePoint::new(Percentage::new_clamp(0.5), Point2D::new(1.5, 2.0))
+            CurvePoint::new(
+                Progress::new(Percentage::new_clamp(0.5), Distance::new(2.5)),
+                Point2D::new(1.5, 2.0)
+            )
         );
     }
 }

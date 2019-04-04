@@ -157,14 +157,15 @@ fn draw_lane_between_two_points(
     rectangle(color.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
 }
 
-fn pos_to_window(pos: &Position, debugger: &VisualDebugger, map_bbox: &MapBbox, lane_graph: &LaneGraph) -> (f64, f64) {
+fn pos_to_window(
+    pos: &Position,
+    debugger: &VisualDebugger,
+    map_bbox: &MapBbox,
+    lane_graph: &LaneGraph,
+) -> (f64, f64) {
     let data = lane_graph.lane_between(pos.val.0);
     let cpoint = data.curve.get_location_at_percentage(pos.val.1);
-    point_to_window(
-        (cpoint.point().x, cpoint.point().y),
-        debugger,
-        map_bbox,
-    )
+    point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
 }
 
 fn point_to_window(
