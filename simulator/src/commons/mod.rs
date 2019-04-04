@@ -2,6 +2,7 @@ pub use self::coordinates::{CartesianCoord, PolarCoord};
 pub use self::curve::Curve;
 pub use self::log_data_entry::LogDataEntry;
 pub use self::point2d::Point2D;
+pub use self::percentage::Percentage;
 
 mod coordinates;
 mod curve;

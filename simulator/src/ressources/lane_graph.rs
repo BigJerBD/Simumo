@@ -10,8 +10,6 @@ use specs::world;
 
 use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
-use crate::osmgraph_api::OsmGraphApi;
-use crate::osmgraph_api::PythonOsmGraphApi;
 use dim::si::{Meter, MeterPerSecond};
 
 pub type IntersectionId = u64;
@@ -188,14 +186,14 @@ pub struct LaneData {
     // from the graph w
     pub width: Option<Meter<Fdim>>,
     pub max_speed: Option<MeterPerSecond<Fdim>>,
-    pub curve: Option<Curve>,
+    pub curve: Curve,
 }
 
 impl LaneData {
     pub fn new(
         width: Option<Meter<Fdim>>,
         max_speed: Option<MeterPerSecond<Fdim>>,
-        curve: Option<Curve>,
+        curve: Curve,
     ) -> Self {
         Self {
             entity_queue: VecDeque::new(),
@@ -289,6 +287,7 @@ mod tests {
     fn lane_map_triangle() -> LaneGraph {
         let node = IntersectionData::new(10.0, 10.0);
 
+        use crate::commons::Point2D;
         LaneGraph::new(
             [
                 (1u64, node.clone()),
@@ -299,9 +298,10 @@ mod tests {
             .to_vec()
             .into_iter(),
             &[
-                (1, 3, LaneData::new(None, None, None)),
-                (2, 3, LaneData::new(None, None, None)),
-                (3, 4, LaneData::new(None, None, None)),
+                // TODO: Also fix LaneData init
+                (1, 3, LaneData::new(None, None, Curve::new(vec![Point2D{x: 0.0, y: 0.0}]))),
+                (2, 3, LaneData::new(None, None, Curve::new(vec![Point2D{x: 0.0, y: 0.0}]))),
+                (3, 4, LaneData::new(None, None, Curve::new(vec![Point2D{x: 0.0, y: 0.0}]))),
             ],
         )
     }

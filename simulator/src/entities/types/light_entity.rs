@@ -8,6 +8,8 @@ use crate::entities::entity_type::Instantiable;
 use crate::ressources::eventsmanagement::EventsManager;
 use crate::systems::renderer::drawableshape::Circle;
 use crate::systems::renderer::drawableshape::DrawableShape;
+use crate::ressources::lane_graph::NodeId;
+use crate::commons::Percentage;
 use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
 use specs::World;
@@ -19,7 +21,7 @@ pub struct LightEntity {
     // it would split the behaviour of the config and the simulation
     pub light: Light,
     #[serde(default)]
-    pub position: (f64, f64),
+    pub position: ((NodeId, NodeId), f64),
     pub observable: String,
 }
 
@@ -38,13 +40,14 @@ impl<'a> Instantiable<'a> for LightEntity {
             .with(Identifier(self.id.clone()))
             .with(self.light)
             .with(Position {
-                val: polarfloat_to_cartesian(self.position.1, self.position.0),
+                val: (self.position.0, Percentage::new_clamp(self.position.1)),
             })
             .with(Drawer {
                 figure: DrawableShape::Circle(Circle::new(4.0)),
             })
             .build();
     }
+
     fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
@@ -52,7 +55,7 @@ impl<'a> Instantiable<'a> for LightEntity {
         updater.insert(
             entity,
             Position {
-                val: CartesianCoord::from_float(self.position.0, self.position.1),
+                val: (self.position.0, Percentage::new_clamp(self.position.1)),
             },
         );
         updater.insert(

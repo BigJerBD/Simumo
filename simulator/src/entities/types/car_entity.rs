@@ -8,6 +8,8 @@ use crate::components::Position;
 use crate::entities::entity_type::Instantiable;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
+use crate::ressources::lane_graph::NodeId;
+use crate::commons::Percentage;
 use dim::si::MPS;
 use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 
@@ -18,7 +20,7 @@ pub struct CarEntity {
     //length : Length,
     //angle: Angle,
     #[serde(default)]
-    pub position: (f64, f64),
+    pub position: ((NodeId, NodeId), f64),
     #[serde(default)]
     pub speed: f64,
     #[serde(default)]
@@ -35,7 +37,7 @@ impl<'a> Instantiable<'a> for CarEntity {
             .create_entity()
             .with(Identifier(self.id.clone()))
             .with(Position {
-                val: polarfloat_to_cartesian(self.position.1, self.position.0),
+                val: (self.position.0, Percentage::new_clamp(self.position.1)),
             })
             .with(CarType)
             .with(Speed {
@@ -46,13 +48,14 @@ impl<'a> Instantiable<'a> for CarEntity {
             })
             .build();
     }
+
     fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(
             entity,
             Position {
-                val: CartesianCoord::from_float(self.position.0, self.position.1),
+                val: (self.position.0, Percentage::new_clamp(self.position.1)),
             },
         );
         updater.insert(entity, CarType);
