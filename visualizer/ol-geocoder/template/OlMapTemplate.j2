@@ -146,6 +146,22 @@ function addColorToPoints(points, gradient)
   });
 }
 
+function addScalablePointsStyle(points, min, max, pointColor)
+{
+  points.forEach( p => {
+    let pointSize = 2 + p.get('value') * (max - min);
+    let circleStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+          radius: pointSize,
+          fill: new ol.style.Fill({
+              color: `rgba(${pointColor.r},${pointColor.g},${pointColor.b}, ${pointColor.b})`
+          }),
+          stroke : new ol.style.Stroke({color: "rgba(255,255,255)"})
+    })});
+    p.setStyle(circleStyle);
+  });
+}
+
 function getPoint(point)
 {
   function lonlatToPoint(x,y) {
@@ -203,5 +219,28 @@ function updateVisualizationLayer(points, style, gradient)
       });
     olVisualizationLayer = heatMapLayer; //keep access to map variable
     olMap.addLayer(heatMapLayer);
+  }
+  else if(style == "scalablePoints")
+  {
+    const minSize = parseInt(document.getElementById("ScalablePointsMin").innerHTML);
+    const maxSize = parseInt(document.getElementById("ScalablePointsMax").innerHTML);
+    let colorPointDiv = document.getElementById("ScalablePointsColor");
+    let colorPoint = {
+      r: parseInt(colorPointDiv.getAttribute('data-red')),
+      g: parseInt(colorPointDiv.getAttribute('data-green')),
+      b: parseInt(colorPointDiv.getAttribute('data-blue')),
+      a: parseInt(colorPointDiv.getAttribute('data-alpha'))
+    };
+
+    addScalablePointsStyle(features, minSize, maxSize, colorPoint);
+    let pointsSource = new ol.source.Vector({
+      features: features,
+    });
+
+    let colorsPointsLayer = new ol.layer.Vector({
+      source: pointsSource
+    });
+    olVisualizationLayer = colorsPointsLayer; //keep access to map variable
+    olMap.addLayer(colorsPointsLayer);
   }
 }

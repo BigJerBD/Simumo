@@ -40,15 +40,21 @@
 
     <div class="selectionBox" id="legendBox">
       <h3>Légende</h3>
+      <div id="legendBoxContent"> </div>
+  </div>
 
+  {#  global variables used by the visualisations#}
+  <div id="visualizationsInfo">
       <div id="legendColors">
       {% for color in legend %}
         <div class="legendColor" data-red={{"\"" +color.red|string + "\""}} data-green={{"\"" +color.green|string + "\""}} data-blue={{"\"" +color.blue|string + "\""}}> </div>
       {% endfor %}
       </div>
-
-      <div id="gradientBox"> </div>
-
+      <div id="ScalablePointsInfo">
+          <div id="ScalablePointsMin" hidden>1</div>
+          <div id="ScalablePointsMax" hidden>12</div>
+          <div id="ScalablePointsColor" data-red="160" data-green="82" data-blue="45" data-alpha="0.7" ></div>
+      </div>
   </div>
 
   <div id="visualizations">
@@ -56,6 +62,7 @@
       <ul>
         <li><a href="#" rel="ColoredPoints" class="selected" onclick="loadit(this)">Points colorés</a></li>
         <li><a href="#" rel="HeatMap" onClick="loadit(this)">Heatmap</a></li>
+        <li><a href="#" rel="ScalablePoints" onClick="loadit(this)">Points grosseurs variables</a></li>
       </ul>
 
       {% include 'OlMapTemplate.html' %}
