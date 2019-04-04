@@ -8,9 +8,9 @@ use std::path::Path;
 use specs::World;
 
 use crate::commons::CartesianCoord;
-use crate::commons::PolarCoord;
 use crate::commons::Curve;
 use crate::commons::Point2D;
+use crate::commons::PolarCoord;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::generals;
@@ -49,15 +49,14 @@ impl Map {
                 longitude,
                 latitude,
                 zoom,
-            } => lanegraph_from_pyosmgraph(*latitude, *longitude, *zoom)
+            } => lanegraph_from_pyosmgraph(*latitude, *longitude, *zoom),
         };
         create_ressource_lanegraph(lanegraph, world);
     }
 }
 
 pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
-    let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom)
-        .unwrap();
+    let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
 
     let nodes: Vec<(_, _)> = osmgraph
         .get_nodes()
@@ -74,12 +73,17 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .unwrap()
         .iter()
         // todo :: replace the none by the valid values
-        .map(|(from, to)| (*from, *to, LaneData::new(None, None, Curve::new(vec![Point2D{ x: 0.0, y:0.0 }]))))
+        .map(|(from, to)| {
+            (
+                *from,
+                *to,
+                LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
+            )
+        })
         .collect();
 
     LaneGraph::new(nodes.into_iter(), edges.into_iter())
 }
-
 
 fn lanegraph_from_filemap(path: String) -> LaneGraph {
     let path = Path::new(&path);
@@ -89,17 +93,20 @@ fn lanegraph_from_filemap(path: String) -> LaneGraph {
 
     use crate::commons::Point2D;
     LaneGraph::new(
-        map
-            .nodes
-            .iter()
-            .map(|(id, (lon, lat))| {
-                let pos = polarfloat_to_cartesiantuple(*lat, *lon);
-                (*id, IntersectionData::new(pos.0, pos.1))
-            }),
+        map.nodes.iter().map(|(id, (lon, lat))| {
+            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+            (*id, IntersectionData::new(pos.0, pos.1))
+        }),
         map.edges
             .iter()
             // TODO: Fix LaneData init, especially the Curve
-            .map(|(from, to)| (*from, *to, LaneData::new(None, None, Curve::new(vec![Point2D{ x: 0.0, y:0.0 }])))),
+            .map(|(from, to)| {
+                (
+                    *from,
+                    *to,
+                    LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
+                )
+            }),
     )
 }
 

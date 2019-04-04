@@ -19,7 +19,6 @@ extern crate log;
 extern crate lazy_static;
 extern crate dimensioned as dim;
 
-
 mod command_line;
 mod commons;
 mod components;

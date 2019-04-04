@@ -19,9 +19,7 @@ pub struct StaticPosition {
 
 impl Default for StaticPosition {
     fn default() -> Self {
-        Self {
-            val: 0
-        }
+        Self { val: 0 }
     }
 }
 
@@ -32,9 +30,7 @@ impl<'de> Deserialize<'de> for StaticPosition {
         D: Deserializer<'de>,
     {
         let pos = StaticPositionDeserialzable::deserialize(deserializer)?;
-        Ok(StaticPosition {
-            val: pos.node,
-        })
+        Ok(StaticPosition { val: pos.node })
     }
 }
 

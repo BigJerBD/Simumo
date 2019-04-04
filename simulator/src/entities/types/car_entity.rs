@@ -1,4 +1,5 @@
 use crate::commons::CartesianCoord;
+use crate::commons::Percentage;
 use crate::commons::PolarCoord;
 use crate::components::types::constant::CarType;
 use crate::components::types::constant::Drawer;
@@ -6,10 +7,9 @@ use crate::components::types::constant::Identifier;
 use crate::components::types::dynamic::Speed;
 use crate::components::Position;
 use crate::entities::entity_type::Instantiable;
+use crate::ressources::lane_graph::NodeId;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
-use crate::ressources::lane_graph::NodeId;
-use crate::commons::Percentage;
 use dim::si::MPS;
 use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 

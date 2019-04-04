@@ -34,7 +34,11 @@ impl<'a> System<'a> for FrequencySpawner {
         let num_cars_to_spawn = random.get_rng().gen_range(self.min, self.max);
         for _ in 1..num_cars_to_spawn {
             let position = self.get_random_start_location(&mut random, &lane_graph);
-            debug!("vehicule spawned at : node={} towards={}", (position.0).0, (position.0).1);
+            debug!(
+                "vehicule spawned at : node={} towards={}",
+                (position.0).0,
+                (position.0).1
+            );
             let _destination = self.get_random_end_location(&mut random, &lane_graph);
             let speed = normal_dist.sample(random.get_rng());
             let new_car: CarEntity = CarEntity {
