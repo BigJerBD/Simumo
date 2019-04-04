@@ -23,6 +23,7 @@ impl<'a> Instantiable<'a> for EntityType {
             EntityType::LightEntity(light) => light.create(world),
         }
     }
+
     fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
         match self {
             EntityType::CarEntity(car) => car.spawn(entities, updater),

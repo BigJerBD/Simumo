@@ -50,6 +50,7 @@ pub struct Curve {
 
 impl Curve {
     pub fn new(points: Vec<Point2D>) -> Self {
+        assert!(!points.is_empty());
         let length = get_total_length(&points);
         let mut points: Vec<_> = points
             .iter()

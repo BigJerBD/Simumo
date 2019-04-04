@@ -9,6 +9,8 @@ use specs::World;
 
 use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
+use crate::commons::Curve;
+use crate::commons::Point2D;
 use crate::osmgraph_api::OsmGraphApi;
 use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::generals;
@@ -72,7 +74,7 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .unwrap()
         .iter()
         // todo :: replace the none by the valid values
-        .map(|(from, to)| (*from, *to, LaneData::new(None, None, None)))
+        .map(|(from, to)| (*from, *to, LaneData::new(None, None, Curve::new(vec![Point2D{ x: 0.0, y:0.0 }]))))
         .collect();
 
     LaneGraph::new(nodes.into_iter(), edges.into_iter())
@@ -85,6 +87,7 @@ fn lanegraph_from_filemap(path: String) -> LaneGraph {
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
+    use crate::commons::Point2D;
     LaneGraph::new(
         map
             .nodes
@@ -95,7 +98,8 @@ fn lanegraph_from_filemap(path: String) -> LaneGraph {
             }),
         map.edges
             .iter()
-            .map(|(from, to)| (*from, *to, LaneData::new(None, None, None))),
+            // TODO: Fix LaneData init, especially the Curve
+            .map(|(from, to)| (*from, *to, LaneData::new(None, None, Curve::new(vec![Point2D{ x: 0.0, y:0.0 }])))),
     )
 }
 
