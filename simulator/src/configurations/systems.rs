@@ -58,8 +58,6 @@ impl SystemsConfiguration {
         self.mobility.set_in_dispatcher(builder, systems);
         info!("Setting in dispatcher : recorders");
         set_all_in_dispatcher(self.recorders, builder, systems);
-        info!("Setting in dispatcher : logger");
-        self.logger.set_in_dispatcher(builder, systems);
         self.spawner.set_in_dispatcher(builder, systems);
     }
 }

@@ -5,14 +5,8 @@ use crate::commons::metrics::Fdim;
 use dim::si::Second;
 use serde::ser::Serialize;
 use serde::ser::Serializer;
-use simumo_derive::simucomponent_base;
-use specs::prelude::{Component, VecStorage};
-use typeinfo::TypeInfo;
-use typeinfo_derive::TypeInfo;
 
-#[simucomponent_base]
 #[derive(Serialize)]
-#[storage(VecStorage)]
 pub struct LogRecord {
     #[serde(serialize_with = "timestamp_serialize")]
     timestamp: Second<Fdim>,
