@@ -22,8 +22,11 @@ use crate::ressources::lane_graph::LaneGraph;
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Map {
-    FileMap {
+    PolarFileMap {
         path: String,
+    },
+    CartFileMap {
+        path: String
     },
     ///Constructed from Open Street Map API.
     OsmGraph {
@@ -44,7 +47,12 @@ impl Map {
     ///Create world ressources depending on type.
     pub fn forward_ressources(&self, world: &mut World) {
         let lanegraph = match self {
-            Map::FileMap { path } => lanegraph_from_filemap(path.to_string()),
+            Map::PolarFileMap { path } => lanegraph_from_filemap(
+                path.to_string(),
+                &|pt|polarfloat_to_cartesiantuple((pt.1,pt.0))),
+            Map::CartFileMap { path } => lanegraph_from_filemap(
+                path.to_string(),
+                &|pt| pt),
             Map::OsmGraph {
                 longitude,
                 latitude,
@@ -63,7 +71,7 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .unwrap()
         .iter()
         .map(|(id, (lon, lat))| {
-            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+            let pos = polarfloat_to_cartesiantuple((*lat, *lon));
             (*id, IntersectionData::new(pos.0, pos.1))
         })
         .collect();
@@ -85,17 +93,24 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
     LaneGraph::new(nodes.into_iter(), edges.into_iter())
 }
 
-fn lanegraph_from_filemap(path: String) -> LaneGraph {
+fn lanegraph_from_filemap(path: String,
+                          pt_conversion: &Fn((f64,f64)) -> (f64,f64)) -> LaneGraph
+{
     let path = Path::new(&path);
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
+    ///            .map(|(id, (p1, p2))|{(*id,(*p1,*p2))})
+    //            .map(|(id, (p1, p2))| {(id,IntersectionData::new(p1,p2)))})
+    /// let pos = polarfloat_to_cartesiantuple(*lat, *lon);
     use crate::commons::Point2D;
     LaneGraph::new(
-        map.nodes.iter().map(|(id, (lon, lat))| {
-            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
-            (*id, IntersectionData::new(pos.0, pos.1))
+        map.nodes.iter()
+            .map(|(id,pt)|(*id,pt_conversion(*pt)))
+            .map(|(id, pt)| {
+
+            (id, IntersectionData::new(pt.0, pt.1))
         }),
         map.edges
             .iter()
@@ -109,6 +124,7 @@ fn lanegraph_from_filemap(path: String) -> LaneGraph {
             }),
     )
 }
+
 
 ///Create the graph that will be display the in visual debugger
 fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
@@ -129,7 +145,7 @@ fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
 }
 
 /// for convenience
-fn polarfloat_to_cartesiantuple(lat: f64, lon: f64) -> (f64, f64) {
+fn polarfloat_to_cartesiantuple((lat,lon): (f64,f64)) -> (f64, f64) {
     let polar = PolarCoord::from_float(lat, lon);
     let cart = CartesianCoord::from_polar(&polar);
     (cart.x.value_unsafe, cart.y.value_unsafe)

@@ -9,10 +9,9 @@ generals:
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-
 map:
-  type: PolarFileMap
-  path: etc/tokyo_graph_big.json
+  type: CartFileMap
+  path: etc/triangle_graph.json
 
 systems:
   agents:
@@ -41,9 +40,9 @@ systems:
     min: 10
     max: 20
     start_locations:
-      - 31300384
+      - 1
     end_locations:
-      - 2805815287
+      - 3
 
 
 entities: []
