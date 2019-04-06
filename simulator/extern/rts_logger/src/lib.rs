@@ -1,55 +1,148 @@
-use std::fs::File;
-use std::sync::mpsc::Receiver;
-use std::sync::mpsc::Sender;
-use std::thread;
-use std::thread::JoinHandle;
+#[macro_use]
+extern crate lazy_static;
 
-use serde::Serialize;
+use crate::logger_configuration::LoggerConfiguration;
+use std::{
+    collections::HashMap,
+    sync::{
+        mpsc::{channel, Receiver, Sender},
+        Mutex,
+    },
+    thread::JoinHandle,
+};
+pub mod data_writer;
+pub mod logger_configuration;
 
-pub mod logger_type;
-
-use crate::logger_type::LoggerType;
-
-/// The logger manager that allow to
+/// this static collection is used to send the sender channels easily
+/// so the users dont have to do complex manipulation
+/// when creating a new AsyncLogSender
 ///
-struct AsyncLogManager;
-impl AsyncLogManager {
-    fn with_loggers() -> Self {
-        unimplemented!()
+lazy_static! {
+    static ref LOG_SENDERS: LogSenderProvider = LogSenderProvider::new();
+}
+
+///
+type LogMessage = Box<erased_serde::Serialize + Send>;
+///
+type LogSenderMapping = HashMap<String, Sender<LogMessage>>;
+
+///
+///
+///
+pub struct LogSenderProvider(Mutex<LogSenderMapping>);
+impl LogSenderProvider {
+    fn new() -> Self {
+        Self(Mutex::new(HashMap::new()))
     }
 
-    fn add_logger(&mut self) {
-        unimplemented!()
+    fn add_sender(&self, name: String, sender: Sender<LogMessage>) {
+        self.0.lock().unwrap().insert(name, sender);
+    }
+
+    fn get_sender(&self, name: String) -> Result<Sender<LogMessage>, ()> {
+        match self.0.lock().unwrap().get(&name) {
+            Some(val) => Ok(val.clone()),
+            None => Err(()),
+        }
     }
 }
 
-impl Drop for AsyncLogManager {
-    fn drop(&mut self) {
-        unimplemented!()
+///
+///
+///
+pub struct LogWriterManager {
+    loggers: HashMap<String, AsyncLogWriter>,
+}
+impl LogWriterManager {
+    pub fn new() -> Self {
+        Self {
+            loggers: HashMap::new(),
+        }
+    }
+
+    pub fn from_loggers<L>(log_configs: L) -> Result<Self, String>
+    where
+        L: Iterator<Item = LoggerConfiguration>,
+    {
+        let mut manager = Self::new();
+        for config in log_configs {
+            manager.add_logger(config)?
+        }
+        Ok(manager)
+    }
+
+    pub fn add_logger(&mut self, log_config: LoggerConfiguration) -> Result<(), String> {
+        let name = log_config.name.clone();
+        if let Some(_) = self.loggers.get(&name) {
+            Err(format!(
+                "The Logger name was already found in the manager. name={}",
+                name
+            ))
+        } else {
+            self.loggers
+                .insert(name, Self::spawn_log_writer(log_config));
+            Ok(())
+        }
+    }
+
+    pub fn remove_logger(&mut self, name: String) -> Result<(), String> {
+        match self.loggers.remove(&name) {
+            Some(_) => Ok(()),
+            None => Err(format!("The Logger to delete was not found. name={}", name)),
+        }
+    }
+
+    ///spawn a log writer
+    /// TODO :: handle the other config parameters more properly
+    /// TODO :: give the reciever to the log writer
+    fn spawn_log_writer(log_config: LoggerConfiguration) -> AsyncLogWriter {
+        let (sender, receiver) = channel::<LogMessage>();
+
+        LOG_SENDERS.add_sender(log_config.name, sender);
+        AsyncLogWriter::new()
     }
 }
 
-/// Async logger that uses two queues.
+/// entry point to send logs records to an AsyncLogWriter.
 ///
-/// # fields
+/// # Fields
 ///
+/// * log_input : Sender Channel that sends to the receiver in the AsyncLogWriter
 ///
-/// the io and record_queue is swapped when ...
-///
-struct AsyncLogSender {}
+/// TODO :: make the error handling configurable?
+pub struct AsyncLogSender {
+    log_input: Sender<LogMessage>,
+}
 impl AsyncLogSender {
-    ///Send a serializable record to a queuje
+    /// Create and fetch the proper sender to send future records
     ///
-    fn log<S: Serialize>(&mut self, record: S) {}
+    pub fn new(logger_name: String) -> Self {
+        match LOG_SENDERS.get_sender(logger_name) {
+            Ok(sender) => Self { log_input: sender },
+            Err(_) => panic!("The current AsyncLogWriter shut down unexpectedly"),
+        }
+    }
+
+    ///Send a serializable record to the receiver specific AsyncLogWriter
+    ///
+    pub fn log(&self, record: Box<LogMessage>) {
+        match self.log_input.send(record) {
+            Ok(()) => (),
+            Err(_) => panic!("The current AsyncLogWriter shut down unexpectedly"),
+        };
+    }
 }
 
 /// Log writer that
 ///
-struct AsyncLogWriter<T: LoggerType> {
-    file_handle: T,
+/// # Fields
+///
+///
+struct AsyncLogWriter {
+    //file_handle: RefCell<LoggerType>,
     thread_handle: JoinHandle<()>,
 }
-impl<T: LoggerType> AsyncLogWriter<T> {
+impl AsyncLogWriter {
     fn new() -> Self {
         unimplemented!()
         //let sender = thread::spawn(
@@ -58,7 +151,7 @@ impl<T: LoggerType> AsyncLogWriter<T> {
         //});
     }
 }
-impl<T: LoggerType> Drop for AsyncLogWriter<T> {
+impl Drop for AsyncLogWriter {
     fn drop(&mut self) {
         unimplemented!()
     }
@@ -66,8 +159,6 @@ impl<T: LoggerType> Drop for AsyncLogWriter<T> {
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+
+    //TODO :: add unit tests
 }
