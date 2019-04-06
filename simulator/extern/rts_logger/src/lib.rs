@@ -1,7 +1,6 @@
 #[macro_use]
 extern crate lazy_static;
 
-pub mod commons;
 pub mod data_writer;
 pub mod log_message_senders;
 pub mod log_sender;
