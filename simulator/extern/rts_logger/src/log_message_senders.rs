@@ -4,7 +4,7 @@ use std::{
 };
 
 /// Object send through the channels for logging
-///
+/// TODO :: Add notification-type message (in addition to log message to serialize)
 pub type LogMessage = Box<erased_serde::Serialize + Send>;
 
 /// used for convenience
@@ -33,8 +33,8 @@ impl<T> SharedSenderMapping<T> {
 }
 
 /// this static collection is used to send the sender channels easily
-/// so the users dont have to do complex manipulation
-/// when creating a new AsyncLogSender
+/// so the users don't have to do complex manipulation
+/// when creating a new LogSender
 ///
 lazy_static! {
     pub static ref LOG_MESSAGE_SENDERS: SharedSenderMapping<LogMessage> =

@@ -59,11 +59,10 @@ impl LogWriterManager {
 
     ///spawn a log writer
     /// TODO :: handle the other config parameters more properly
-    /// TODO :: give the receiver to the log writer
     fn spawn_log_writer(log_config: LoggerConfiguration) -> LogWriter {
         let (sender, receiver) = channel::<LogMessage>();
 
         LOG_MESSAGE_SENDERS.add_sender(log_config.name, sender);
-        LogWriter::new()
+        LogWriter::new(log_config, sender, receiver)
     }
 }

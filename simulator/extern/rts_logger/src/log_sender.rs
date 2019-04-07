@@ -26,7 +26,7 @@ impl LogSender {
     pub fn log(&self, record: Box<LogMessage>) {
         match self.log_input.send(record) {
             Ok(()) => (),
-            Err(_) => panic!("The current AsyncLogWriter shut down unexpectedly"),
+            Err(_) => panic!("The current LogWriter shut down unexpectedly"),
         };
     }
 }
