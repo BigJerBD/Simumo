@@ -23,7 +23,7 @@ pub struct SystemsConfiguration {
     pub mobility: MobilitySystem,
     pub physic: PhysicSystem,
     pub recorders: Vec<RecorderSystem>,
-    pub spawner: SpawnerSystem,
+    pub spawner: Option<SpawnerSystem>,
     //pub others : Vec<UnclassifiedSystem>
 }
 
@@ -40,7 +40,9 @@ impl SystemsConfiguration {
         );
         system_mapping.insert(PhysicSystem::typename(), vec![self.physic.system_name()]);
         system_mapping.insert(RecorderSystem::typename(), as_sysname_vec(&self.recorders));
-        system_mapping.insert(SpawnerSystem::typename(), vec![self.spawner.system_name()]);
+        if let Some(spawner) = &self.spawner {
+            system_mapping.insert(SpawnerSystem::typename(), vec![spawner.system_name()]);
+        }
     }
 
     ///Setup all systems in the simulator
@@ -63,7 +65,9 @@ impl SystemsConfiguration {
         set_all_in_dispatcher(self.recorders, builder, systems);
         info!("Setting in dispatcher : logger");
         self.logger.set_in_dispatcher(builder, systems);
-        self.spawner.set_in_dispatcher(builder, systems);
+        if let Some(spawner) = self.spawner {
+            spawner.set_in_dispatcher(builder, systems);
+        }
     }
 }
 

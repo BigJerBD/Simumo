@@ -26,7 +26,7 @@ pub enum Map {
         path: String,
     },
     CartFileMap {
-        path: String
+        path: String,
     },
     ///Constructed from Open Street Map API.
     OsmGraph {
@@ -47,12 +47,10 @@ impl Map {
     ///Create world ressources depending on type.
     pub fn forward_ressources(&self, world: &mut World) {
         let lanegraph = match self {
-            Map::PolarFileMap { path } => lanegraph_from_filemap(
-                path.to_string(),
-                &|pt|polarfloat_to_cartesiantuple((pt.1,pt.0))),
-            Map::CartFileMap { path } => lanegraph_from_filemap(
-                path.to_string(),
-                &|pt| pt),
+            Map::PolarFileMap { path } => lanegraph_from_filemap(path.to_string(), &|pt| {
+                polarfloat_to_cartesiantuple((pt.1, pt.0))
+            }),
+            Map::CartFileMap { path } => lanegraph_from_filemap(path.to_string(), &|pt| pt),
             Map::OsmGraph {
                 longitude,
                 latitude,
@@ -65,10 +63,9 @@ impl Map {
 
 pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
     let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
+    let osm_nodes = osmgraph.get_nodes().unwrap();
 
-    let nodes: Vec<(_, _)> = osmgraph
-        .get_nodes()
-        .unwrap()
+    let nodes: Vec<(_, _)> = osm_nodes
         .iter()
         .map(|(id, (lon, lat))| {
             let pos = polarfloat_to_cartesiantuple((*lat, *lon));
@@ -80,51 +77,52 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .get_edges()
         .unwrap()
         .iter()
-        // todo :: replace the none by the valid values
         .map(|(from, to)| {
-            (
-                *from,
-                *to,
-                LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
-            )
+            (*from, *to, {
+                // TODO: Init actual curves, between intersections
+                let (x_from, y_from) = osm_nodes[from];
+                let (x_to, y_to) = osm_nodes[to];
+                LaneData::new(
+                    None,
+                    None,
+                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
+                )
+            })
         })
         .collect();
 
     LaneGraph::new(nodes.into_iter(), edges.into_iter())
 }
 
-fn lanegraph_from_filemap(path: String,
-                          pt_conversion: &Fn((f64,f64)) -> (f64,f64)) -> LaneGraph
-{
+fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, f64)) -> LaneGraph {
     let path = Path::new(&path);
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
-    ///            .map(|(id, (p1, p2))|{(*id,(*p1,*p2))})
-    //            .map(|(id, (p1, p2))| {(id,IntersectionData::new(p1,p2)))})
-    /// let pos = polarfloat_to_cartesiantuple(*lat, *lon);
-    use crate::commons::Point2D;
-    LaneGraph::new(
-        map.nodes.iter()
-            .map(|(id,pt)|(*id,pt_conversion(*pt)))
-            .map(|(id, pt)| {
+    let nodes : HashMap<_,_> = map.nodes
+        .iter()
+        .map(|(id, pt)| (*id, pt_conversion(*pt)))
+        .collect();
 
-            (id, IntersectionData::new(pt.0, pt.1))
-        }),
-        map.edges
+    LaneGraph::new(
+        nodes
             .iter()
-            // TODO: Fix LaneData init, especially the Curve
-            .map(|(from, to)| {
-                (
-                    *from,
-                    *to,
-                    LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
+            .map(|(id, pt)| (*id, IntersectionData::new(pt.0, pt.1))),
+        map.edges.iter().map(|(from, to)| {
+            (*from, *to, {
+                // TODO: Init actual curves, between intersections
+                let (x_from, y_from) = nodes[from];
+                let (x_to, y_to) = nodes[to];
+                LaneData::new(
+                    None,
+                    None,
+                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
                 )
-            }),
+            })
+        }),
     )
 }
-
 
 ///Create the graph that will be display the in visual debugger
 fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
@@ -134,18 +132,19 @@ fn create_ressource_lanegraph(lanegraph: LaneGraph, world: &mut World) {
         .map(|v| v.position())
         .collect();
 
+    use std::f64::NAN;
     let bbox = generals::MapBbox {
-        x1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
-        x2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
-        y1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
-        y2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
+        x1: positions.iter().map(|v| v.0).fold(NAN, f64::min),
+        x2: positions.iter().map(|v| v.0).fold(NAN, f64::max),
+        y1: positions.iter().map(|v| v.1).fold(NAN, f64::min),
+        y2: positions.iter().map(|v| v.1).fold(NAN, f64::max),
     };
     world.add_resource(bbox);
     world.add_resource(lanegraph);
 }
 
 /// for convenience
-fn polarfloat_to_cartesiantuple((lat,lon): (f64,f64)) -> (f64, f64) {
+fn polarfloat_to_cartesiantuple((lat, lon): (f64, f64)) -> (f64, f64) {
     let polar = PolarCoord::from_float(lat, lon);
     let cart = CartesianCoord::from_polar(&polar);
     (cart.x.value_unsafe, cart.y.value_unsafe)

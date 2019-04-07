@@ -128,8 +128,7 @@ impl<'a> System<'a> for DrawVehicles {
         for (position, _car, drawer) in (&positions, &cars, &drawers).join() {
             let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
 
-            debug!("vehicule2 rendering: x={} y={}", x, y);
-
+            debug!("vehicule rendering: x={} y={}", x, y);
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(x, y, Color::BLACK, c, gl);
             });
