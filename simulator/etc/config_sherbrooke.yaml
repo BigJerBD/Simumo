@@ -30,7 +30,7 @@ systems:
 
   logger:
     type: CsvLogger
-    directory: "log_results"
+    directory: "log_results" #This directory should be the same in the visualizer 
     files: []
 
   mobility:
