@@ -1,7 +1,7 @@
 generals:
   clock_dt: 0.25
   end_time:
-    val: 12.5
+    val: 1200
   debugger:
     use: true
     width: 720
@@ -35,14 +35,18 @@ systems:
 
   recorders: []
 
-  spawner:
-    type: Frequency
-    min: 10
-    max: 20
-    start_locations:
-      - 1
-    end_locations:
-      - 3
+  # spawner:
+  #   type: Frequency
+  #   min: 10
+  #   max: 20
+  #   start_locations:
+  #     - 1
+  #   end_locations:
+  #     - 3
 
 
-entities: []
+entities:
+  - id: car01
+    type: vehicle
+    position: [[2, 3], 0.5]
+    speed: 0.02

@@ -298,21 +298,32 @@ mod tests {
             .to_vec()
             .into_iter(),
             &[
-                // TODO: Also fix LaneData init
                 (
                     1,
                     3,
-                    LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
+                    LaneData::new(
+                        None,
+                        None,
+                        Curve::new(vec![Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 0.0 }]),
+                    ),
                 ),
                 (
                     2,
                     3,
-                    LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
+                    LaneData::new(
+                        None,
+                        None,
+                        Curve::new(vec![Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 0.0 }]),
+                    ),
                 ),
                 (
                     3,
                     4,
-                    LaneData::new(None, None, Curve::new(vec![Point2D { x: 0.0, y: 0.0 }])),
+                    LaneData::new(
+                        None,
+                        None,
+                        Curve::new(vec![Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 0.0 }]),
+                    ),
                 ),
             ],
         )

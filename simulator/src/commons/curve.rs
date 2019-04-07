@@ -51,7 +51,7 @@ pub struct Curve {
 
 impl Curve {
     pub fn new(points: Vec<Point2D>) -> Self {
-        assert!(!points.is_empty());
+        assert!(points.len() >= 2);
 
         let length = Distance::new(get_total_length(&points));
 
@@ -76,11 +76,11 @@ impl Curve {
     pub fn distance_to_progress(&self, distance: Distance) -> Progress {
         let p = distance / self.length();
         let percentage = Percentage::new_clamp(*p.value_unsafe());
-        Progress::new(percentage, percentage.value() * self.length())
+        Progress::new(percentage, self.length())
     }
 
     pub fn percentage_to_progress(&self, percentage: Percentage) -> Progress {
-        Progress::new(percentage, percentage.value() * self.length())
+        Progress::new(percentage, self.length())
     }
 
     pub fn get_location_at_distance(&self, distance: Distance) -> CurvePoint {
