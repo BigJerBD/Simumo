@@ -3,8 +3,8 @@ use crate::components::log_record::LogRecord;
 use crate::components::Position;
 use crate::ressources;
 
-use specs::prelude::{Entities, Read, ReadStorage, System, Join};
 use simumo_derive::simusystem;
+use specs::prelude::{Entities, Join, Read, ReadStorage, System};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
@@ -32,7 +32,6 @@ impl<'a> System<'a> for CarPositionRecorderSystem {
         //do a modulo to do it only on a certain frequency...
 
         for (entity, _, position) in (&entities, &cars, &positions).join() {
-
             //todo insert call to the logger
             let _record = LogRecord::new(
                 clock.get_time(),

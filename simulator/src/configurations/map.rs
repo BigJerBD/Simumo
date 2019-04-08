@@ -47,15 +47,14 @@ impl Map {
                 longitude,
                 latitude,
                 zoom,
-            } => lanegraph_from_pyosmgraph(*latitude, *longitude, *zoom)
+            } => lanegraph_from_pyosmgraph(*latitude, *longitude, *zoom),
         };
         create_ressource_lanegraph(lanegraph, world);
     }
 }
 
 pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
-    let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom)
-        .unwrap();
+    let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
 
     let nodes: Vec<(_, _)> = osmgraph
         .get_nodes()
@@ -78,7 +77,6 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
     LaneGraph::new(nodes.into_iter(), edges.into_iter())
 }
 
-
 fn lanegraph_from_filemap(path: String) -> LaneGraph {
     let path = Path::new(&path);
     let file = File::open(path).unwrap();
@@ -86,13 +84,10 @@ fn lanegraph_from_filemap(path: String) -> LaneGraph {
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
     LaneGraph::new(
-        map
-            .nodes
-            .iter()
-            .map(|(id, (lon, lat))| {
-                let pos = polarfloat_to_cartesiantuple(*lat, *lon);
-                (*id, IntersectionData::new(pos.0, pos.1))
-            }),
+        map.nodes.iter().map(|(id, (lon, lat))| {
+            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
+            (*id, IntersectionData::new(pos.0, pos.1))
+        }),
         map.edges
             .iter()
             .map(|(from, to)| (*from, *to, LaneData::new(None, None, None))),
