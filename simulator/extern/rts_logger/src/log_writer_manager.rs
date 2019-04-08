@@ -62,7 +62,7 @@ impl LogWriterManager {
     fn spawn_log_writer(log_config: LoggerConfiguration) -> LogWriter {
         let (sender, receiver) = channel::<LogMessage>();
 
-        LOG_MESSAGE_SENDERS.add_sender(log_config.name, sender);
-        LogWriter::new(log_config, sender, receiver)
+        LOG_MESSAGE_SENDERS.add_sender(log_config.name.clone(), sender.clone());
+        LogWriter::new(log_config, sender.clone(), receiver)
     }
 }

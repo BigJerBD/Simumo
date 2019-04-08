@@ -4,8 +4,11 @@ use std::{
 };
 
 /// Object send through the channels for logging
-/// TODO :: Add notification-type message (in addition to log message to serialize)
-pub type LogMessage = Box<erased_serde::Serialize + Send>;
+pub type Loggable = Box<erased_serde::Serialize + Send>;
+pub enum LogMessage {
+    Log(Loggable),
+    Quit,
+}
 
 /// used for convenience
 type SenderMapping<T> = HashMap<String, Sender<T>>;

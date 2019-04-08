@@ -1,38 +1,56 @@
-use crate::{data_writer::DataWrite};
-use std::{thread, sync::mpsc::channel::Receiver};
+use crate::log_message_senders::LogMessage;
+use crate::log_writer_manager::LoggerConfiguration;
+use std::{
+    cell::RefCell,
+    sync::mpsc::{Receiver, Sender},
+    thread,
+};
 
 /// Log writer that listens for new data to be written to a specific file
 ///
-///
 pub struct LogWriter {
-    file_handle: RefCell<DataWrite>,
     queue: Sender<LogMessage>,
-    worker_thread: thread::JoinHandle<()>,
+    worker_thread: Option<thread::JoinHandle<()>>,
 }
 
 impl LogWriter {
-    pub fn new(log_config: LoggerConfiguration,
-               queue: Sender<LogMessage>,
-               receiver: Receiver<LogMessage>) -> Self {
+    pub fn new(
+        log_config: LoggerConfiguration,
+        queue: Sender<LogMessage>,
+        receiver: Receiver<LogMessage>,
+    ) -> Self {
         Self {
-            file_handle: log_config.log_type,
             queue,
-            worker_thread: thread::Builder::new().name(log_config.name).spawn(move || loop {
-                let msg = receiver.recv();
-                match msg {
-                    Ok(LogMessage::LogMsg(msg)) => file_handle.write(msg),
-                    Ok(LogMessage::Quit) => break,
-                    Err(e) => panic!("The current LogWriter closed unexpectedly without sending a Quit first"),
-                }
-            }),
+            worker_thread: Some(thread::Builder::new().name(log_config.name.clone()).spawn(
+                move || {
+                    let mut log_type = log_config.log_type;
+                    loop {
+                        let msg = receiver.recv();
+
+                        match msg {
+                            Ok(LogMessage::Log(msg)) => &log_type.write(msg),
+                            Ok(LogMessage::Quit) => break,
+                            Err(_) => panic!("The current LogWriter closed unexpectedly without sending a Quit first"),
+                        };
+                    }
+                }).unwrap()),
         }
     }
 }
 
 impl Drop for LogWriter {
     fn drop(&mut self) {
-        let thread_stop_msg;
-        self.queue.send(LogMessage::Quit).expect("The current LogWriter's queue was closed before joining thread");
-        self.worker_thread.join().expect("Failed to join the worker thread when dropping current LogWriter");
+
+        self.queue
+            .send(LogMessage::Quit)
+            .expect("The current LogWriter's queue was closed before joining thread");
+
+        let join_handle = self.worker_thread
+            .take()
+            .expect("Cannot take worker thread when it does not exist");
+
+        join_handle
+            .join()
+            .expect("Failed to join the worker thread when dropping current LogWriter");
     }
 }
