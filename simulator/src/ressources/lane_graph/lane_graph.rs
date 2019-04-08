@@ -16,6 +16,7 @@ use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::lane_graph::*;
 
 pub type NodeId = u64;
+pub type EdgeId = (NodeId, NodeId);
 
 /// The Identifier of the entities in the graph
 /// it uses the entities ID of specs
@@ -155,13 +156,23 @@ impl LaneGraph {
     }
 }
 
-/*impl GraphBase for LaneGraph {
-    type EdgeId = LaneData;
+/*
+impl GraphBase for LaneGraph {
+    type EdgeId = EdgeId;
     type NodeId = NodeId;
 }
 
+impl IntoEdgeReferences for LaneGraph {
+    type EdgeRef: EdgeRef<NodeId = Self::NodeId, EdgeId = Self::EdgeId, Weight = Self::EdgeWeight>;
+    type EdgeReferences: Iterator<Item = Self::EdgeRef>;
+
+    fn edge_references(self) -> Self::EdgeReferences {
+
+    }
+}
+
 impl IntoEdges for LaneGraph {
-    type Edges = Vec<LaneData>;
+    type Edges = Iterator<Item = Self::EdgeRef>;
 
     fn edges(self, nodeid: Self::NodeId) -> Self::Edges {
         let neighbors: Neighbors<'_, u64, petgraph::Directed> =
@@ -170,19 +181,20 @@ impl IntoEdges for LaneGraph {
             .iter()
             .map(|n| self.lane_between((*nodeid, n)))
             .collect();
-        edges
+        IntoIterator::into_iter(edges)
     }
 }
 
 impl IntoNeighbors for LaneGraph {
-    type Neighbors = Vec<Self::NodeId>;
+    type Neighbors = Iterator<Item = IntersectionData>;
 
     fn neighbors(self, nodeid: Self::NodeId) -> Self::Neighbors {
         let neighbors: Self::Neighbors = 
             self.graph.neighbors(*nodeid).collect();
-        neighbors
+        IntoIterator::into_iter(neighbors)
     }
-}*/
+}
+*/
 
 #[cfg(test)]
 mod tests {

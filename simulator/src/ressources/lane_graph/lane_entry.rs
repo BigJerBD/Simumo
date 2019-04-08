@@ -12,6 +12,7 @@ use crate::ressources::lane_graph::NodeId;
 /// * `entity_locations` : mut ref of the mapping of all entity locations
 ///
 /// those reference will of course be released when releasing LaneEntry
+/// 
 pub struct LaneEntry<'a, 'b> {
     lane: &'b mut LaneData,
     lane_location: (NodeId, NodeId),

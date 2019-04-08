@@ -1,7 +1,9 @@
 use std::collections::VecDeque;
 use dim::si::{Meter, MeterPerSecond};
+use petgraph::visit::EdgeRef;
 use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
+use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::EntityId;
 
 /// Contains all the information of a lane in the map
@@ -14,7 +16,8 @@ use crate::ressources::lane_graph::EntityId;
 /// * `curve` - curve of the lane
 ///
 /// note :: `width`,`max_speed` and `curve`are options because we
-///     are not garrenteed yet to have it for everylane
+///     are not guaranteed yet to have it for every lane
+///
 #[derive(Clone, Debug)]
 pub struct LaneData {
     entity_queue: VecDeque<EntityId>,

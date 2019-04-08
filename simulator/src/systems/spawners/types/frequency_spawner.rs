@@ -38,7 +38,7 @@ impl<'a> System<'a> for FrequencySpawner {
             let destination = self.get_random_end_location(&mut random, &lane_graph);
             let speed = normal_dist.sample(random.get_rng());
             /*let path = astar(
-                &lane_graph,
+                lane_graph.lanes(),
                 position,
                 |finish| finish == destination,
                 |e| *e.weight(),

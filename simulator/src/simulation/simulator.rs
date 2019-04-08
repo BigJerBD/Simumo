@@ -1,15 +1,13 @@
 use std::collections::HashMap;
-
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
 use piston::event_loop::{EventSettings, Events};
-use piston::window::WindowSettings;
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
+use piston_window::WindowSettings;
 use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use uuid::Uuid;
-
 use crate::configurations::generals::EndTime;
 use crate::configurations::debugger::VisualDebugger;
 use crate::configurations::Configuration;
