@@ -23,7 +23,7 @@ impl LogWriter {
             queue,
             worker_thread: Some(thread::Builder::new().name(log_config.name.clone()).spawn(
                 move || {
-                    let mut log_type = log_config.log_type;
+                    let mut log_type = log_config.data_writer;
                     loop {
                         let msg = receiver.recv();
 

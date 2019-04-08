@@ -9,7 +9,7 @@ use std::{collections::HashMap, sync::mpsc::channel};
 ///
 pub struct LoggerConfiguration {
     pub name: String,
-    pub log_type: Box<DataWrite>,
+    pub data_writer: Box<DataWrite>,
 }
 
 /// TODO :: document
