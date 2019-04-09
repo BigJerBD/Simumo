@@ -1,6 +1,7 @@
 use crate::commons::CartesianCoord;
 use crate::commons::Percentage;
 use crate::commons::PolarCoord;
+use crate::components::agents::Destination;
 use crate::components::types::constant::CarType;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
@@ -11,6 +12,7 @@ use crate::ressources::lane_graph::NodeId;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
 use dim::si::MPS;
+use specs::EntityBuilder;
 use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -22,6 +24,8 @@ pub struct CarEntity {
     #[serde(default)]
     pub position: ((NodeId, NodeId), f64),
     #[serde(default)]
+    pub destination: (f64, f64),
+    #[serde(default)]
     pub speed: f64,
     #[serde(default)]
     pub acceleration: f64,
@@ -31,25 +35,30 @@ pub struct CarEntity {
 
 impl<'a> Instantiable<'a> for CarEntity {
     // NOTE :: a create car is converted to the cartesian referential
-    //         BUT a spawned one is already on the cartesian referential
-    fn create(&self, world: &mut World) {
-        world
+    // but a spawned one is already on the cartesian referential
+    fn create(&self, world: &mut World, is_rendering_on: bool) {
+        let mut entity_builder: EntityBuilder = world
             .create_entity()
             .with(Identifier(self.id.clone()))
             .with(Position {
                 val: (self.position.0, Percentage::new_clamp(self.position.1)),
             })
+            /*.with(Destination {
+                val: polarfloat_to_cartesian(self.destination.1, self.destination.0),
+            })*/
             .with(CarType)
             .with(Speed {
                 val: self.speed * MPS,
-            })
-            .with(Drawer {
+            });
+        if is_rendering_on {
+            entity_builder = entity_builder.with(Drawer {
                 figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
-            })
-            .build();
+            });
+        }
+        entity_builder.build();
     }
 
-    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
+    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>, is_rendering_on: bool) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(
@@ -58,6 +67,12 @@ impl<'a> Instantiable<'a> for CarEntity {
                 val: (self.position.0, Percentage::new_clamp(self.position.1)),
             },
         );
+        /*updater.insert(
+            entity,
+            Destination {
+                val: CartesianCoord::from_float(self.destination.0, self.destination.1),
+            },
+        );*/
         updater.insert(entity, CarType);
         updater.insert(
             entity,
@@ -65,12 +80,14 @@ impl<'a> Instantiable<'a> for CarEntity {
                 val: self.speed * MPS,
             },
         );
-        updater.insert(
-            entity,
-            Drawer {
-                figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
-            },
-        );
+        if is_rendering_on {
+            updater.insert(
+                entity,
+                Drawer {
+                    figure: DrawableShape::Rectangle(Rectangle::new(3.0, 3.0)),
+                },
+            );
+        }
     }
 }
 

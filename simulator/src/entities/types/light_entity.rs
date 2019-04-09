@@ -12,6 +12,7 @@ use crate::systems::renderer::drawableshape::Circle;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
+use specs::EntityBuilder;
 use specs::World;
 
 #[derive(Deserialize, Debug)]
@@ -33,22 +34,24 @@ impl LightEntity {
 }
 
 impl<'a> Instantiable<'a> for LightEntity {
-    fn create(&self, world: &mut World) {
+    fn create(&self, world: &mut World, is_rendering_on: bool) {
         self.connect_to_observable(world, self.observable.clone());
-        world
+        let mut entity_builder: EntityBuilder = world
             .create_entity()
             .with(Identifier(self.id.clone()))
             .with(self.light)
             .with(Position {
                 val: (self.position.0, Percentage::new_clamp(self.position.1)),
-            })
-            .with(Drawer {
+            });
+        if is_rendering_on {
+            entity_builder = entity_builder.with(Drawer {
                 figure: DrawableShape::Circle(Circle::new(4.0)),
-            })
-            .build();
+            });
+        }
+        entity_builder.build();
     }
 
-    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
+    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>, is_rendering_on: bool) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(entity, self.light);
@@ -58,12 +61,14 @@ impl<'a> Instantiable<'a> for LightEntity {
                 val: (self.position.0, Percentage::new_clamp(self.position.1)),
             },
         );
-        updater.insert(
-            entity,
-            Drawer {
-                figure: DrawableShape::Circle(Circle::new(4.0)),
-            },
-        );
+        if is_rendering_on {
+            updater.insert(
+                entity,
+                Drawer {
+                    figure: DrawableShape::Circle(Circle::new(4.0)),
+                },
+            );
+        }
     }
 }
 

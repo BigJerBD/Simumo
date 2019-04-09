@@ -1,20 +1,15 @@
 use std::collections::HashMap;
-use std::collections::VecDeque;
 use std::ops::Index;
 use std::ops::IndexMut;
-
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
 use specs::world;
-
-use crate::commons::metrics::Fdim;
+use crate::ressources::lane_graph::*;
 use crate::commons::Curve;
-use dim::si::{Meter, MeterPerSecond};
 
-pub type IntersectionId = u64;
-/// used for convenience
-pub type NodeId = IntersectionId;
+pub type NodeId = u64;
+pub type EdgeId = (NodeId, NodeId);
 
 /// The Identifier of the entities in the graph
 /// it uses the entities ID of specs
@@ -112,164 +107,53 @@ impl LaneGraph {
     pub fn lane_mut(&mut self, entity: EntityId) -> LaneEntry {
         let location = self.entity_locations[&entity];
         let lane = self.graph.index_mut(location);
-        LaneEntry {
+        LaneEntry::new(
             lane,
-            lane_location: location,
-            entity_locations: &mut self.entity_locations,
-        }
+            location,
+            &mut self.entity_locations,
+        )
     }
 
     /// Get the lane as a mutable lane between two nodes
     ///
     pub fn lane_between_mut(&mut self, location: (NodeId, NodeId)) -> LaneEntry {
-        LaneEntry {
-            lane: self.graph.index_mut(location),
-            lane_location: location,
-            entity_locations: &mut self.entity_locations,
-        }
+        LaneEntry::new(
+            self.graph.index_mut(location),
+            location,
+            &mut self.entity_locations,
+        )
     }
 }
 
-/// Access Entry that allows to modify the LaneMap while keeping its integrity
-///
-/// # Fields
-///
-/// * `lane` :  mut ref of the currently selected lane
-/// * `lane_location` : location of the lane in the graph
-/// * `entity_locations` : mut ref of the mapping of all entity locations
-///
-/// those reference will of course be released when releasing LaneEntry
-pub struct LaneEntry<'a, 'b> {
-    lane: &'b mut LaneData,
-    lane_location: (NodeId, NodeId),
-    entity_locations: &'a mut HashMap<EntityId, (NodeId, NodeId)>,
+/*
+impl GraphBase for LaneGraph {
+    type EdgeId = EdgeId;
+    type NodeId = NodeId;
 }
 
-impl<'a, 'b> LaneEntry<'a, 'b> {
-    pub fn lane(&self) -> &LaneData {
-        self.lane
-    }
+impl IntoEdgeReferences for LaneGraph {
+    type EdgeRef: EdgeRef<NodeId = Self::NodeId, EdgeId = Self::EdgeId, Weight = Self::EdgeWeight>;
+    type EdgeReferences: Iterator<Item = Self::EdgeRef>;
 
-    fn push_back(&mut self, entity: EntityId) {
-        self.entity_locations.insert(entity, self.lane_location);
-        self.lane.push_back(entity);
-    }
-    fn pop_front(&mut self) -> EntityId {
-        let entity = self.lane.pop_front();
-        self.entity_locations.remove(&entity);
-        entity
-    }
+    fn edge_references(self) -> Self::EdgeReferences {
 
-    fn pop_if_front(&mut self, entity: EntityId) -> Option<EntityId> {
-        let _ = self.lane.pop_if_front(entity)?;
-        self.entity_locations.remove(&entity);
-        Some(entity)
     }
 }
 
-/// Contains all the information of a lane in the map
-///
-/// # Fields
-///
-/// * `entity_queue` - ordered queue giving the order of the contained elements
-/// * `width` - width of the lane
-/// * `max_speed` - max speed of the lane
-/// * `curve` - curve of the lane
-///
-/// note :: `width`,`max_speed` and `curve`are options because we
-///     are not garrenteed yet to have it for everylane
-#[derive(Clone, Debug)]
-pub struct LaneData {
-    entity_queue: VecDeque<EntityId>,
-    //todo :: consider if all the specific data  (width,max_speed,etc)
-    // should be wrapped in a generic this way we could  abstract street info
-    // from the graph w
-    pub width: Option<Meter<Fdim>>,
-    pub max_speed: Option<MeterPerSecond<Fdim>>,
-    pub curve: Curve,
+impl IntoEdges for LaneGraph {
+    type Edges = Iterator<Item = Self::EdgeRef>;
 }
 
-impl LaneData {
-    pub fn new(
-        width: Option<Meter<Fdim>>,
-        max_speed: Option<MeterPerSecond<Fdim>>,
-        curve: Curve,
-    ) -> Self {
-        Self {
-            entity_queue: VecDeque::new(),
-            width,
-            max_speed,
-            curve,
-        }
-    }
+impl IntoNeighbors for LaneGraph {
+    type Neighbors = Iterator<Item = IntersectionData>;
 
-    /// get a reference of the queue
-    ///
-    pub fn queue(&self) -> &VecDeque<EntityId> {
-        &self.entity_queue
-    }
-
-    /// Insert a entity at the beginning of the lane
-    ///
-    /// note :: we use the back of de entity queue because
-    ///         it makes more sense in our context
-    pub fn push_back(&mut self, entity: EntityId) {
-        self.entity_queue.push_back(entity);
-    }
-
-    /// pop an entity at the end of the lane
-    ///
-    ///
-    pub fn pop_front(&mut self) -> EntityId {
-        self.entity_queue.pop_front().unwrap()
-    }
-
-    /// remove if the entity is in front of the queue
-    ///
-    /// todo :: result instead of option?
-    pub fn pop_if_front(&mut self, entity: EntityId) -> Option<EntityId> {
-        let front_entity = self.entity_queue.front()?;
-        if *front_entity != entity {
-            None
-        } else {
-            self.entity_queue.pop_front()
-        }
-    }
-
-    /// give the entity which is in front of an other entity
-    ///
-    pub fn in_front_of(&self, entity: EntityId) -> EntityId {
-        let pos = self.entity_queue.iter().position(|x| x == &entity).unwrap();
-
-        self.entity_queue[pos + 1]
+    fn neighbors(self, nodeid: Self::NodeId) -> Self::Neighbors {
+        let neighbors: Self::Neighbors = 
+            self.graph.neighbors(*nodeid).collect();
+        IntoIterator::into_iter(neighbors)
     }
 }
-
-///  Contains all the information of an intersection in the map
-///
-///  # Fields
-///
-/// * `position` - position in longitude latitude
-/// * `contained_entity` - Index referencing to the contained entity
-///
-#[derive(Clone, Debug)]
-pub struct IntersectionData {
-    position: (f64, f64),
-    contained_entity: Option<EntityId>,
-}
-
-impl IntersectionData {
-    pub fn new(lon: f64, lat: f64) -> Self {
-        Self {
-            position: (lon, lat),
-            contained_entity: None,
-        }
-    }
-
-    pub fn position(&self) -> (f64, f64) {
-        self.position
-    }
-}
+*/
 
 #[cfg(test)]
 mod tests {
@@ -363,5 +247,4 @@ mod tests {
         assert!(graph.lane_between((1, 3)).queue().is_empty());
         assert!(graph.lane_between((2, 3)).queue().is_empty());
     }
-
 }
