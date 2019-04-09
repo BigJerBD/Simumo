@@ -12,7 +12,7 @@ pub struct LoggerConfiguration {
     pub data_writer: Box<DataWrite>,
 }
 
-/// TODO :: document
+/// This module
 ///
 ///
 pub struct LogWriterManager {
@@ -54,7 +54,9 @@ impl LogWriterManager {
         match self.loggers.remove(&name) {
             Some(_) => Ok(()),
             None => Err(format!("The Logger to delete was not found. name={}", name)),
-        }
+        }?;
+        LOG_MESSAGE_SENDERS.drop_sender(name);
+        Ok(())
     }
 
     ///spawn a log writer

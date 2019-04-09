@@ -23,7 +23,7 @@ impl<T> SharedSenderMapping<T> {
         Self(Mutex::new(HashMap::new()))
     }
 
-    pub fn add_sender(&self, name: String, sender: Sender<T>) {
+    pub fn add_sender(&self, name: String, sender: Sender<T>)  {
         self.0.lock().unwrap().insert(name, sender);
     }
 
@@ -32,6 +32,11 @@ impl<T> SharedSenderMapping<T> {
             Some(val) => Ok(val.clone()),
             None => Err(()),
         }
+    }
+
+    pub fn drop_sender(&self, name : String) {
+        self.0.lock().unwrap().remove(&name);
+
     }
 }
 

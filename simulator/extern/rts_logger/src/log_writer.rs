@@ -1,7 +1,6 @@
 use crate::log_message_senders::LogMessage;
 use crate::log_writer_manager::LoggerConfiguration;
 use std::{
-    cell::RefCell,
     sync::mpsc::{Receiver, Sender},
     thread,
 };
