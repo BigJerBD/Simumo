@@ -6,7 +6,11 @@ use std::io::BufReader;
 use std::path::Path;
 
 use crate::commons::CartesianCoord;
+use crate::commons::Curve;
+use crate::commons::Point2D;
 use crate::commons::PolarCoord;
+use crate::osmgraph_api::OsmGraphApi;
+use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::IntersectionData;
 use crate::ressources::lane_graph::LaneData;
@@ -16,7 +20,10 @@ use crate::ressources::lane_graph::LaneGraph;
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Map {
-    FileMap {
+    PolarFileMap {
+        path: String,
+    },
+    CartFileMap {
         path: String,
     },
     ///Constructed from Open Street Map API.
@@ -36,40 +43,82 @@ struct FileMap {
 
 impl Map {
     pub fn forward_ressources(&self) -> (LaneGraph, MapBbox) {
-        match self {
-            Map::FileMap { path } => {
-                let lane_graph: LaneGraph = lanemap_from_file_map(path.to_string());
-                let bbox: MapBbox = compute_bounding_box(&lane_graph);
-                (lane_graph, bbox)
-            }
+        let lane_graph: LaneGraph = match self {
+            Map::PolarFileMap { path } => lanegraph_from_filemap(path.to_string(), &|pt| {
+                polarfloat_to_cartesiantuple((pt.1, pt.0))
+            }),
+            Map::CartFileMap { path } => lanegraph_from_filemap(path.to_string(), &|pt| pt),
             Map::OsmGraph {
                 longitude,
                 latitude,
                 zoom,
-            } => {
-                let pos = polarfloat_to_cartesiantuple(*latitude, *longitude);
-                let lane_graph: LaneGraph = LaneGraph::from_pyosmgraph(pos.0, pos.1, *zoom);
-                let bbox: MapBbox = compute_bounding_box(&lane_graph);
-                (lane_graph, bbox)
-            }
-        }
+            } => lanegraph_from_pyosmgraph(*latitude, *longitude, *zoom),
+        };
+        let bbox: MapBbox = compute_bounding_box(&lane_graph);
+        (lane_graph, bbox)
     }
 }
 
-fn lanemap_from_file_map(path: String) -> LaneGraph {
+pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
+    let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
+    let osm_nodes = osmgraph.get_nodes().unwrap();
+
+    let nodes: Vec<(_, _)> = osm_nodes
+        .iter()
+        .map(|(id, (lon, lat))| {
+            let pos = polarfloat_to_cartesiantuple((*lat, *lon));
+            (*id, IntersectionData::new(pos.0, pos.1))
+        })
+        .collect();
+
+    let edges: Vec<(_, _, _)> = osmgraph
+        .get_edges()
+        .unwrap()
+        .iter()
+        .map(|(from, to)| {
+            (*from, *to, {
+                // TODO: Init actual curves, between intersections
+                let (x_from, y_from) = osm_nodes[from];
+                let (x_to, y_to) = osm_nodes[to];
+                LaneData::new(
+                    None,
+                    None,
+                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
+                )
+            })
+        })
+        .collect();
+
+    LaneGraph::new(nodes.into_iter(), edges.into_iter())
+}
+
+fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, f64)) -> LaneGraph {
     let path = Path::new(&path);
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
+    let nodes : HashMap<_,_> = map.nodes
+        .iter()
+        .map(|(id, pt)| (*id, pt_conversion(*pt)))
+        .collect();
+
     LaneGraph::new(
-        map.nodes.iter().map(|(id, (lon, lat))| {
-            let pos = polarfloat_to_cartesiantuple(*lat, *lon);
-            (*id, IntersectionData::new(pos.0, pos.1))
-        }),
-        map.edges
+        nodes
             .iter()
-            .map(|(from, to)| (*from, *to, LaneData::new(None, None, None))),
+            .map(|(id, pt)| (*id, IntersectionData::new(pt.0, pt.1))),
+        map.edges.iter().map(|(from, to)| {
+            (*from, *to, {
+                // TODO: Init actual curves, between intersections
+                let (x_from, y_from) = nodes[from];
+                let (x_to, y_to) = nodes[to];
+                LaneData::new(
+                    None,
+                    None,
+                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
+                )
+            })
+        }),
     )
 }
 
@@ -81,16 +130,17 @@ fn compute_bounding_box(lanegraph: &LaneGraph) -> MapBbox {
         .map(|v| v.position())
         .collect();
 
+    use std::f64::NAN;
     MapBbox {
-        x1: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::min),
-        x2: positions.iter().map(|v| v.0).fold(std::f64::NAN, f64::max),
-        y1: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::min),
-        y2: positions.iter().map(|v| v.1).fold(std::f64::NAN, f64::max),
+        x1: positions.iter().map(|v| v.0).fold(NAN, f64::min),
+        x2: positions.iter().map(|v| v.0).fold(NAN, f64::max),
+        y1: positions.iter().map(|v| v.1).fold(NAN, f64::min),
+        y2: positions.iter().map(|v| v.1).fold(NAN, f64::max),
     }
 }
 
 /// for convenience
-fn polarfloat_to_cartesiantuple(lat: f64, lon: f64) -> (f64, f64) {
+fn polarfloat_to_cartesiantuple((lat, lon): (f64, f64)) -> (f64, f64) {
     let polar = PolarCoord::from_float(lat, lon);
     let cart = CartesianCoord::from_polar(&polar);
     (cart.x.value_unsafe, cart.y.value_unsafe)

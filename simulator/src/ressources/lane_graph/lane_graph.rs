@@ -1,19 +1,12 @@
 use std::collections::HashMap;
-use std::collections::VecDeque;
 use std::ops::Index;
 use std::ops::IndexMut;
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
-use petgraph::graphmap::Neighbors;
 use petgraph::IntoWeightedEdge;
-use petgraph::visit::GraphBase;
-use petgraph::visit::IntoEdges;
-use petgraph::visit::IntoEdgeReferences;
-use petgraph::visit::IntoNeighbors;
 use specs::world;
-use crate::osmgraph_api::OsmGraphApi;
-use crate::osmgraph_api::PythonOsmGraphApi;
 use crate::ressources::lane_graph::*;
+use crate::commons::Curve;
 
 pub type NodeId = u64;
 pub type EdgeId = (NodeId, NodeId);
@@ -48,30 +41,6 @@ impl LaneGraph {
             intersections: nodes.collect::<HashMap<_, _>>(),
             entity_locations: HashMap::new(),
         }
-    }
-
-    /// Uses the osmgraph api to make the graph
-    ///
-    /// todo :: find a way to make this function more generic?
-    pub fn from_pyosmgraph(lon: f64, lat: f64, zoom: i64) -> Self {
-        let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
-
-        let nodes: Vec<(_, _)> = osmgraph
-            .get_nodes()
-            .unwrap()
-            .iter()
-            .map(|(id, (lon, lat))| (*id, IntersectionData::new(*lon, *lat)))
-            .collect();
-
-        let edges: Vec<(_, _, _)> = osmgraph
-            .get_edges()
-            .unwrap()
-            .iter()
-            // todo :: replace the none by the valid values
-            .map(|(from, to)| (*from, *to, LaneData::new(None, None, None)))
-            .collect();
-
-        Self::new(nodes.into_iter(), edges.into_iter())
     }
 
     /// Take the entity in front of the lane `from`
@@ -173,16 +142,6 @@ impl IntoEdgeReferences for LaneGraph {
 
 impl IntoEdges for LaneGraph {
     type Edges = Iterator<Item = Self::EdgeRef>;
-
-    fn edges(self, nodeid: Self::NodeId) -> Self::Edges {
-        let neighbors: Neighbors<'_, u64, petgraph::Directed> =
-            self.graph.neighbors(*nodeid);
-        let edges: Self::Edges = neighbors
-            .iter()
-            .map(|n| self.lane_between((*nodeid, n)))
-            .collect();
-        IntoIterator::into_iter(edges)
-    }
 }
 
 impl IntoNeighbors for LaneGraph {
@@ -212,6 +171,7 @@ mod tests {
     fn lane_map_triangle() -> LaneGraph {
         let node = IntersectionData::new(10.0, 10.0);
 
+        use crate::commons::Point2D;
         LaneGraph::new(
             [
                 (1u64, node.clone()),
@@ -222,9 +182,33 @@ mod tests {
             .to_vec()
             .into_iter(),
             &[
-                (1, 3, LaneData::new(None, None, None)),
-                (2, 3, LaneData::new(None, None, None)),
-                (3, 4, LaneData::new(None, None, None)),
+                (
+                    1,
+                    3,
+                    LaneData::new(
+                        None,
+                        None,
+                        Curve::new(vec![Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 0.0 }]),
+                    ),
+                ),
+                (
+                    2,
+                    3,
+                    LaneData::new(
+                        None,
+                        None,
+                        Curve::new(vec![Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 0.0 }]),
+                    ),
+                ),
+                (
+                    3,
+                    4,
+                    LaneData::new(
+                        None,
+                        None,
+                        Curve::new(vec![Point2D { x: 0.0, y: 0.0 }, Point2D { x: 0.0, y: 0.0 }]),
+                    ),
+                ),
             ],
         )
     }

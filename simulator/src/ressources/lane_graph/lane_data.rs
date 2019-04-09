@@ -1,9 +1,7 @@
 use std::collections::VecDeque;
 use dim::si::{Meter, MeterPerSecond};
-use petgraph::visit::EdgeRef;
 use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
-use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::EntityId;
 
 /// Contains all the information of a lane in the map
@@ -18,6 +16,17 @@ use crate::ressources::lane_graph::EntityId;
 /// note :: `width`,`max_speed` and `curve`are options because we
 ///     are not guaranteed yet to have it for every lane
 ///
+/// Contains all the information of a lane in the map
+///
+/// # Fields
+///
+/// * `entity_queue` - ordered queue giving the order of the contained elements
+/// * `width` - width of the lane
+/// * `max_speed` - max speed of the lane
+/// * `curve` - curve of the lane
+///
+/// note :: `width`,`max_speed` and `curve`are options because we
+///     are not garrenteed yet to have it for everylane
 #[derive(Clone, Debug)]
 pub struct LaneData {
     entity_queue: VecDeque<EntityId>,
@@ -26,14 +35,14 @@ pub struct LaneData {
     // from the graph w
     pub width: Option<Meter<Fdim>>,
     pub max_speed: Option<MeterPerSecond<Fdim>>,
-    pub curve: Option<Curve>,
+    pub curve: Curve,
 }
 
 impl LaneData {
     pub fn new(
         width: Option<Meter<Fdim>>,
         max_speed: Option<MeterPerSecond<Fdim>>,
-        curve: Option<Curve>,
+        curve: Curve,
     ) -> Self {
         Self {
             entity_queue: VecDeque::new(),

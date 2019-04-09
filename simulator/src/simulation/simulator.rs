@@ -9,7 +9,6 @@ use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use uuid::Uuid;
 use crate::configurations::generals::EndTime;
-use crate::configurations::debugger::VisualDebugger;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::clock;
@@ -22,25 +21,36 @@ use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
 //use std::process::Command;
 
+pub struct UseDebugger(pub bool);
+impl Default for UseDebugger {
+    fn default() -> Self {
+        Self(false)
+    }
+}
+
 pub struct Simulation<'a, 'b> {
     world: World,
-    window: Window,
     base_dispatcher: Dispatcher<'a, 'b>,
-    render_dispatcher: Dispatcher<'a, 'b>,
+    rendering: (bool, Dispatcher<'a, 'b>),
+    window: Option<Window>,
 }
 
 impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
-        let width: f64 = config.generals.debugger.width;
-        let height: f64 = config.generals.debugger.height;
-        let window = Self::create_window(width, height);
-
         let mut base_dispatcher_builder = DispatcherBuilder::new();
         let mut world = World::new();
         let mut system_mapping = HashMap::<String, Vec<String>>::new();
 
+        let is_rendering_on: bool = config.generals.debugger.on;
+        let width: f64 = config.generals.debugger.width;
+        let height: f64 = config.generals.debugger.height;
+        let window = if is_rendering_on {
+            Some(Self::create_window(width, height))
+        } else {
+            None
+        };
         Self::create_ressources(&mut world, &config);
 
         config.systems.declare_systems(&mut system_mapping);
@@ -51,40 +61,53 @@ impl<'a, 'b> Simulation<'a, 'b> {
         add_ending_systems(&mut base_dispatcher_builder);
 
         let mut base_dispatcher = base_dispatcher_builder.build();
-        let mut render_dispatcher = make_render_dispatcher();
-
         base_dispatcher.setup(&mut world.res);
-        render_dispatcher.setup(&mut world.res);
+
+        let rendering = if is_rendering_on {
+            let mut render_dispatcher = make_render_dispatcher();
+            render_dispatcher.setup(&mut world.res);
+            (is_rendering_on, render_dispatcher)
+        } else {
+            (is_rendering_on, DispatcherBuilder::new().build())
+        };
+        world.add_resource(UseDebugger(is_rendering_on));
 
         //entities
         for entity in config.entities.iter() {
-            entity.create(&mut world);
+            entity.create(&mut world, is_rendering_on);
         }
 
         Self {
             world,
-            window,
             base_dispatcher,
-            render_dispatcher,
+            rendering,
+            window
         }
     }
 
     pub fn run_simulation(&mut self) {
         let mut events = Events::new(EventSettings::new());
-        while let Some(e) = events.next(&mut self.window) {
+        let is_render_on = self.rendering.0;
+        let mut is_simulation_running = true;
+        while should_keep_going(is_render_on, is_simulation_running) {
             if !simulation_ended(&self.world) {
+                is_simulation_running = true;
                 self.base_dispatcher.dispatch(&self.world.res);
                 self.world.maintain();
+            } else {
+                is_simulation_running = false;
             }
-            if let Some(r) = e.render_args() {
-                self.world.add_resource(r);
-                self.render_dispatcher.dispatch(&self.world.res);
-                self.world.maintain();
+            if is_render_on {
+                if let Some(ref mut window) = &mut self.window {
+                    if let Some(e) = events.next(&mut *window) {
+                        if let Some(r) = e.render_args() {
+                            self.world.add_resource(r);
+                            self.rendering.1.dispatch(&self.world.res);
+                            self.world.maintain();
+                        }
+                    }
+                };
             }
-
-            // Wait 0.2s so we can see the changes on the visual debugger
-            //let mut child = Command::new("sleep").arg("0.05").spawn().unwrap();
-            //let _result = child.wait().unwrap();
         }
         println!("Showing results log...");
     }
@@ -99,28 +122,36 @@ impl<'a, 'b> Simulation<'a, 'b> {
     //
     ///Create default world's ressources and config's ressources
     fn create_ressources(world: &mut World, config: &Configuration) {
-        let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
         let end_time = config.generals.end_time.clone();
-        let debugger = config.generals.debugger.clone();
         let seed = if !config.generals.seed.is_empty() {
             Uuid::parse_str(&config.generals.seed).unwrap_or_else(|_| panic!("invalid seed format"))
         } else {
             Uuid::new_v4()
         };
         let random = Random::from_uuid(&seed);
-
         let (lane_graph, bbox): (LaneGraph, MapBbox) = config.map.forward_ressources();
-        debugger.create_background_image(&lane_graph, &bbox);
 
+        if config.generals.debugger.on {
+            let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
+            let debugger = config.generals.debugger.clone();
+            debugger.create_background_image(&lane_graph, &bbox);
+            world.add_resource(graphics_handle);
+            world.add_resource(debugger);
+            world.add_resource(bbox);
+        }
         world.add_resource(lane_graph);
-        world.add_resource(bbox);
         world.add_resource(end_time);
-        world.add_resource(graphics_handle);
         world.add_resource(clock::Clock::new(config.generals.clock_dt));
         world.add_resource(EventsManager::new());
-        world.add_resource(debugger);
         world.add_resource(random);
     }
+}
+
+fn should_keep_going(is_render_on: bool, is_simulation_running: bool) -> bool {
+    if is_render_on {
+        return true;
+    }
+    is_simulation_running
 }
 
 fn simulation_ended(ressources: &World) -> bool {

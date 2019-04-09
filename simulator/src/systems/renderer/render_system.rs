@@ -10,12 +10,9 @@ use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
 use crate::systems::renderer::drawableshape::Drawable;
 use graphics::{clear, rectangle, Context, Transformed};
-use graphics::DrawState;
-use graphics::rectangle::square;
 use opengl_graphics::GlGraphics;
 use piston::input::RenderArgs;
 use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
-use std::path::Path;
 
 const EDGE_WIDTH: f64 = 2.0;
 
@@ -74,14 +71,15 @@ impl<'a> System<'a> for DrawTrafficLights {
         ReadStorage<'a, Drawer>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
+        ReadExpect<'a, LaneGraph>,
     );
 
     fn run(
         &mut self,
-        (debugger, map_bbox, positions, lights, drawers, mut g_handle, args): Self::SystemData,
+        (debugger, map_bbox, positions, lights, drawers, mut g_handle, args, lane_graph): Self::SystemData,
     ) {
         for (position, light, drawer) in (&positions, &lights, &drawers).join() {
-            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox);
+            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
 
             debug!("light rendering: x={} y={}", x, y);
             g_handle.draw(args.viewport(), |c, gl| {
@@ -104,17 +102,17 @@ impl<'a> System<'a> for DrawVehicles {
         ReadStorage<'a, Drawer>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
+        ReadExpect<'a, LaneGraph>,
     );
 
     fn run(
         &mut self,
-        (debugger, map_bbox, positions, cars, drawers, mut g_handle, args): Self::SystemData,
+        (debugger, map_bbox, positions, cars, drawers, mut g_handle, args, lane_graph): Self::SystemData,
     ) {
         for (position, _car, drawer) in (&positions, &cars, &drawers).join() {
-            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox);
+            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
 
-            debug!("vehicule2 rendering: x={} y={}", x, y);
-
+            debug!("vehicule rendering: x={} y={}", x, y);
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(x, y, Color::BLACK, c, gl);
             });
@@ -142,10 +140,13 @@ fn draw_lane_between_two_points(
     rectangle(color.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
 }
 
-fn pos_to_window(pos: &Position, debugger: &VisualDebugger, map_bbox: &MapBbox) -> (f64, f64) {
-    point_to_window(
-        (pos.val.x.value_unsafe, pos.val.y.value_unsafe),
-        debugger,
-        map_bbox,
-    )
+fn pos_to_window(
+    pos: &Position,
+    debugger: &VisualDebugger,
+    map_bbox: &MapBbox,
+    lane_graph: &LaneGraph,
+) -> (f64, f64) {
+    let data = lane_graph.lane_between(pos.val.0);
+    let cpoint = data.curve.get_location_at_percentage(pos.val.1);
+    point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
 }

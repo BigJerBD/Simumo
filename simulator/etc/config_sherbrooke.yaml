@@ -9,14 +9,14 @@ generals:
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-# map:
-#   type: OsmGraph
-#   latitude: -71.89908
-#   longitude: 45.40008
-#   zoom: 1200
+#map:
+#  type: OsmGraph
+#  latitude: 45.40008
+#  longitude: -71.89908
+#  zoom: 1200
 
 map:
-  type: FileMap
+  type: PolarFileMap
   path: etc/sherbrooke_graph.json
 
 systems:
@@ -30,7 +30,7 @@ systems:
 
   logger:
     type: CsvLogger
-    directory: "log_results"
+    directory: "log_results" #This directory should be the same in the visualizer 
     files: []
 
   mobility:
@@ -71,7 +71,7 @@ entities:
       max_green_time: 5
       max_yellow_time: 1.5
       time: 3.5
-    position: [-71.9103753, 45.4103252]
+    position: [[81474235, 81474556], 0.0]
     observable: trafficlight02
   - id: trafficlight02
     type: trafficlight
@@ -80,5 +80,5 @@ entities:
       max_green_time: 3
       max_yellow_time: 1
       time: 0
-    position: [-71.9047379, 45.410244]
+    position: [[81474235, 81475573], 0.0]
     observable: trafficlight01

@@ -48,7 +48,7 @@ ul {
 }
 
 /* For the legende */
-.gradientbox {
+.legendBoxContent {
   position: relative;
   border: 1px solid;
   width: 100%;
@@ -75,6 +75,7 @@ ul {
   width: 50%;
   text-align: right;
 }
+
 
 /* Where the Visualization appears */
 #visualizations {

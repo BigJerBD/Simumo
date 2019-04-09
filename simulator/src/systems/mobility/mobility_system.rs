@@ -10,6 +10,7 @@ use typeinfo::TypeInfo;
 pub enum MobilitySystem {
     StandardMobility(StandardMobilitySystem),
 }
+
 impl SystemType for MobilitySystem {
     fn setup(self, hook: &mut DispatcherBuilderHook) {
         match self {

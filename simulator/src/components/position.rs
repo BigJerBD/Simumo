@@ -8,20 +8,22 @@ use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
-use crate::commons::CartesianCoord;
-use crate::commons::PolarCoord;
+use crate::commons::Percentage;
+use crate::ressources::lane_graph::NodeId;
+
+type Edge = (NodeId, NodeId);
 
 #[simucomponent_base]
 #[derive(Debug, Clone)]
 #[storage(VecStorage)]
 pub struct Position {
-    pub val: CartesianCoord,
+    pub val: (Edge, Percentage),
 }
 
 impl Default for Position {
     fn default() -> Self {
         Self {
-            val: CartesianCoord::default(),
+            val: ((0, 0), Percentage::lower()),
         }
     }
 }
@@ -34,7 +36,7 @@ impl<'de> Deserialize<'de> for Position {
     {
         let pos = PositionDeserialzable::deserialize(deserializer)?;
         Ok(Position {
-            val: CartesianCoord::from_float(pos.x, pos.y),
+            val: ((pos.from, pos.to), Percentage::new_clamp(pos.percentage)),
         })
     }
 }
@@ -44,16 +46,18 @@ impl Serialize for Position {
     where
         S: Serializer,
     {
-        let pcoord = PolarCoord::from_cartesian(&self.val);
-        let mut strct = serializer.serialize_struct("position", 2)?;
-        strct.serialize_field("x", &pcoord.1)?;
-        strct.serialize_field("y", &pcoord.0)?;
+        let ((from, to), percentage) = self.val;
+        let mut strct = serializer.serialize_struct("position", 3)?;
+        strct.serialize_field("from", &from)?;
+        strct.serialize_field("to", &to)?;
+        strct.serialize_field("percentage", &percentage.value())?;
         strct.end()
     }
 }
 
 #[derive(Deserialize)]
 struct PositionDeserialzable {
-    pub x: f64,
-    pub y: f64,
+    pub from: NodeId,
+    pub to: NodeId,
+    pub percentage: f64,
 }

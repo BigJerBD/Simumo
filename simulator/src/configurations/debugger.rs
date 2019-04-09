@@ -1,7 +1,6 @@
 extern crate image;
 extern crate imageproc;
-use std::path::Path;
-use image::{Rgba, RgbaImage};
+use image::RgbaImage;
 use imageproc::drawing::draw_filled_rect_mut;
 use imageproc::drawing::draw_convex_polygon_mut;
 use imageproc::drawing::Point;
@@ -28,7 +27,7 @@ fn default_renderbuffer() -> RenderBuffer {
 }
 
 impl VisualDebugger {
-    pub fn create_background_image(&self, lane_graph: &LaneGraph, map_bbox: &MapBbox) {
+    pub fn create_background_image(&self, _lane_graph: &LaneGraph, _map_bbox: &MapBbox) {
         /*const EDGE_WIDTH: f64 = 3.0;
         let path = Path::new("bg.png");
         let mut img = RgbaImage::new(self.width as u32, self.height as u32);
@@ -71,12 +70,12 @@ fn draw_lane_between_two_points(
     p1: (f64, f64),
     p2: (f64, f64),
     width: f64,
-    color: Color,
-    img: &mut RgbaImage,
+    _color: Color,
+    _img: &mut RgbaImage,
 ) {
-    let rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
-    let rectangle_width: f64 = width;
-    let rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
+    let _rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
+    let _rectangle_width: f64 = width;
+    let _rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
     /*let transform = IDENTITY
         .trans(p1.0, p1.1)
         .rot_rad(rectangle_angle)
