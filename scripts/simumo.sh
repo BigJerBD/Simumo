@@ -2,8 +2,8 @@
 
 # This script is used to start  the Simumo then the visualiser after
 # This is copied in the build when the system is built
-#   first argument: configuration file path
-#   Second argument: vizualizer congfiguration path.
+#   first argument: simulator configuration file path
+#   Second argument: vizualizer congfiguration file path.
 # Make sure that logger path of each config file are the same.
 # note :: this might be replaced with a python script in the future
 unamestr=`uname`
