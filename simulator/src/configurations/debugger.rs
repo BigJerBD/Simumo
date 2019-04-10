@@ -1,14 +1,10 @@
 extern crate image;
 extern crate imageproc;
-use image::RgbaImage;
-use imageproc::drawing::draw_filled_rect_mut;
-use imageproc::drawing::draw_convex_polygon_mut;
-use imageproc::drawing::Point;
-use imageproc::pixelops::interpolate;
-use graphics_buffer::RenderBuffer;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
+use graphics_buffer::RenderBuffer;
+use image::RgbaImage;
 
 ///Represent the ending time of the simulator.
 #[derive(Clone, Deserialize)]
@@ -77,9 +73,9 @@ fn draw_lane_between_two_points(
     let _rectangle_width: f64 = width;
     let _rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
     /*let transform = IDENTITY
-        .trans(p1.0, p1.1)
-        .rot_rad(rectangle_angle)
-        .scale(rectangle_length, rectangle_width);*/
+    .trans(p1.0, p1.1)
+    .rot_rad(rectangle_angle)
+    .scale(rectangle_length, rectangle_width);*/
     /*let points:&[Point<i32>] = &[
         Point::new(rectangle_length.0, p1.1),
         Point::new(p1.0 + EDGE_WIDTH, p1.1),

@@ -2,7 +2,7 @@ use crate::components::agents::AcceleratingAgent;
 use crate::components::controls::EnergyControl;
 use crate::components::types::constant::CarType;
 use simumo_derive::simusystem;
-use specs::prelude::{Join, System, ReadStorage, WriteStorage};
+use specs::prelude::{Join, ReadStorage, System, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 

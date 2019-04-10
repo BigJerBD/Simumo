@@ -1,13 +1,3 @@
-use std::collections::HashMap;
-use glutin_window::GlutinWindow as Window;
-use opengl_graphics::GlGraphics;
-use piston::event_loop::{EventSettings, Events};
-use piston_window::OpenGL;
-use piston_window::RenderEvent;
-use piston_window::WindowSettings;
-use specs::prelude::{DispatcherBuilder, World};
-use specs::Dispatcher;
-use uuid::Uuid;
 use crate::configurations::generals::EndTime;
 use crate::configurations::Configuration;
 use crate::entities::entity_type::Instantiable;
@@ -19,6 +9,16 @@ use crate::ressources::random::Random;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
+use glutin_window::GlutinWindow as Window;
+use opengl_graphics::GlGraphics;
+use piston::event_loop::{EventSettings, Events};
+use piston_window::OpenGL;
+use piston_window::RenderEvent;
+use piston_window::WindowSettings;
+use specs::prelude::{DispatcherBuilder, World};
+use specs::Dispatcher;
+use std::collections::HashMap;
+use uuid::Uuid;
 //use std::process::Command;
 
 pub struct UseDebugger(pub bool);
@@ -81,7 +81,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
             world,
             base_dispatcher,
             rendering,
-            window
+            window,
         }
     }
 

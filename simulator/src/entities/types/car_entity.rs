@@ -1,7 +1,6 @@
 use crate::commons::CartesianCoord;
 use crate::commons::Percentage;
 use crate::commons::PolarCoord;
-use crate::components::agents::Destination;
 use crate::components::types::constant::CarType;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
@@ -12,8 +11,8 @@ use crate::ressources::lane_graph::NodeId;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
 use dim::si::MPS;
-use specs::EntityBuilder;
 use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
+use specs::EntityBuilder;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CarEntity {
@@ -58,7 +57,12 @@ impl<'a> Instantiable<'a> for CarEntity {
         entity_builder.build();
     }
 
-    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>, is_rendering_on: bool) {
+    fn spawn(
+        &self,
+        entities: &Entities<'a>,
+        updater: &Read<'a, LazyUpdate>,
+        is_rendering_on: bool,
+    ) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(

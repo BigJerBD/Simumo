@@ -1,12 +1,12 @@
-use std::collections::HashMap;
-use std::ops::Index;
-use std::ops::IndexMut;
+use crate::commons::Curve;
+use crate::ressources::lane_graph::{IntersectionData,LaneData,LaneEntry};
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
 use specs::world;
-use crate::ressources::lane_graph::*;
-use crate::commons::Curve;
+use std::collections::HashMap;
+use std::ops::Index;
+use std::ops::IndexMut;
 
 pub type NodeId = u64;
 pub type EdgeId = (NodeId, NodeId);
@@ -107,11 +107,7 @@ impl LaneGraph {
     pub fn lane_mut(&mut self, entity: EntityId) -> LaneEntry {
         let location = self.entity_locations[&entity];
         let lane = self.graph.index_mut(location);
-        LaneEntry::new(
-            lane,
-            location,
-            &mut self.entity_locations,
-        )
+        LaneEntry::new(lane, location, &mut self.entity_locations)
     }
 
     /// Get the lane as a mutable lane between two nodes
@@ -148,7 +144,7 @@ impl IntoNeighbors for LaneGraph {
     type Neighbors = Iterator<Item = IntersectionData>;
 
     fn neighbors(self, nodeid: Self::NodeId) -> Self::Neighbors {
-        let neighbors: Self::Neighbors = 
+        let neighbors: Self::Neighbors =
             self.graph.neighbors(*nodeid).collect();
         IntoIterator::into_iter(neighbors)
     }

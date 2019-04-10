@@ -24,7 +24,12 @@ impl<'a> Instantiable<'a> for EntityType {
         }
     }
 
-    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>, is_rendering_on: bool) {
+    fn spawn(
+        &self,
+        entities: &Entities<'a>,
+        updater: &Read<'a, LazyUpdate>,
+        is_rendering_on: bool,
+    ) {
         match self {
             EntityType::CarEntity(car) => car.spawn(entities, updater, is_rendering_on),
             EntityType::LightEntity(light) => light.spawn(entities, updater, is_rendering_on),

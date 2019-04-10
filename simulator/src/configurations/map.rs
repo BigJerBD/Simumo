@@ -71,7 +71,7 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         })
         .collect();
 
-    let edges: Vec<(_, _, _)> = osmgraph
+    let mut edges: Vec<(_, _, _)> = osmgraph
         .get_edges()
         .unwrap()
         .iter()
@@ -89,6 +89,26 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         })
         .collect();
 
+    //todo this code is ugly, it can be simplified A LOT
+    let mut opposite_edges: Vec<(_, _, _)> = osmgraph
+        .get_edges()
+        .unwrap()
+        .iter()
+        .map(|(from, to)| {
+            (*to, *from, {
+                // TODO: Init actual curves, between intersections
+                let (x_to, y_to) = osm_nodes[from];
+                let (x_from, y_from) = osm_nodes[to];
+                LaneData::new(
+                    None,
+                    None,
+                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
+                )
+            })
+        })
+        .collect();
+
+    edges.append(&mut opposite_edges);
     LaneGraph::new(nodes.into_iter(), edges.into_iter())
 }
 
@@ -98,16 +118,16 @@ fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, 
     let reader = BufReader::new(file);
     let map: FileMap = serde_json::from_reader(reader).unwrap();
 
-    let nodes : HashMap<_,_> = map.nodes
+    let nodes: HashMap<_, _> = map
+        .nodes
         .iter()
         .map(|(id, pt)| (*id, pt_conversion(*pt)))
         .collect();
 
-    LaneGraph::new(
-        nodes
-            .iter()
-            .map(|(id, pt)| (*id, IntersectionData::new(pt.0, pt.1))),
-        map.edges.iter().map(|(from, to)| {
+    let mut edges: Vec<(_, _, _)> = map
+        .edges
+        .iter()
+        .map(|(from, to)| {
             (*from, *to, {
                 // TODO: Init actual curves, between intersections
                 let (x_from, y_from) = nodes[from];
@@ -118,7 +138,32 @@ fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, 
                     Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
                 )
             })
-        }),
+        })
+        .collect();
+
+    let mut opposite_edges: Vec<(_, _, _)> = map
+        .edges
+        .iter()
+        .map(|(from, to)| {
+            (*to, *from, {
+                // TODO: Init actual curves, between intersections
+                let (x_to, y_to) = nodes[from];
+                let (x_from, y_from) = nodes[to];
+                LaneData::new(
+                    None,
+                    None,
+                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
+                )
+            })
+        })
+        .collect();
+    edges.append(&mut opposite_edges);
+
+    LaneGraph::new(
+        nodes
+            .iter()
+            .map(|(id, pt)| (*id, IntersectionData::new(pt.0, pt.1))),
+        edges.into_iter(),
     )
 }
 

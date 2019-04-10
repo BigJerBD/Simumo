@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use crate::ressources::lane_graph::EntityId;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::NodeId;
+use std::collections::HashMap;
 
 /// Access Entry that allows to modify the LaneMap while keeping its integrity
 ///
@@ -12,7 +12,7 @@ use crate::ressources::lane_graph::NodeId;
 /// * `entity_locations` : mut ref of the mapping of all entity locations
 ///
 /// those reference will of course be released when releasing LaneEntry
-/// 
+///
 pub struct LaneEntry<'a, 'b> {
     lane: &'b mut LaneData,
     lane_location: (NodeId, NodeId),
@@ -28,7 +28,7 @@ impl<'a, 'b> LaneEntry<'a, 'b> {
         Self {
             lane,
             lane_location,
-            entity_locations
+            entity_locations,
         }
     }
 

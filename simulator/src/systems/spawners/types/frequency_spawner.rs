@@ -31,7 +31,10 @@ impl<'a> System<'a> for FrequencySpawner {
         Read<'a, UseDebugger>,
     );
 
-    fn run(&mut self, (_clock, mut random, entities, lane_graph, updater, use_debugger): Self::SystemData) {
+    fn run(
+        &mut self,
+        (_clock, mut random, entities, lane_graph, updater, use_debugger): Self::SystemData,
+    ) {
         let normal_dist = Normal::new(0.015, 0.003);
         let num_cars_to_spawn = random.get_rng().gen_range(self.min, self.max);
         for _ in 1..num_cars_to_spawn {

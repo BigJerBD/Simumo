@@ -51,7 +51,12 @@ impl<'a> Instantiable<'a> for LightEntity {
         entity_builder.build();
     }
 
-    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>, is_rendering_on: bool) {
+    fn spawn(
+        &self,
+        entities: &Entities<'a>,
+        updater: &Read<'a, LazyUpdate>,
+        is_rendering_on: bool,
+    ) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(entity, self.light);

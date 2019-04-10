@@ -1,7 +1,7 @@
+use crate::commons::Percentage;
 use crate::components::types::dynamic::Speed;
 use crate::components::Position;
 use crate::ressources::lane_graph::LaneGraph;
-use crate::commons::Percentage;
 use crate::ressources::Clock;
 
 use simumo_derive::simusystem;
