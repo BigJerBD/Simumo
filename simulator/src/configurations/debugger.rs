@@ -1,10 +1,6 @@
 extern crate image;
 extern crate imageproc;
 use image::RgbaImage;
-use imageproc::drawing::draw_filled_rect_mut;
-use imageproc::drawing::draw_convex_polygon_mut;
-use imageproc::drawing::Point;
-use imageproc::pixelops::interpolate;
 use graphics_buffer::RenderBuffer;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneGraph;

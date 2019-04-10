@@ -147,6 +147,6 @@ fn pos_to_window(
     lane_graph: &LaneGraph,
 ) -> (f64, f64) {
     let data = lane_graph.lane_between(pos.val.0);
-    let cpoint = data.curve.get_location_at_percentage(pos.val.1);
+    let cpoint = data.curve().get_location_at_percentage(pos.val.1);
     point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
 }

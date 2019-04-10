@@ -3,6 +3,7 @@ use dim::si::{Meter, MeterPerSecond};
 use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
 use crate::ressources::lane_graph::EntityId;
+use crate::ressources::lane_graph::NodeId;
 
 /// Contains all the information of a lane in the map
 ///
@@ -29,27 +30,37 @@ use crate::ressources::lane_graph::EntityId;
 ///     are not garrenteed yet to have it for everylane
 #[derive(Clone, Debug)]
 pub struct LaneData {
+    location: (NodeId, NodeId),
     entity_queue: VecDeque<EntityId>,
     //todo :: consider if all the specific data  (width,max_speed,etc)
     // should be wrapped in a generic this way we could  abstract street info
     // from the graph w
-    pub width: Option<Meter<Fdim>>,
-    pub max_speed: Option<MeterPerSecond<Fdim>>,
-    pub curve: Curve,
+    width: Option<Meter<Fdim>>,
+    max_speed: Option<MeterPerSecond<Fdim>>,
+    curve: Curve,
 }
 
 impl LaneData {
     pub fn new(
+        location: (NodeId, NodeId),
         width: Option<Meter<Fdim>>,
         max_speed: Option<MeterPerSecond<Fdim>>,
         curve: Curve,
     ) -> Self {
         Self {
+            location,
             entity_queue: VecDeque::new(),
             width,
             max_speed,
             curve,
         }
+    }
+
+    pub fn location(&self) -> (NodeId, NodeId) {
+        self.location
+    }
+    pub fn curve(&self) -> &Curve {
+        &self.curve
     }
 
     /// get a reference of the queue
@@ -91,5 +102,13 @@ impl LaneData {
         let pos = self.entity_queue.iter().position(|x| x == &entity).unwrap();
 
         self.entity_queue[pos + 1]
+    }
+
+    // An index that is used for the A* algorithm in order to estimate the
+    // cost of a lane.
+    // The higher the index, the higher the cost of the lane
+    pub fn get_cost_index(&self) -> i32 {
+        let nb_entities: usize = self.entity_queue.len();
+        nb_entities as i32
     }
 }

@@ -109,7 +109,6 @@ impl LaneGraph {
         let lane = self.graph.index_mut(location);
         LaneEntry::new(
             lane,
-            location,
             &mut self.entity_locations,
         )
     }
@@ -119,7 +118,6 @@ impl LaneGraph {
     pub fn lane_between_mut(&mut self, location: (NodeId, NodeId)) -> LaneEntry {
         LaneEntry::new(
             self.graph.index_mut(location),
-            location,
             &mut self.entity_locations,
         )
     }

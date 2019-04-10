@@ -23,7 +23,7 @@ impl<'a> System<'a> for StandardMobilitySystem {
         for (pos, vel) in (&mut pos, &vel).join() {
             // TODO: Tweak Curve to not need so many conversions
             let ((from, to), percentage) = pos.val;
-            let curve = &lane_graph.lane_between((from, to)).curve;
+            let curve = &lane_graph.lane_between((from, to)).curve();
             let mut progress = curve.percentage_to_progress(percentage);
             progress += vel.val * clock.dt;
             pos.val.1 = progress.percentage();
