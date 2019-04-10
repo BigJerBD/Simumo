@@ -3,12 +3,13 @@ from distutils.dir_util import copy_tree
 import os
 import shutil
 
-dirname = os.path.dirname(__file__) #absolute path to this script folder
+dirname = os.path.dirname(__file__)  # absolute path to this script folder
+
 
 def render_ol_map(map_output_path, city):
     # copy directory containing the outputmap and its ressources
-    geocoder_path = os.path.join(dirname,"ol-geocoder/template")
-    map_output_path = os.path.join(dirname,"output")
+    geocoder_path = os.path.join(dirname, "ol-geocoder/template")
+    map_output_path = os.path.join(dirname, "output")
     if os.path.isdir(map_output_path):
         shutil.rmtree(map_output_path)  # in case the command was run before
     copy_tree(geocoder_path, map_output_path)
@@ -20,14 +21,14 @@ def render_ol_map(map_output_path, city):
     template = template_env.get_template("OlMapTemplate.j2")
     map_rendered = template.render(initialLocation="\"" + city + "\"")
     with open(map_output_path + "/OlMapTemplate.js", "wb") as text_file:
-        map_rendered = template.render(initialLocation="\"" + city + "\"").encode( "utf-8" )
+        map_rendered = template.render(initialLocation="\"" + city + "\"").encode("utf-8")
         text_file.write(map_rendered)
     os.remove(map_output_path + "/OlMapTemplate.j2")
 
 
 def render_layout(map_output_path, metrics, legend):
     # copy directory containing the outputmap and its ressources
-    layout_path = os.path.join(dirname,"layoutVisualization")
+    layout_path = os.path.join(dirname, "layoutVisualization")
 
     copy_tree(layout_path, map_output_path)
 
@@ -39,7 +40,7 @@ def render_layout(map_output_path, metrics, legend):
     template = template_env.get_template('layout.j2')
 
     with open(map_output_path + "/layout.html", "wb") as text_file:
-        map_rendered = template.render(metrics=metrics, legend=legend).encode( "utf-8" )
+        map_rendered = template.render(metrics=metrics, legend=legend).encode("utf-8")
         text_file.write(map_rendered)
     os.remove(map_output_path + '/layout.j2')
 
@@ -48,5 +49,3 @@ def render_visualization(city, metrics, legend):
     map_output_path = os.path.join(dirname, "output")
     render_ol_map(map_output_path, city)
     render_layout(map_output_path, metrics, legend)
-
-
