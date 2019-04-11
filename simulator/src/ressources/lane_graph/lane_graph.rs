@@ -1,6 +1,8 @@
 use std::collections::HashMap;
+use std::ops::Add;
 use std::ops::Index;
 use std::ops::IndexMut;
+use std::rc::Rc;
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
@@ -24,31 +26,44 @@ pub type EntityId = world::Index;
 /// * `entity_locations` - locations of the entities in the graph
 ///
 pub struct LaneGraph {
-    pub graph: DiGraphMap<NodeId, LaneData>,
+    pub graph: DiGraphMap<NodeId, EdgeId>,
     pub intersections: HashMap<NodeId, IntersectionData>,
-    pub entity_locations: HashMap<EntityId, (NodeId, NodeId)>,
+    pub entity_locations: HashMap<EntityId, EdgeId>,
+    pub lanes: HashMap<EdgeId, LaneData>,
 }
 
 impl LaneGraph {
     pub fn new<I1, I2>(nodes: I1, edges: I2) -> Self
     where
         I1: Iterator<Item = (NodeId, IntersectionData)>,
-        I2: IntoIterator,
+        I2: IntoIterator + Clone,
         I2::Item: IntoWeightedEdge<LaneData, NodeId = NodeId>,
     {
+        // Associate EdgeId to LaneData
+        let mut edge_ids = Vec::new();
+        let mut lanes = HashMap::new();
+        let mut edges_iter = edges.clone().into_iter();
+        while let Some(edge) = edges_iter.next() {
+            let (node_from, node_to, lane_data) = edge.into_weighted_edge();
+            let edge_id = (node_from, node_to);
+            edge_ids.push(edge_id);
+            lanes.insert(edge_id, lane_data);
+        }
+        // Return LaneGraph
         Self {
-            graph: GraphMap::from_edges(edges),
+            graph: GraphMap::from_edges(edge_ids),
             intersections: nodes.collect::<HashMap<_, _>>(),
             entity_locations: HashMap::new(),
+            lanes,
         }
     }
 
     /// Take the entity in front of the lane `from`
     /// and put it at the back of the lane `to`
     ///
-    pub fn node_forward(&mut self, from: (NodeId, NodeId), to: (NodeId, NodeId)) {
-        let front_entity = { self.lane_between_mut(from).pop_front() };
-        self.lane_between_mut(to).push_back(front_entity);
+    pub fn node_forward(&mut self, from: EdgeId, to: EdgeId) {
+        let front_entity = { self.lane_between_mut(from).unwrap().pop_front() };
+        self.lane_between_mut(to).unwrap().push_back(front_entity);
     }
 
     /// forward a tuple of three node
@@ -70,7 +85,7 @@ impl LaneGraph {
     pub fn intersections(&self) -> &HashMap<NodeId, IntersectionData> {
         &self.intersections
     }
-    pub fn lanes(&self) -> &DiGraphMap<NodeId, LaneData> {
+    pub fn lanes(&self) -> &DiGraphMap<NodeId, EdgeId> {
         &self.graph
     }
     pub fn entity_locations(&self) -> &HashMap<EntityId, (NodeId, NodeId)> {
@@ -93,65 +108,49 @@ impl LaneGraph {
     ///
     pub fn lane(&self, entity: EntityId) -> &LaneData {
         let location = self.entity_locations[&entity];
-        self.graph.index(location)
+        self.lane_between(location).unwrap()
     }
 
-    /// get the lane between two node
+    /// get the lane between two nodes
     ///
-    pub fn lane_between(&self, location: (NodeId, NodeId)) -> &LaneData {
-        self.graph.index(location)
+    pub fn lane_between(&self, location: EdgeId) -> Option<&LaneData> {
+        self.lanes.get(&location)
     }
 
     /// get the lane as a mutable lane based on the entityId
     ///
     pub fn lane_mut(&mut self, entity: EntityId) -> LaneEntry {
         let location = self.entity_locations[&entity];
-        let lane = self.graph.index_mut(location);
-        LaneEntry::new(
-            lane,
-            &mut self.entity_locations,
-        )
+        self.lane_between_mut(location).unwrap()
     }
 
     /// Get the lane as a mutable lane between two nodes
     ///
-    pub fn lane_between_mut(&mut self, location: (NodeId, NodeId)) -> LaneEntry {
-        LaneEntry::new(
-            self.graph.index_mut(location),
-            &mut self.entity_locations,
-        )
+    pub fn lane_between_mut(&mut self, location: EdgeId) -> Option<LaneEntry> {
+        if let Some(lane) = self.lanes.get_mut(&location) {
+            return Some(LaneEntry::new(
+                lane,
+                &mut self.entity_locations,
+            ));
+        }
+        None
+    }
+
+    pub fn get_edge_cost(&self, edge_id: EdgeId) -> f64 {
+        if let Some(lane) = self.lane_between(edge_id) {
+            return lane.get_cost_index()
+        }
+        std::f64::INFINITY
+    }
+
+    pub fn get_estimate_cost_from_node(&self, node_id: NodeId, goal: NodeId) -> f64 {
+        let node_position = self.intersection(node_id).position();
+        let goal_position = self.intersection(goal).position();
+        let diff_x = (goal_position.0 - node_position.0);
+        let diff_y = (goal_position.1 - node_position.1);
+        diff_x.hypot(diff_y)
     }
 }
-
-/*
-impl GraphBase for LaneGraph {
-    type EdgeId = EdgeId;
-    type NodeId = NodeId;
-}
-
-impl IntoEdgeReferences for LaneGraph {
-    type EdgeRef: EdgeRef<NodeId = Self::NodeId, EdgeId = Self::EdgeId, Weight = Self::EdgeWeight>;
-    type EdgeReferences: Iterator<Item = Self::EdgeRef>;
-
-    fn edge_references(self) -> Self::EdgeReferences {
-
-    }
-}
-
-impl IntoEdges for LaneGraph {
-    type Edges = Iterator<Item = Self::EdgeRef>;
-}
-
-impl IntoNeighbors for LaneGraph {
-    type Neighbors = Iterator<Item = IntersectionData>;
-
-    fn neighbors(self, nodeid: Self::NodeId) -> Self::Neighbors {
-        let neighbors: Self::Neighbors = 
-            self.graph.neighbors(*nodeid).collect();
-        IntoIterator::into_iter(neighbors)
-    }
-}
-*/
 
 #[cfg(test)]
 mod tests {
