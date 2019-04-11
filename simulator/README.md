@@ -18,35 +18,15 @@ Also, you must have a config file in .json or .yaml.
 See ./etc/config.yaml as example.
 
 ### Installing
-
-There is only one environnement at the moment.
-
 First of all, you need to setup your virtual environnement because we use our own python package.
-
-if you are on __Linux__
-run
 ```
-make dev
+make dev_venv
 ```
-This will setup your virtual environnement.
-
-if you are on __Window__
-
-You will have to execute manually the makefile.
-
-To do so execute in the terminal
-
-1. virtualenv venv --no-site-packages
-2. pip install -r simumap/requirements.txt
-3. pip install ./simumap
-4. source venv/bin/activate
-
-À partir d'ici, vous vous retrouvez dans l'envionnement virtual.
 
 To run the simulator execute in the terminal
 
 ```
-cargo run -- -c config.yaml
+cargo run -- -c <pathToSimulatorConfigFile>
 ```
 
 Eventually, the simulator will output the metrics as data.
