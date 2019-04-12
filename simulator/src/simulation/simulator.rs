@@ -9,13 +9,13 @@ use crate::ressources::random::Random;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
-use rts_logger::LogWriterManager;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
 use piston::event_loop::{EventSettings, Events};
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
 use piston_window::WindowSettings;
+use rts_logger::LogWriterManager;
 use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use std::collections::HashMap;
@@ -34,7 +34,7 @@ pub struct Simulation<'a, 'b> {
     base_dispatcher: Dispatcher<'a, 'b>,
     rendering: (bool, Dispatcher<'a, 'b>),
     window: Option<Window>,
-    loggers : Option<LogWriterManager>
+    loggers: Option<LogWriterManager>,
 }
 
 impl<'a, 'b> Simulation<'a, 'b> {
@@ -83,8 +83,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         for entity in config.entities.iter() {
             entity.create(&mut world, is_rendering_on);
         }
-
-
 
         Self {
             world,

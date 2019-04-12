@@ -4,9 +4,9 @@ use crate::commons::metrics::second_deserialize;
 use crate::commons::metrics::Fdim;
 use crate::configurations::debugger::VisualDebugger;
 use dim::si::{Second, MIN};
+use rts_logger::data_writer::{DataWrite, NdJsonWriter};
 use rts_logger::LogWriterManager;
 use rts_logger::LoggerConfiguration;
-use rts_logger::data_writer::{NdJsonWriter,DataWrite};
 use std::fs;
 
 #[derive(Deserialize)]
@@ -23,30 +23,29 @@ pub struct GeneralConfigurations {
 ///
 ///
 #[derive(Deserialize)]
-pub struct  LoggingConfiguration {
-    pub path : String,
-    pub filenames: Vec<String>
+pub struct LoggingConfiguration {
+    pub path: String,
+    pub filenames: Vec<String>,
 }
 impl LoggingConfiguration {
-    pub fn get_manager(&self) -> LogWriterManager{
+    pub fn get_manager(&self) -> LogWriterManager {
         let _ = fs::remove_dir_all(&self.path);
         let _ = fs::create_dir(&self.path);
-        let loggers : Vec<LoggerConfiguration> = self.filenames
+        let loggers: Vec<LoggerConfiguration> = self
+            .filenames
             .iter()
             .map(|name| {
-                let file_path = format!("{}/{}", self.path,name.clone());
+                let file_path = format!("{}/{}", self.path, name.clone());
                 LoggerConfiguration {
                     name: name.clone(),
-                    data_writer: Box::new(NdJsonWriter::open(&file_path))
-                }}
-            )
+                    data_writer: Box::new(NdJsonWriter::open(&file_path)),
+                }
+            })
             .collect();
         print!("ALLO");
         LogWriterManager::from_loggers(loggers.into_iter()).unwrap()
     }
 }
-
-
 
 #[derive(Clone, Deserialize)]
 pub struct EndTime {

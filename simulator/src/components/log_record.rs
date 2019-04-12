@@ -10,7 +10,7 @@ use serde::ser::Serializer;
 pub struct LogRecord {
     #[serde(serialize_with = "timestamp_serialize")]
     timestamp: Second<Fdim>,
-    lat : f64,
+    lat: f64,
     lon: f64,
     record_id: u32,
     record_type: String,
@@ -22,7 +22,7 @@ impl LogRecord {
     pub fn new(
         timestamp: Second<Fdim>,
         record_id: u32,
-        (lat,lon) : (f64,f64),
+        (lat, lon): (f64, f64),
         record_type: String,
         log_data: Box<LogWritable>,
     ) -> Self {
@@ -49,11 +49,13 @@ where
 {
     let sec = x.value_unsafe.floor() as i64;
     let msec = ((x.value_unsafe - x.value_unsafe.floor()) * 100.) as i64;
-    let time = format!("{:02}:{:02}:{:02}:{:03}",
-                       sec / 3600,
-                       (sec / 60) % 60,
-                       sec % 60,
-                       msec );
+    let time = format!(
+        "{:02}:{:02}:{:02}:{:03}",
+        sec / 3600,
+        (sec / 60) % 60,
+        sec % 60,
+        msec
+    );
     //todo make timestamp into a 00:00:00 format
     s.serialize_str(&time)
 }

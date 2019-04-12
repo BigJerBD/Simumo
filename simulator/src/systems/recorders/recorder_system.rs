@@ -3,14 +3,14 @@ use crate::systems::recorders::CarPositionRecorderSystem;
 use crate::systems::system_type::DispatcherBuilderHook;
 use crate::systems::system_type::SystemType;
 
-use typeinfo::TypeInfo;
 use crate::systems::recorders::CarSpeedRecorderSystem;
+use typeinfo::TypeInfo;
 
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum RecorderSystem {
     CarPositionRecorder(CarPositionRecorderSystem),
-    CarSpeedRecorder(CarSpeedRecorderSystem)
+    CarSpeedRecorder(CarSpeedRecorderSystem),
 }
 impl SystemType for RecorderSystem {
     fn setup(self, hook: &mut DispatcherBuilderHook) {
