@@ -126,6 +126,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         WindowSettings::new("Simumo - Visual debugger", [width, height])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
+            .automatic_close(true)
             .build()
             .unwrap()
     }

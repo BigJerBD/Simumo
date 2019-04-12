@@ -28,7 +28,7 @@ impl CarPoint {
     fn new () -> Self {
         Self {
             ttype: "car".to_string(),
-            resolution: "unit".to_string(),
+            resolution: "Unit".to_string(),
             value: 1
         }
     }
