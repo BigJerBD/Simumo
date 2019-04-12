@@ -6,7 +6,7 @@ use crate::commons::metrics::Fdim;
 use crate::commons::Point2D;
 
 lazy_static! {
-    static ref EARTH_RADIUS: Fdef = 6371.0088 * M;
+    static ref EARTH_RADIUS: Fdef = 1000.0 * 6371.0088 * M;
 }
 const PI: Fdim = std::f64::consts::PI;
 

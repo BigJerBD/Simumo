@@ -2,7 +2,9 @@ use crate::entities::entity_type::Instantiable;
 use crate::entities::types::CarEntity;
 use crate::ressources::clock;
 use crate::ressources::lane_graph::LaneGraph;
+use crate::ressources::lane_graph::NodeId;
 use crate::ressources::random::Random;
+use crate::simulation::UseDebugger;
 use rand::distributions::{Distribution, Normal};
 use rand::Rng;
 use simumo_derive::simusystem;
@@ -18,6 +20,7 @@ pub struct FrequencySpawner {
     pub min: i32,
     pub max: i32,
 }
+
 impl<'a> System<'a> for FrequencySpawner {
     type SystemData = (
         Read<'a, clock::Clock>,
@@ -25,23 +28,35 @@ impl<'a> System<'a> for FrequencySpawner {
         Entities<'a>,
         ReadExpect<'a, LaneGraph>,
         Read<'a, LazyUpdate>,
+        Read<'a, UseDebugger>,
     );
 
-    fn run(&mut self, (_clock, mut random, entities, lane_graph, updater): Self::SystemData) {
+    fn run(
+        &mut self,
+        (_clock, mut random, entities, lane_graph, updater, use_debugger): Self::SystemData,
+    ) {
         let normal_dist = Normal::new(0.015, 0.003);
         let num_cars_to_spawn = random.get_rng().gen_range(self.min, self.max);
         for _ in 1..num_cars_to_spawn {
             let position = self.get_random_start_location(&mut random, &lane_graph);
-            debug!("vehicule spawned at : x={} y={}", position.0, position.1);
-            let _destination = self.get_random_end_location(&mut random, &lane_graph);
+            let destination = self.get_random_end_location(&mut random, &lane_graph);
             let speed = normal_dist.sample(random.get_rng());
+            /*let path = astar(
+                lane_graph.lanes(),
+                position,
+                |finish| finish == destination,
+                |e| *e.weight(),
+                |_| 0
+            );
+            println!("{:#?}", path);*/
             let new_car: CarEntity = CarEntity {
                 id: "randomid".to_string(),
                 position,
+                destination,
                 speed,
                 acceleration: 0.0,
             };
-            new_car.spawn(&entities, &updater);
+            new_car.spawn(&entities, &updater, use_debugger.0);
         }
     }
 }
@@ -51,12 +66,18 @@ impl FrequencySpawner {
         &self,
         random: &mut Random,
         lane_graph: &LaneGraph,
-    ) -> (f64, f64) {
-        let pos_n: usize = random.get_rng().gen_range(0, self.start_locations.len());
-        lane_graph
-            .intersection(self.start_locations[pos_n])
-            .position()
+    ) -> ((NodeId, NodeId), f64) {
+        let mut pos_n: usize = random.get_rng().gen_range(0, self.start_locations.len());
+        let mut from = self.start_locations[pos_n];
+        let mut to = lane_graph.graph.edges(from).last();
+        while to.is_none() {
+            pos_n = random.get_rng().gen_range(0, self.start_locations.len());
+            from = self.start_locations[pos_n];
+            to = lane_graph.graph.edges(from).last();
+        }
+        ((from, to.unwrap().1), 0.0)
     }
+
     pub fn get_random_end_location(
         &self,
         random: &mut Random,

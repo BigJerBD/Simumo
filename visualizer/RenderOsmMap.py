@@ -3,11 +3,12 @@ from distutils.dir_util import copy_tree
 import os
 import shutil
 
+dirname = os.path.dirname(__file__) #absolute path to this script folder
 
 def render_ol_map(map_output_path, city):
     # copy directory containing the outputmap and its ressources
-    geocoder_path = "./ol-geocoder/template"
-    map_output_path = "./output"
+    geocoder_path = os.path.join(dirname,"ol-geocoder/template")
+    map_output_path = os.path.join(dirname,"output")
     if os.path.isdir(map_output_path):
         shutil.rmtree(map_output_path)  # in case the command was run before
     copy_tree(geocoder_path, map_output_path)
@@ -26,7 +27,7 @@ def render_ol_map(map_output_path, city):
 
 def render_layout(map_output_path, metrics, legend):
     # copy directory containing the outputmap and its ressources
-    layout_path = "./layoutVisualization"
+    layout_path = os.path.join(dirname,"layoutVisualization")
 
     copy_tree(layout_path, map_output_path)
 
@@ -44,7 +45,7 @@ def render_layout(map_output_path, metrics, legend):
 
 
 def render_visualization(city, metrics, legend):
-    map_output_path = "./output"
+    map_output_path = os.path.join(dirname, "output")
     render_ol_map(map_output_path, city)
     render_layout(map_output_path, metrics, legend)
 

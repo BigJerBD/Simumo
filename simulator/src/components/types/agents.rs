@@ -1,11 +1,9 @@
-/*! Define the agents component. */
-
+use crate::commons::CartesianCoord;
 use crate::commons::LogDataEntry;
-
 use serde::ser::Serialize;
 use serde::ser::SerializeSeq;
 use serde::ser::Serializer;
-use simumo_derive::{simucomponent_data, SimumoSerialize};
+use simumo_derive::{simucomponent_base, simucomponent_data, SimumoSerialize};
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
@@ -28,3 +26,18 @@ pub struct ConstantSpeedAgent {
     pub position: Position,
     pub speed: Speed,
 }*/
+
+#[simucomponent_base]
+#[derive(Debug)]
+#[storage(VecStorage)]
+pub struct Destination {
+    pub val: CartesianCoord,
+}
+
+impl Default for Destination {
+    fn default() -> Self {
+        Self {
+            val: CartesianCoord::default(),
+        }
+    }
+}

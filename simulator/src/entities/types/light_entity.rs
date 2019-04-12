@@ -1,4 +1,5 @@
 use crate::commons::CartesianCoord;
+use crate::commons::Percentage;
 use crate::commons::PolarCoord;
 use crate::components::types::constant::Drawer;
 use crate::components::types::constant::Identifier;
@@ -6,10 +7,12 @@ use crate::components::types::statics::trafficlight::Light;
 use crate::components::Position;
 use crate::entities::entity_type::Instantiable;
 use crate::ressources::eventsmanagement::EventsManager;
+use crate::ressources::lane_graph::NodeId;
 use crate::systems::renderer::drawableshape::Circle;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use specs::prelude::{Entities, LazyUpdate, Read};
 use specs::Builder;
+use specs::EntityBuilder;
 use specs::World;
 
 #[derive(Deserialize, Debug)]
@@ -19,7 +22,7 @@ pub struct LightEntity {
     // it would split the behaviour of the config and the simulation
     pub light: Light,
     #[serde(default)]
-    pub position: (f64, f64),
+    pub position: ((NodeId, NodeId), f64),
     pub observable: String,
 }
 
@@ -31,36 +34,46 @@ impl LightEntity {
 }
 
 impl<'a> Instantiable<'a> for LightEntity {
-    fn create(&self, world: &mut World) {
+    fn create(&self, world: &mut World, is_rendering_on: bool) {
         self.connect_to_observable(world, self.observable.clone());
-        world
+        let mut entity_builder: EntityBuilder = world
             .create_entity()
             .with(Identifier(self.id.clone()))
             .with(self.light)
             .with(Position {
-                val: polarfloat_to_cartesian(self.position.1, self.position.0),
-            })
-            .with(Drawer {
+                val: (self.position.0, Percentage::new_clamp(self.position.1)),
+            });
+        if is_rendering_on {
+            entity_builder = entity_builder.with(Drawer {
                 figure: DrawableShape::Circle(Circle::new(4.0)),
-            })
-            .build();
+            });
+        }
+        entity_builder.build();
     }
-    fn spawn(&self, entities: &Entities<'a>, updater: &Read<'a, LazyUpdate>) {
+
+    fn spawn(
+        &self,
+        entities: &Entities<'a>,
+        updater: &Read<'a, LazyUpdate>,
+        is_rendering_on: bool,
+    ) {
         let entity = entities.create();
         updater.insert(entity, Identifier(self.id.clone()));
         updater.insert(entity, self.light);
         updater.insert(
             entity,
             Position {
-                val: CartesianCoord::from_float(self.position.0, self.position.1),
+                val: (self.position.0, Percentage::new_clamp(self.position.1)),
             },
         );
-        updater.insert(
-            entity,
-            Drawer {
-                figure: DrawableShape::Circle(Circle::new(4.0)),
-            },
-        );
+        if is_rendering_on {
+            updater.insert(
+                entity,
+                Drawer {
+                    figure: DrawableShape::Circle(Circle::new(4.0)),
+                },
+            );
+        }
     }
 }
 

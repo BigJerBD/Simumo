@@ -17,7 +17,7 @@ impl LogSender {
     pub fn new(logger_name: String) -> Self {
         let log_input = LOG_MESSAGE_SENDERS
             .get_sender(logger_name)
-            .expect("The current AsyncLogWriter shut down unexpectedly");
+            .expect("The current AsyncLogWriter is not available yet");
         Self { log_input }
     }
 

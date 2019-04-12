@@ -2,7 +2,12 @@
 
 use crate::commons::metrics::second_deserialize;
 use crate::commons::metrics::Fdim;
+use crate::configurations::debugger::VisualDebugger;
 use dim::si::{Second, MIN};
+use rts_logger::LogWriterManager;
+use rts_logger::LoggerConfiguration;
+use rts_logger::data_writer::{NdJsonWriter,DataWrite};
+use std::fs;
 
 #[derive(Deserialize)]
 pub struct GeneralConfigurations {
@@ -11,17 +16,37 @@ pub struct GeneralConfigurations {
     pub clock_dt: Second<Fdim>,
     pub end_time: EndTime,
     pub debugger: VisualDebugger,
+    pub logging: Option<LoggingConfiguration>,
     pub seed: String,
 }
 
-///Represent the ending time of the simulator.
-#[derive(Clone, Deserialize)]
-pub struct VisualDebugger {
-    #[serde(rename = "use")]
-    pub on: bool,
-    pub width: f64,
-    pub height: f64,
+///
+///
+#[derive(Deserialize)]
+pub struct  LoggingConfiguration {
+    pub path : String,
+    pub filenames: Vec<String>
 }
+impl LoggingConfiguration {
+    pub fn get_manager(&self) -> LogWriterManager{
+        let _ = fs::remove_dir_all(&self.path);
+        let _ = fs::create_dir(&self.path);
+        let loggers : Vec<LoggerConfiguration> = self.filenames
+            .iter()
+            .map(|name| {
+                let file_path = format!("{}/{}", self.path,name.clone());
+                LoggerConfiguration {
+                    name: name.clone(),
+                    data_writer: Box::new(NdJsonWriter::open(&file_path))
+                }}
+            )
+            .collect();
+        print!("ALLO");
+        LogWriterManager::from_loggers(loggers.into_iter()).unwrap()
+    }
+}
+
+
 
 #[derive(Clone, Deserialize)]
 pub struct EndTime {

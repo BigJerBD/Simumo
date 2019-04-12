@@ -33,12 +33,12 @@ impl Default for Angle {
 pub struct Speed {
     #[simumo_metric]
     #[serde(deserialize_with = "meterpersecond_deserialize")]
-    pub val: MeterPerSecond<Fdim>,
+    pub speed: MeterPerSecond<Fdim>,
 }
 
 impl Default for Speed {
     fn default() -> Self {
-        Self { val: 0.0 * MPS }
+        Self { speed: 0.0 * MPS }
     }
 }
 

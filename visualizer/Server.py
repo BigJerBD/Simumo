@@ -35,4 +35,4 @@ if __name__ == "__main__":
         except yaml.YAMLError as exc:
             print("The Visualization config is not in valid Yaml")
 
-    app.run("0.0.0.0")
+    app.run("localhost")

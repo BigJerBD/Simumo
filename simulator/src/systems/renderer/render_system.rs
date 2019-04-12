@@ -1,20 +1,20 @@
+extern crate graphics;
 use crate::components::constant::Drawer;
 use crate::components::statics::trafficlight::Light;
 use crate::components::types::constant::CarType;
 use crate::components::Position;
-use crate::configurations::generals::VisualDebugger;
+use crate::configurations::debugger::point_to_window;
+use crate::configurations::debugger::VisualDebugger;
 use crate::ressources::generals::MapBbox;
-use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
 use crate::systems::renderer::drawableshape::Drawable;
 use graphics::{clear, rectangle, Context, Transformed};
 use opengl_graphics::GlGraphics;
-use petgraph::graphmap::Neighbors;
 use piston::input::RenderArgs;
 use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
 
-const EDGE_WIDTH: f64 = 2.0;
+const EDGE_WIDTH: f64 = 1.0;
 
 pub struct DrawClear;
 
@@ -23,7 +23,7 @@ impl<'a> System<'a> for DrawClear {
 
     fn run(&mut self, (mut g_handle, args): Self::SystemData) {
         g_handle.draw(args.viewport(), |_, gl| {
-            clear(Color::GRESSFOREST.get(), gl);
+            clear(Color::GREENFOREST.get(), gl);
         });
     }
 }
@@ -40,38 +40,22 @@ impl<'a> System<'a> for DrawMap {
     );
 
     fn run(&mut self, (debugger, map_bbox, lane_graph, mut g_handle, args): Self::SystemData) {
-        //polar_coordinates_to_cartesian
-        //TODO:: replace this algorithm to simply interate between all edges
-        for (nodeid, node) in lane_graph.intersections() {
-            let pos_node: (f64, f64) = point_to_window(node.position(), &debugger, &map_bbox);
-
-            let neighbors: Neighbors<'_, u64, petgraph::Directed> =
-                lane_graph.graph.neighbors(*nodeid);
-
-            for neighbor in neighbors {
-                let _lane: &LaneData = lane_graph.lane_between((*nodeid, neighbor));
-
-                let pos_neighbor: (f64, f64) = point_to_window(
-                    lane_graph.intersection(neighbor).position(),
-                    &debugger,
-                    &map_bbox,
+        let mut edges = lane_graph.lanes().all_edges();
+        while let Some(edge) = edges.next() {
+            let node1 = lane_graph.intersection(edge.0);
+            let node2 = lane_graph.intersection(edge.1);
+            let pos_node1: (f64, f64) = point_to_window(node1.position(), &debugger, &map_bbox);
+            let pos_node2: (f64, f64) = point_to_window(node2.position(), &debugger, &map_bbox);
+            g_handle.draw(args.viewport(), |c, gl| {
+                draw_lane_between_two_points(
+                    pos_node1,
+                    pos_node2,
+                    EDGE_WIDTH,
+                    Color::LIGHTGRAY,
+                    c,
+                    gl,
                 );
-
-                debug!(
-                    "lane rendering: x1={} y1={} x2={} y2={}",
-                    pos_node.0, pos_node.1, pos_neighbor.0, pos_neighbor.1
-                );
-                g_handle.draw(args.viewport(), |c, gl| {
-                    draw_lane_between_two_points(
-                        pos_node,
-                        pos_neighbor,
-                        EDGE_WIDTH,
-                        Color::LIGHTGRAY,
-                        c,
-                        gl,
-                    );
-                });
-            }
+            });
         }
     }
 }
@@ -87,14 +71,15 @@ impl<'a> System<'a> for DrawTrafficLights {
         ReadStorage<'a, Drawer>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
+        ReadExpect<'a, LaneGraph>,
     );
 
     fn run(
         &mut self,
-        (debugger, map_bbox, positions, lights, drawers, mut g_handle, args): Self::SystemData,
+        (debugger, map_bbox, positions, lights, drawers, mut g_handle, args, lane_graph): Self::SystemData,
     ) {
         for (position, light, drawer) in (&positions, &lights, &drawers).join() {
-            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox);
+            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
 
             debug!("light rendering: x={} y={}", x, y);
             g_handle.draw(args.viewport(), |c, gl| {
@@ -117,17 +102,17 @@ impl<'a> System<'a> for DrawVehicles {
         ReadStorage<'a, Drawer>,
         WriteExpect<'a, GlGraphics>,
         ReadExpect<'a, RenderArgs>,
+        ReadExpect<'a, LaneGraph>,
     );
 
     fn run(
         &mut self,
-        (debugger, map_bbox, positions, cars, drawers, mut g_handle, args): Self::SystemData,
+        (debugger, map_bbox, positions, cars, drawers, mut g_handle, args, lane_graph): Self::SystemData,
     ) {
         for (position, _car, drawer) in (&positions, &cars, &drawers).join() {
-            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox);
+            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
 
-            debug!("vehicule2 rendering: x={} y={}", x, y);
-
+            debug!("vehicule rendering: x={} y={}", x, y);
             g_handle.draw(args.viewport(), |c, gl| {
                 drawer.figure.draw(x, y, Color::BLACK, c, gl);
             });
@@ -155,24 +140,13 @@ fn draw_lane_between_two_points(
     rectangle(color.get(), rectangle::square(0.0, 0.0, 1.0), transform, gl);
 }
 
-fn pos_to_window(pos: &Position, debugger: &VisualDebugger, map_bbox: &MapBbox) -> (f64, f64) {
-    point_to_window(
-        (pos.val.x.value_unsafe, pos.val.y.value_unsafe),
-        debugger,
-        map_bbox,
-    )
-}
-
-fn point_to_window(
-    (x, y): (f64, f64),
+fn pos_to_window(
+    pos: &Position,
     debugger: &VisualDebugger,
     map_bbox: &MapBbox,
+    lane_graph: &LaneGraph,
 ) -> (f64, f64) {
-    let diff_x: f64 = map_bbox.x2 - map_bbox.x1;
-    let diff_y: f64 = map_bbox.y2 - map_bbox.y1;
-    let width: f64 = debugger.width;
-    let height: f64 = debugger.height;
-    let xpx = width * (x - map_bbox.x1) / diff_x;
-    let ypx = height * (map_bbox.y2 - y) / diff_y;
-    (xpx, ypx)
+    let data = lane_graph.lane_between(pos.val.0);
+    let cpoint = data.curve.get_location_at_percentage(pos.val.1);
+    point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
 }
