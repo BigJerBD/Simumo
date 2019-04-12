@@ -8,7 +8,7 @@ function updateTimeline(min, max)
 		max: max,
 		range: true,
 		values: [min, max],
-		change: updateVisualizationBox
+		change: function() {updateVisualizationBox(document.getElementsByClassName("submenu-linkSelected")[0])},
 	}).slider("pips", {
 		rest: "label",
 		step: (max - min)/10.0

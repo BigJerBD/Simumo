@@ -60,20 +60,21 @@ function timestampToSec(timestamp) {
     return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]);
 }
 
-function updateVisualizationBox() {
-    $("body").css("cursor", "wait");
-    let metrics = document.getElementsByName('metricSelection');
-    let selectedMetric;
-    for (var i = 0, length = metrics.length; i < length; i++) {
-        if (metrics[i].checked) {
-            selectedMetric = metrics[i];
-            break;
-        }
-    }
+function updateVisualizationBox(selectedMetric) {
     if (!selectedMetric) {
-        $("body").css("cursor", "default");
         return;
     }
+
+    let selectedMetrics = document.getElementsByClassName("submenu-link");
+    for(let i = 0, length = selectedMetrics.length; i < length; i++) //remove previous selected Metric
+    {
+        selectedMetrics[i].class = "submenu-link";
+    }
+    selectedMetric.classList.add("submenu-linkSelected");
+
+    $("body").css("cursor", "wait");
+    let metrics = document.getElementsByName('metricSelection');
+
     let logPath = selectedMetric.getAttribute('data-logPath');
     let logUnit = selectedMetric.getAttribute('data-unit');
 
@@ -112,6 +113,7 @@ function updateVisualizationBox() {
         $.ajax({
             url: urlLog,
             cache: false,
+            complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
                 let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
@@ -131,24 +133,7 @@ function updateVisualizationBox() {
         $.ajax({
             url: urlLog,
             cache: false,
-            success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
-                let logMinValue = parseInt(minMaxLogInfo.value[0]);
-                let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
-                let logMinTimestamp = minMaxLogInfo.timestamp[0];
-                let logMaxTimestamp = minMaxLogInfo.timestamp[1];
-                if (!existTimeline) {
-                    updateTimeline(logMinTimestamp, logMaxTimestamp);
-                }
-                loadColorGradient(logMinValue, logMaxValue, gradient);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
-                updateVisualizationLayer(parsedLog, "heatMap", gradient);
-            }
-        });
-    } else if (heatMapTab.className == "selected") {
-        $.ajax({
-            url: urlLog,
-            cache: false,
+            complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
                 let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
@@ -167,6 +152,7 @@ function updateVisualizationBox() {
         $.ajax({
             url: urlLog,
             cache: false,
+            complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
                 let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
@@ -192,5 +178,4 @@ function updateVisualizationBox() {
         });
     }
 
-    $("body").css("cursor", "default");
 }

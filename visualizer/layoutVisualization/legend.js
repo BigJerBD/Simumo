@@ -46,18 +46,8 @@ function loadScalablePointsLegend(timeLineMin, timeLineMax, pointMinSize, pointM
 
 
     legendBoxContent.innerHTML += `<div style="display: flex; align-items: center;">  
-                                   <div style="float: left;width: 30%;display: flex;justify-content: center;">  <div style="${circleStyleSmall}"><div style="height:100%; width:100%; font-weight: bold;">${timeLineMin}</div></div> </div> 
-                                   <div style="float: left;width: 30%;display: flex;justify-content: center;">  <div  style="${circleStyleMedium}"><div style="height:100%; width:100%; margin-top:${sizeMediumCircle/2.5}px; font-weight: bold; ">${timeLineMiddle}</div> </div> </div> 
-                                   <div style="float: left;display: flex;justify-content: center;">  <div  style="${circleStyleLarge}"> <div style="height:100%; width:100%; margin-top:${sizeLargeCircle/2.5}px; font-weight: bold;">${timeLineMax}</div> <div> </div>
+                                   <div style="float: left;width: 30%;display: flex;justify-content: center;">  <div style="${circleStyleSmall}"><div style="height:100%; width:100%; margin-top:${sizeMediumCircle}px; font-weight: bold;">${timeLineMin}</div></div> </div> 
+                                   <div style="float: left;width: 30%;display: flex;justify-content: center;">  <div  style="${circleStyleMedium}"><div style="height:100%; width:100%; margin-top:${sizeMediumCircle + 11}px; font-weight: bold; ">${timeLineMiddle}</div> </div> </div> 
+                                   <div style="float: left;display: flex;justify-content: center;">  <div  style="${circleStyleLarge}"> <div style="height:100%; width:100%; margin-top:${sizeLargeCircle + 4}px; font-weight: bold;">${timeLineMax}</div> <div> </div>
                                    </div> </div>`;
-
-     // legendBoxContent.innerHTML += `<div style="clear: both;">  <div style="float: left;width: 17%; text-align: right;">
-     //                               ${timeLineMin}
-     //                               </div>
-     //                               <div style="float:left; width: 30%; text-align: right;">
-     //                               ${timeLineMiddle}
-     //                               </div>
-     //                               <div style="float:left; width: 30%; text-align: right;">
-     //                               ${timeLineMax}
-     //                               </div>  </div>`;
 }
