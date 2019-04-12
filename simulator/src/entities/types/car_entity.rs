@@ -24,7 +24,7 @@ pub struct CarEntity {
     #[serde(default)]
     pub position: ((NodeId, NodeId), f64),
     #[serde(default)]
-    pub destination: (f64, f64),
+    pub destination: ((NodeId, NodeId), f64),
     #[serde(default)]
     pub speed: f64,
     #[serde(default)]

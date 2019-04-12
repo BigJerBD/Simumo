@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use crate::entities::entity_type::Instantiable;
 use crate::entities::types::CarEntity;
 use crate::ressources::clock;
@@ -37,25 +36,28 @@ impl<'a> System<'a> for FrequencySpawner {
         let normal_dist = Normal::new(0.015, 0.003);
         let num_cars_to_spawn = random.get_rng().gen_range(self.min, self.max);
         for _ in 1..num_cars_to_spawn {
-            let position = 2557106752; //self.get_random_start_location(&mut random, &lane_graph);
-            let destination = 2557106755; //self.get_random_end_location(&mut random, &lane_graph);
+            let start_node = self.get_random_start_location(&mut random, &lane_graph); //2557106752
+            let end_node = self.get_random_end_location(&mut random, &lane_graph); //2557106755
             let speed = normal_dist.sample(random.get_rng());
-            let path = astar(
-                lane_graph.lanes(),
-                position,
-                |finish| finish == destination,
-                |e| lane_graph.get_edge_cost((e.0, e.1)),
-                |n| lane_graph.get_estimate_cost_from_node(n, destination),
-            );
-            println!("{:#?} {:#?} {:#?}", position, destination, path);
-            /*let new_car: CarEntity = CarEntity {
-                id: "randomid".to_string(),
-                position,
-                destination,
-                speed,
-                acceleration: 0.0,
-            };
-            new_car.spawn(&entities, &updater, use_debugger.0);*/
+            if let Some((_cost, path)) = astar(
+                    lane_graph.lanes(),
+                    start_node,
+                    |finish| finish == end_node,
+                    |e| lane_graph.get_edge_cost((e.0, e.1)),
+                    |n| lane_graph.get_estimate_cost_from_node(n, end_node),
+                ) {
+                let num_nodes = path.len();
+                let new_car: CarEntity = CarEntity {
+                    id: "randomid".to_string(),
+                    position: ((path[0], path[1]), 0.0),
+                    destination: ((path[num_nodes - 2], path[num_nodes - 1]), 1.0),
+                    speed,
+                    acceleration: 0.0,
+                };
+                new_car.spawn(&entities, &updater, use_debugger.0);
+            } else {
+               println!("could not find path from node {:#?} to node {:#?}", start_node, end_node);
+            }
         }
     }
 }
@@ -87,55 +89,3 @@ impl FrequencySpawner {
         self.end_locations[pos_n]
     }
 }
-
-/*fn astar(graph: GraphMap<, start: NodeId, finish: NodeId) {
-    let mut closed = Vec::new();
-    let mut open = vec![start];
-    let mut came_from = HashMap::new();
-    let mut node_score = HashMap::new();
-    let mut nodes = graph.nodes();
-    while let node = nodes.next() {
-        println!("{:#?}", node);
-    }
-    
-
-    // For each node, the cost of getting from the start node to that node.
-    gScore := map with default value of Infinity
-
-    // The cost of going from start to start is zero.
-    gScore[start] := 0
-
-    // For each node, the total cost of getting from the start node to the goal
-    // by passing by that node. That value is partly known, partly heuristic.
-    fScore := map with default value of Infinity
-
-    // For the first node, that value is completely heuristic.
-    fScore[start] := heuristic_cost_estimate(start, goal)
-
-    while openSet is not empty
-        current := the node in openSet having the lowest fScore[] value
-        if current = goal
-            return reconstruct_path(cameFrom, current)
-
-        openSet.Remove(current)
-        closedSet.Add(current)
-
-        for each neighbor of current
-            if neighbor in closedSet
-                continue		// Ignore the neighbor which is already evaluated.
-
-            // The distance from start to a neighbor
-            tentative_gScore := gScore[current] + dist_between(current, neighbor)
-
-            if neighbor not in openSet	// Discover a new node
-                openSet.Add(neighbor)
-            else if tentative_gScore >= gScore[neighbor]
-                continue
-
-            // This path is the best until now. Record it!
-            cameFrom[neighbor] := current
-            gScore[neighbor] := tentative_gScore
-            fScore[neighbor] := gScore[neighbor] + heuristic_cost_estimate(neighbor, goal)
-    
-}
-*/

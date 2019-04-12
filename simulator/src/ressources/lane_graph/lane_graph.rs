@@ -1,8 +1,4 @@
 use std::collections::HashMap;
-use std::ops::Add;
-use std::ops::Index;
-use std::ops::IndexMut;
-use std::rc::Rc;
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
@@ -146,8 +142,8 @@ impl LaneGraph {
     pub fn get_estimate_cost_from_node(&self, node_id: NodeId, goal: NodeId) -> f64 {
         let node_position = self.intersection(node_id).position();
         let goal_position = self.intersection(goal).position();
-        let diff_x = (goal_position.0 - node_position.0);
-        let diff_y = (goal_position.1 - node_position.1);
+        let diff_x = goal_position.0 - node_position.0;
+        let diff_y = goal_position.1 - node_position.1;
         diff_x.hypot(diff_y)
     }
 }
