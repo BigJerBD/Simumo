@@ -47,7 +47,7 @@ impl<'a> Instantiable<'a> for CarEntity {
             })*/
             .with(CarType)
             .with(Speed {
-                val: self.speed * MPS,
+                speed: self.speed * MPS,
             });
         if is_rendering_on {
             entity_builder = entity_builder.with(Drawer {
@@ -81,7 +81,7 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(
             entity,
             Speed {
-                val: self.speed * MPS,
+                speed: self.speed * MPS,
             },
         );
         if is_rendering_on {

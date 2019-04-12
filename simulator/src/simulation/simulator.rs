@@ -9,6 +9,7 @@ use crate::ressources::random::Random;
 use crate::simulation::dispatchers::add_ending_systems;
 use crate::simulation::dispatchers::add_starting_systems;
 use crate::simulation::dispatchers::make_render_dispatcher;
+use rts_logger::LogWriterManager;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::GlGraphics;
 use piston::event_loop::{EventSettings, Events};
@@ -33,12 +34,18 @@ pub struct Simulation<'a, 'b> {
     base_dispatcher: Dispatcher<'a, 'b>,
     rendering: (bool, Dispatcher<'a, 'b>),
     window: Option<Window>,
+    loggers : Option<LogWriterManager>
 }
 
 impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
+        let loggers = match &config.generals.logging {
+            Some(logging) => Some(logging.get_manager()),
+            None => None,
+        };
+
         let mut base_dispatcher_builder = DispatcherBuilder::new();
         let mut world = World::new();
         let mut system_mapping = HashMap::<String, Vec<String>>::new();
@@ -77,11 +84,14 @@ impl<'a, 'b> Simulation<'a, 'b> {
             entity.create(&mut world, is_rendering_on);
         }
 
+
+
         Self {
             world,
             base_dispatcher,
-            rendering,
             window,
+            rendering,
+            loggers,
         }
     }
 
@@ -116,6 +126,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         WindowSettings::new("Simumo - Visual debugger", [width, height])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
+            .automatic_close(true)
             .build()
             .unwrap()
     }

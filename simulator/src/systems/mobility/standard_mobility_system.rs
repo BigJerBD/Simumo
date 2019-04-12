@@ -25,7 +25,7 @@ impl<'a> System<'a> for StandardMobilitySystem {
             let ((from, to), percentage) = pos.val;
             let curve = &lane_graph.lane_between((from, to)).curve;
             let mut progress = curve.percentage_to_progress(percentage);
-            progress += vel.val * clock.dt;
+            progress += vel.speed * clock.dt;
             pos.val.1 = progress.percentage();
             if progress.percentage() == Percentage::upper() {
                 if let Some((from, to, _)) = lane_graph.lanes().edges(to).nth(0) {

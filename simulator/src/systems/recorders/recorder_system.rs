@@ -4,16 +4,19 @@ use crate::systems::system_type::DispatcherBuilderHook;
 use crate::systems::system_type::SystemType;
 
 use typeinfo::TypeInfo;
+use crate::systems::recorders::CarSpeedRecorderSystem;
 
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum RecorderSystem {
     CarPositionRecorder(CarPositionRecorderSystem),
+    CarSpeedRecorder(CarSpeedRecorderSystem)
 }
 impl SystemType for RecorderSystem {
     fn setup(self, hook: &mut DispatcherBuilderHook) {
         match self {
             RecorderSystem::CarPositionRecorder(s) => hook.add(s),
+            RecorderSystem::CarSpeedRecorder(s) => hook.add(s),
         }
     }
 
@@ -23,6 +26,7 @@ impl SystemType for RecorderSystem {
     fn system_name(&self) -> String {
         match self {
             RecorderSystem::CarPositionRecorder(s) => String::from(s.type_of()),
+            RecorderSystem::CarSpeedRecorder(s) => String::from(s.type_of()),
         }
     }
 

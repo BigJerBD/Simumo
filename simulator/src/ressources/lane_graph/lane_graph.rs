@@ -1,5 +1,7 @@
 use crate::commons::Curve;
 use crate::ressources::lane_graph::{IntersectionData,LaneData,LaneEntry};
+use crate::commons::metrics::Fdim;
+use dim::si::{Meter, MeterPerSecond};
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
@@ -10,6 +12,7 @@ use std::ops::IndexMut;
 
 pub type NodeId = u64;
 pub type EdgeId = (NodeId, NodeId);
+
 
 /// The Identifier of the entities in the graph
 /// it uses the entities ID of specs

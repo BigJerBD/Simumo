@@ -1,9 +1,7 @@
 use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::components::Position;
-use crate::commons::CartesianCoord;
 use crate::ressources;
-
 
 use rts_logger::LogSender;
 use simumo_derive::simusystem;
@@ -14,51 +12,37 @@ use serde::Deserializer;
 use specs::Resources;
 use crate::ressources::lane_graph::LaneGraph;
 use specs::ReadExpect;
+use crate::components::types::dynamic::Speed;
+use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
 
 
-#[derive(Serialize)]
-pub struct CarPoint{
-    #[serde(rename="type")]
-    ttype: String,
-    resolution: String,
-    value : i32
-}
-impl CarPoint {
-    fn new () -> Self {
-        Self {
-            ttype: "car".to_string(),
-            resolution: "Unit".to_string(),
-            value: 1
-        }
-    }
-}
-
-
 #[simusystem]
-pub struct CarPositionRecorderSystem {
+pub struct CarSpeedRecorderSystem {
     capture_freq: f64,
     #[serde(skip)]
     car_log : Option<LogSender>
 }
 
-
-
-impl<'a> System<'a> for CarPositionRecorderSystem {
+impl<'a> System<'a> for CarSpeedRecorderSystem {
     type SystemData = (
         Read<'a, ressources::Clock>,
         Entities<'a>,
         ReadStorage<'a, CarType>,
+        ReadStorage<'a, Speed>,
         ReadStorage<'a, Position>,
         ReadExpect<'a, LaneGraph>,
     );
 
     /// the run process select the right logger for every
     /// records
-    fn run(&mut self, (clock, entities, cars, positions,lane_graph): Self::SystemData) {
+    fn run(&mut self, (clock, entities, cars,speed, positions,lane_graph): Self::SystemData) {
         //do a modulo to do it only on a certain frequency...
 
-        for (entity, _, pos) in (&entities, &cars, &positions).join() {
+        for (entity, _,speed, pos) in (&entities, &cars,&speed, &positions).join() {
+
+            let data = lane_graph.lane_between(pos.val.0);
+            let cpoint = data.curve.get_location_at_percentage(pos.val.1);
 
             let data = lane_graph.lane_between(pos.val.0);
             let cpoint = data.curve.get_location_at_percentage(pos.val.1);
@@ -69,9 +53,10 @@ impl<'a> System<'a> for CarPositionRecorderSystem {
                 clock.get_time(),
                 entity.id(),
                 (pcoord.0.clone(),pcoord.1.clone()),
-                String::from("CarEntity"),
-                Box::new(vec![CarPoint::new()]),
+                String::from("CarSpeed"),
+                Box::new(speed.clone()),
             );
+
 
             match &self.car_log {
                 Some(log) => log.log(Box::new(_record)),
@@ -81,6 +66,6 @@ impl<'a> System<'a> for CarPositionRecorderSystem {
     }
 
     fn setup(&mut self, _: &mut Resources) {
-        self.car_log = Some(LogSender::new(String::from("car_positions")));
+        self.car_log = Some(LogSender::new(String::from("car_speed")));
     }
 }

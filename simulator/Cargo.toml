@@ -50,6 +50,7 @@ quote = "0.6.11"
 typeinfo = {path = "extern/typeinfo"}
 typeinfo_derive = {path = "extern/typeinfo_derive"}
 simumo_derive = {path = "extern/simumo_derive"}
+rts_logger = {path = "extern/rts_logger"}
 
 #rng
 rand = "0.6"
