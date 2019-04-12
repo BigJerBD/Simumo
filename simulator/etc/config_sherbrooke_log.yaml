@@ -8,7 +8,7 @@ generals:
     height: 720
 
   logging:
-    path: "./logs"
+    path: "./tmp_logs"
     filenames:
       - car_positions
       - car_speed
