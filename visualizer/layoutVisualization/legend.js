@@ -15,7 +15,7 @@ function loadColorGradient(timeLineMin, timeLineMax, gradient) {
     //add color gradient
     legendBoxContent.innerHTML += `<div class=\"legendBoxContent\" style=\"${gradientStyle}\">`;
     //add scalar index
-    let timeLineMiddle = Math.round(timeLineMax / 2.0)
+    let timeLineMiddle = Math.round((timeLineMin + timeLineMin) / 2.0)
     legendBoxContent.innerHTML += `<div class="beginLegendBox" style=>
                                 ${timeLineMin}
                               </div>
@@ -42,7 +42,7 @@ function loadScalablePointsLegend(timeLineMin, timeLineMax, pointMinSize, pointM
     let circleStyleLarge = `width: ${sizeLargeCircle}px; height: ${sizeLargeCircle}px; border-radius: 50%; background-color: rgba(${pointColor.r},${pointColor.g},${pointColor.b}, ${pointColor.b});`;
 
     //add scalar index
-    let timeLineMiddle = Math.round(timeLineMax / 2.0)
+    let timeLineMiddle = Math.round((timeLineMin + timeLineMax) / 2.0)
 
 
     legendBoxContent.innerHTML += `<div style="display: flex; align-items: center;">  
