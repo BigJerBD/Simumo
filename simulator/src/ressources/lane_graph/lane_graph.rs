@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use crate::commons::Curve;
 use crate::ressources::lane_graph::{IntersectionData, LaneData, LaneEntry};
 use dim::si::{Meter, MeterPerSecond};
+use petgraph::algo::astar;
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
@@ -146,6 +147,16 @@ impl LaneGraph {
         let diff_x = goal_position.0 - node_position.0;
         let diff_y = goal_position.1 - node_position.1;
         diff_x.hypot(diff_y)
+    }
+
+    pub fn get_optimal_path_between_nodes(&self, start_node: NodeId, end_node: NodeId) -> Option<(f64, Vec<NodeId>)> {
+        astar(
+            self.lanes(),
+            start_node,
+            |finish| finish == end_node,
+            |e| self.get_edge_cost((e.0, e.1)),
+            |n| self.get_estimate_cost_from_node(n, end_node),
+        )
     }
 }
 

@@ -31,7 +31,6 @@ impl<'a> System<'a> for StandardMobilitySystem {
             let mut progress = curve.percentage_to_progress(percentage);
             progress += vel.speed * clock.dt;
             pos.val.1 = progress.percentage();
-            println!("{:#?}", progress);
             if progress.percentage() == Percentage::upper() {
                 if let Some((from, to)) = itinerary.next() {
                     pos.val = ((from, to), Percentage::lower());

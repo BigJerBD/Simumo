@@ -16,7 +16,6 @@ use crate::ressources::lane_graph::NodeId;
 use crate::systems::renderer::drawableshape::DrawableShape;
 use crate::systems::renderer::drawableshape::Rectangle;
 use dim::si::MPS;
-use petgraph::algo::astar;
 use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 use specs::EntityBuilder;
 
@@ -50,13 +49,9 @@ impl CarEntity {
         lane_graph: &LaneGraph,
     ) -> Self {
         ID.fetch_add(1, Ordering::SeqCst);
-        let (_cost, path) = astar(
-            lane_graph.lanes(),
-            start_node,
-            |finish| finish == end_node,
-            |e| lane_graph.get_edge_cost((e.0, e.1)),
-            |n| lane_graph.get_estimate_cost_from_node(n, end_node),
-        ).unwrap();
+        let (_cost, path) = lane_graph
+            .get_optimal_path_between_nodes(start_node, end_node)
+            .unwrap();
         let num_nodes = path.len();
         
         Self {
@@ -74,7 +69,20 @@ impl<'a> Instantiable<'a> for CarEntity {
     // NOTE :: a create car is converted to the cartesian referential
     // but a spawned one is already on the cartesian referential
     fn create(&self, world: &mut World, is_rendering_on: bool) {
-        let mut itinerary = Itinerary::new(self.path.clone().unwrap());
+        let path = if let Some(path) = self.path.clone() {
+            path
+        } else {
+            let lane_graph = world.read_resource::<LaneGraph>();
+            let start_node = (self.position.0).0;
+            let end_node = (self.destination.0).1;
+            println!("{} {}", start_node, end_node);
+            let (_cost, path) = lane_graph
+                .get_optimal_path_between_nodes(start_node, end_node)
+                .unwrap();
+            path
+        };
+
+        let mut itinerary = Itinerary::new(path);
         itinerary.next();
         let mut entity_builder: EntityBuilder = world
             .create_entity()
