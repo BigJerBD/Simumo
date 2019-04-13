@@ -1,7 +1,8 @@
-use std::collections::HashMap;
 use crate::ressources::lane_graph::EntityId;
 use crate::ressources::lane_graph::LaneData;
 use crate::ressources::lane_graph::EdgeId;
+use crate::ressources::lane_graph::NodeId;
+use std::collections::HashMap;
 
 /// Access Entry that allows to modify the LaneMap while keeping its integrity
 ///
@@ -25,7 +26,7 @@ impl<'a, 'b> LaneEntry<'a, 'b> {
     ) -> Self {
         Self {
             lane,
-            entity_locations
+            entity_locations,
         }
     }
 

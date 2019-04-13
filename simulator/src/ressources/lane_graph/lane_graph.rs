@@ -1,10 +1,12 @@
 use std::collections::HashMap;
+use crate::commons::metrics::Fdim;
+use crate::commons::Curve;
+use crate::ressources::lane_graph::{IntersectionData, LaneData, LaneEntry};
+use dim::si::{Meter, MeterPerSecond};
 use petgraph::graphmap::DiGraphMap;
 use petgraph::graphmap::GraphMap;
 use petgraph::IntoWeightedEdge;
 use specs::world;
-use crate::ressources::lane_graph::*;
-use crate::commons::Curve;
 
 pub type NodeId = u64;
 pub type EdgeId = (NodeId, NodeId);

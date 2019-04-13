@@ -12,8 +12,8 @@ def parse_log(path):
 
 def find_entries_in_log(log, min, max):
     def timestamp_to_sec(timestamp):
-        hour, min, sec = timestamp.split(":")
-        return (int(hour) * 60 * 60) + (int(min) * 60) + int(sec)
+        hour, min, sec, mili = timestamp.split(":")
+        return (int(hour) * 60 * 60) + (int(min) * 60) + int(sec) + int(mili) / 60
 
     if not min or not max:
         return log

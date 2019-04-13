@@ -1,9 +1,9 @@
-use std::collections::VecDeque;
-use dim::si::{Meter, MeterPerSecond};
 use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
 use crate::ressources::lane_graph::EntityId;
 use crate::ressources::lane_graph::EdgeId;
+use dim::si::{Meter, MeterPerSecond};
+use std::collections::VecDeque;
 
 /// Contains all the information of a lane in the map
 ///

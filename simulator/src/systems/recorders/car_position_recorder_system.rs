@@ -1,49 +1,83 @@
+use crate::commons::CartesianCoord;
 use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::components::Position;
 use crate::ressources;
 
+use crate::commons::PolarCoord;
+use crate::ressources::lane_graph::LaneGraph;
+use rts_logger::LogSender;
+use serde::Deserializer;
 use simumo_derive::simusystem;
-use specs::prelude::{Entities, Join, LazyUpdate, Read, ReadStorage, System};
+use specs::prelude::{Entities, Join, Read, ReadStorage, System};
+use specs::ReadExpect;
+use specs::Resources;
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
 
-#[simusystem]
-#[derive(Default)]
-pub struct CarPositionRecorderSystem {
-    capture_freq: f64,
+#[derive(Serialize)]
+pub struct CarPoint {
+    #[serde(rename = "type")]
+    ttype: String,
+    resolution: String,
+    value: i32,
 }
-impl CarPositionRecorderSystem {
-    pub fn new(capture_freq: f64) -> Self {
-        Self { capture_freq }
+impl CarPoint {
+    fn new() -> Self {
+        Self {
+            ttype: "car".to_string(),
+            resolution: "Unit".to_string(),
+            value: 1,
+        }
     }
 }
+
+#[simusystem]
+pub struct CarPositionRecorderSystem {
+    capture_freq: f64,
+    #[serde(skip)]
+    car_log: Option<LogSender>,
+}
+
 impl<'a> System<'a> for CarPositionRecorderSystem {
     type SystemData = (
         Read<'a, ressources::Clock>,
         Entities<'a>,
         ReadStorage<'a, CarType>,
         ReadStorage<'a, Position>,
-        Read<'a, LazyUpdate>,
+        ReadExpect<'a, LaneGraph>,
     );
 
     /// the run process select the right logger for every
     /// records
-    fn run(&mut self, (clock, entities, cars, positions, updater): Self::SystemData) {
+    fn run(&mut self, (clock, entities, cars, positions, lane_graph): Self::SystemData) {
         //do a modulo to do it only on a certain frequency...
 
-        for (entity, _, position) in (&entities, &cars, &positions).join() {
-            let log_info = entities.create();
-            // todo :: currently doesnt serialize until we fix metric problems
-            updater.insert(
-                log_info,
-                LogRecord::new(
-                    clock.get_time(),
-                    entity.id(),
-                    String::from("CarPosition"),
-                    Box::new(position.clone()),
-                ),
-            );
+        if clock.get_time().value_unsafe % self.capture_freq == 0.0 {
+            for (entity, _, pos) in (&entities, &cars, &positions).join() {
+                if let Some(data) = lane_graph.lane_between(pos.val.0) {
+                    let cpoint = data.curve().get_location_at_percentage(pos.val.1);
+                    let ccoord = CartesianCoord::from_float(cpoint.point().x, cpoint.point().y);
+                    let pcoord = PolarCoord::from_cartesian(&ccoord);
+
+                    let _record = LogRecord::new(
+                        clock.get_time(),
+                        entity.id(),
+                        (pcoord.0.clone(), pcoord.1.clone()),
+                        String::from("CarEntity"),
+                        Box::new(vec![CarPoint::new()]),
+                    );
+
+                    match &self.car_log {
+                        Some(log) => log.log(Box::new(_record)),
+                        None => (),
+                    };
+                }
+            }
         }
+    }
+
+    fn setup(&mut self, _: &mut Resources) {
+        self.car_log = Some(LogSender::new(String::from("car_positions")));
     }
 }

@@ -1,7 +1,5 @@
 extern crate image;
 extern crate imageproc;
-use image::RgbaImage;
-use graphics_buffer::RenderBuffer;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
@@ -13,13 +11,6 @@ pub struct VisualDebugger {
     pub on: bool,
     pub width: f64,
     pub height: f64,
-    #[serde(skip_deserializing)]
-    #[serde(default = "default_renderbuffer")]
-    pub bgimage: RenderBuffer,
-}
-
-fn default_renderbuffer() -> RenderBuffer {
-    RenderBuffer::new(0, 0)
 }
 
 impl VisualDebugger {
@@ -67,15 +58,14 @@ fn draw_lane_between_two_points(
     p2: (f64, f64),
     width: f64,
     _color: Color,
-    _img: &mut RgbaImage,
 ) {
     let _rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
     let _rectangle_width: f64 = width;
     let _rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
     /*let transform = IDENTITY
-        .trans(p1.0, p1.1)
-        .rot_rad(rectangle_angle)
-        .scale(rectangle_length, rectangle_width);*/
+    .trans(p1.0, p1.1)
+    .rot_rad(rectangle_angle)
+    .scale(rectangle_length, rectangle_width);*/
     /*let points:&[Point<i32>] = &[
         Point::new(rectangle_length.0, p1.1),
         Point::new(p1.0 + EDGE_WIDTH, p1.1),

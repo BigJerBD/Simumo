@@ -14,7 +14,7 @@ use opengl_graphics::GlGraphics;
 use piston::input::RenderArgs;
 use specs::{Join, ReadExpect, ReadStorage, System, WriteExpect};
 
-const EDGE_WIDTH: f64 = 2.0;
+const EDGE_WIDTH: f64 = 1.0;
 
 pub struct DrawClear;
 
