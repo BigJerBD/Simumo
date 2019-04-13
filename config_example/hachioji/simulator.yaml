@@ -1,0 +1,68 @@
+generals:
+  clock_dt: 0.25
+  end_time:
+    val: 300
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+map:
+  type: OsmGraph
+  latitude: 35.673852
+  longitude: 139.319478
+  zoom: 1200
+
+
+#map:
+#  type: PolarFileMap
+#  path: etc/hachioji_graph.json
+#
+
+systems:
+  agents:
+    - type: Accelerating
+
+  clock:
+    type: StandardClock
+
+  controls: []
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+  recorders:
+    - type : CarPositionRecorder
+      capture_freq: 1.0
+    - type: CarSpeedRecorder
+      capture_freq: 1.0
+
+
+
+entities:
+  - id: car1
+    type: vehicle
+    position: [[1448177523, 1529484139], 0.50]
+    speed: 3
+  - id: car2
+    type: vehicle
+    position: [[299361128, 1980563339], 0.50]
+    speed: 5
+  - id: car3
+    type: vehicle
+    position: [[1744448427, 692802443], 0.50]
+    speed: 5
+  - id: car4267279738500854414
+    type: vehicle
+    position: [[1448225068, 5287124826], 0.50]
+    speed: 2
