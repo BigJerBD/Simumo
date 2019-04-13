@@ -15,7 +15,7 @@ function loadColorGradient(timeLineMin, timeLineMax, gradient) {
     //add color gradient
     legendBoxContent.innerHTML += `<div class=\"legendBoxContent\" style=\"${gradientStyle}\">`;
     //add scalar index
-    let timeLineMiddle = Math.round((timeLineMin + timeLineMin) / 2.0)
+    let timeLineMiddle = Math.round((timeLineMin + timeLineMax) / 2.0)
     legendBoxContent.innerHTML += `<div class="beginLegendBox" style=>
                                 ${timeLineMin}
                               </div>
