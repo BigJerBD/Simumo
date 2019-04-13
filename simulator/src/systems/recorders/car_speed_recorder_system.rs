@@ -2,13 +2,11 @@ use crate::components::constant::CarType;
 use crate::components::log_record::LogRecord;
 use crate::components::Position;
 use crate::ressources;
-
 use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
 use crate::components::types::dynamic::Speed;
 use crate::ressources::lane_graph::LaneGraph;
 use rts_logger::LogSender;
-use serde::Deserializer;
 use simumo_derive::simusystem;
 use specs::prelude::{Entities, Join, Read, ReadStorage, System};
 use specs::ReadExpect;

@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
 use crate::ressources::lane_graph::{IntersectionData, LaneData, LaneEntry};
 use dim::si::{Meter, MeterPerSecond};

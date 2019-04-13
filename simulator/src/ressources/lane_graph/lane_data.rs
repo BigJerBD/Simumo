@@ -108,7 +108,7 @@ impl LaneData {
     // cost of a lane.
     // The higher the index, the higher the cost of the lane
     pub fn get_cost_index(&self) -> f64 {
-        let nb_entities: usize = self.entity_queue.len();
+        let _nb_entities: usize = self.entity_queue.len();
         let lane_length = self.curve.length().value_unsafe;
         lane_length
     }
