@@ -52,12 +52,16 @@ function secToTimestamp(sec) {
     let nbrHours = parseInt(sec / 3600.0);
     let nbrMinutes = parseInt((sec - (nbrHours * 3600.0)) / 60.0);
     let nbrSeconds = (sec - (nbrHours * 3600.0)) - (nbrMinutes * 60.0)
-    return ("0" + nbrHours).slice(-2) + ":" + ("0" + nbrMinutes).slice(-2) + ":" + ("0" + nbrSeconds).slice(-2);
+    let nbrMiliseconds =  (sec - Math.floor(sec)) * 100;
+    return ("0" + nbrHours).slice(-2) + ":"
+            + ("0" + nbrMinutes).slice(-2) + ":"
+            + ("0" + nbrSeconds).slice(-2) + ":"
+            + ("00" + nbrMiliseconds).slice(-3);
 }
 
 function timestampToSec(timestamp) {
     let split = timestamp.split(':');
-    return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]);
+    return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]) + parseInt(split[3]) / 60;
 }
 
 function updateVisualizationBox(selectedMetric) {

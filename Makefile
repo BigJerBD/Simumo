@@ -39,6 +39,8 @@ endif
 
 build_scripts: build_dir
 	cp -r scripts/simumo.sh build
+	cp -r scripts/simumo_viz.sh build
+	cp -r scripts/simumo_sim.sh build
 
 build_config: build_dir
 	cp -r simulator/etc build

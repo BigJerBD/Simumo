@@ -35,9 +35,9 @@ systems:
 
   recorders:
     - type : CarPositionRecorder
-      capture_freq: 0.0
+      capture_freq: 1.0
     - type: CarSpeedRecorder
-      capture_freq: 0.0
+      capture_freq: 1.0
 
 
 entities:

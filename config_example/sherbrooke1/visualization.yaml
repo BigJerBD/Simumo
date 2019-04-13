@@ -1,6 +1,6 @@
-city: "sherbrooke1"
+city: "sherbrooke"
 logs:
-    directory: "/home/local/USHERBROOKE/bigj2701/Workspace/gitlab/simumo/build/tmp_logs"
+    directory: "./tmp_logs"
     metrics:
         - name: "Positions Automobiles"
           logName: "car_positions.ndjson"

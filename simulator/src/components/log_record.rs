@@ -14,6 +14,7 @@ pub struct LogRecord {
     lon: f64,
     record_id: u32,
     record_type: String,
+    #[serde(rename="data")]
     log_data: Box<LogWritable>,
 }
 
