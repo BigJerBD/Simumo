@@ -26,7 +26,7 @@ function getMinMaxLogInfo(log, metric) {
     }
 }
 
-function parseLog(log, unitToSelect, max) {
+function parseLog(log, unitToSelect, min, max) {
     let logJson = JSON.parse(log);
     let parsedLog = []
     logJson.forEach(function (entry) {
@@ -39,7 +39,7 @@ function parseLog(log, unitToSelect, max) {
                     dataType: data["type"],
                     unit: data["resolution"],
                     value: data["value"],
-                    interpolation: data["value"] / max //normalised value
+                    interpolation: (data["value"] - min) / max //normalised value
                 }
                 parsedLog.push(logEntry);
             }
@@ -72,7 +72,7 @@ function updateVisualizationBox(selectedMetric) {
     let selectedMetrics = document.getElementsByClassName("submenu-link");
     for(let i = 0, length = selectedMetrics.length; i < length; i++) //remove previous selected Metric
     {
-        selectedMetrics[i].class = "submenu-link";
+        selectedMetrics[i].classList.remove("submenu-linkSelected");
     }
     selectedMetric.classList.add("submenu-linkSelected");
 
@@ -119,7 +119,7 @@ function updateVisualizationBox(selectedMetric) {
             cache: false,
             complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let minMaxLogInfo = getMinMaxLogInfo(log, selectedMetric.innerText);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
                 let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
                 let logMinTimestamp = minMaxLogInfo.timestamp[0];
@@ -128,7 +128,7 @@ function updateVisualizationBox(selectedMetric) {
                     updateTimeline(logMinTimestamp, logMaxTimestamp);
                 }
                 loadColorGradient(logMinValue, logMaxValue, gradient);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
+                let parsedLog = parseLog(log, logUnit, logMinValue, logMaxValue);
                 updateVisualizationLayer(parsedLog, "coloredPoints", gradient);
             }
         });
@@ -139,7 +139,7 @@ function updateVisualizationBox(selectedMetric) {
             cache: false,
             complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let minMaxLogInfo = getMinMaxLogInfo(log, selectedMetric.innerText);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
                 let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
                 let logMinTimestamp = minMaxLogInfo.timestamp[0];
@@ -148,7 +148,7 @@ function updateVisualizationBox(selectedMetric) {
                     updateTimeline(logMinTimestamp, logMaxTimestamp);
                 }
                 loadColorGradient(logMinValue, logMaxValue, gradient);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
+                let parsedLog = parseLog(log, logUnit, logMinValue, logMaxValue);
                 updateVisualizationLayer(parsedLog, "heatMap", gradient);
             }
         });
@@ -158,7 +158,7 @@ function updateVisualizationBox(selectedMetric) {
             cache: false,
             complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let minMaxLogInfo = getMinMaxLogInfo(log, selectedMetric.innerText);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
                 let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
                 let logMinTimestamp = minMaxLogInfo.timestamp[0];
@@ -176,7 +176,7 @@ function updateVisualizationBox(selectedMetric) {
                     a: parseInt(colorPointDiv.getAttribute('data-alpha'))
                 };
                 loadScalablePointsLegend(logMinValue, logMaxValue, pointMinSize, pointMaxSize, colorPoint);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
+                let parsedLog = parseLog(log, logUnit, logMinValue, logMaxValue);
                 updateVisualizationLayer(parsedLog, "scalablePoints", gradient);
             }
         });
