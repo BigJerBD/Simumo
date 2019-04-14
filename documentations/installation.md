@@ -42,5 +42,5 @@ Afin de créer l'exécutable exécuter la commande à partir de la racine du dos
 make build
 ```
 
-Pour avoir plus d'information comment exécuter le simulateur, référez-vous au document: **usage**
+Pour avoir plus d'information comment utiliser le simulateur, référez-vous au document: **usage**
 
