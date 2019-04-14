@@ -15,4 +15,33 @@ function updateTimeline(min, max)
 	});
 
     document.getElementById("sliderUnit").innerHTML = "sec";
+    document.getElementById("prevNext").removeAttribute("hidden");
+}
+
+function nextSliderRange()
+{
+	let timeValueMin = $("#flat-slider").slider("option", "min");
+	let timeValueMax = $("#flat-slider").slider("option", "max");
+	let timeValueBegin = $('#flat-slider').slider("option", "values")[0];
+	let timeValueEnd = $('#flat-slider').slider("option", "values")[1];
+	let offset = (timeValueMax - timeValueMin) * 0.025;
+	if(timeValueEnd + offset < timeValueMax)
+	{
+		$('#flat-slider').slider("values", 0, timeValueBegin + offset);
+		$('#flat-slider').slider("values", 1, timeValueEnd + offset);
+	}
+}
+
+function previousSliderRange()
+{
+	let timeValueMin = $("#flat-slider").slider("option", "min");
+	let timeValueMax = $("#flat-slider").slider("option", "max");
+	let timeValueBegin = $('#flat-slider').slider("option", "values")[0];
+	let timeValueEnd = $('#flat-slider').slider("option", "values")[1];
+	let offset = (timeValueMax - timeValueMin) * 0.025;
+	if(timeValueBegin - offset > timeValueMin)
+	{
+		$('#flat-slider').slider("values", 0, timeValueBegin - offset);
+		$('#flat-slider').slider("values", 1, timeValueEnd - offset);
+	}
 }
