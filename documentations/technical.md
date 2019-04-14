@@ -26,12 +26,19 @@ Ce dossier contient des librairies externes qui ne sont pas téléchargées par 
 ### src
 Ce dossier contient le code source du simulateur. Les sous-dossiers ont été créés selon la conception **ECS**. On y retrouve les *components*, *entités*, *ressources*, et les *systèmes*.
 1. commons
+    Ce dossier contient tous les types de données qui sont communs dans le simulateur. C'est l'équivalent d'un module utilitaire.
 2. components
+    Ce dossier contient les composantes définies pour l'architecture **ECS**.
 3. configurations
+    Ce dossier contient les différents types de configurations possibles. Regardez les fichiers se retrouvant dans **./simulator/etc** pour plus de détails.
 4. entities
+        Ce dossier contient les entités définies pour l'architecture **ECS**.
 5. ressources
+        Ce dossier contient les ressources définies pour l'architecture **ECS**.
 6. simulation
+    Ce dossier contient tout ce qu'il faut pour construire le simulateur, le démarrer.
 7. systems
+    Ce dossier contient les systèmes définies pour l'architecture **ECS**.
 ### target
 Ce dossier contient les exécutables de débug et de production.
 ## simumap ##
