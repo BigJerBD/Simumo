@@ -3,8 +3,6 @@ extern crate imageproc;
 use crate::ressources::generals::MapBbox;
 use crate::ressources::lane_graph::LaneGraph;
 use crate::systems::renderer::color::Color;
-use graphics_buffer::RenderBuffer;
-use image::RgbaImage;
 
 ///Represent the ending time of the simulator.
 #[derive(Clone, Deserialize)]
@@ -13,13 +11,6 @@ pub struct VisualDebugger {
     pub on: bool,
     pub width: f64,
     pub height: f64,
-    #[serde(skip_deserializing)]
-    #[serde(default = "default_renderbuffer")]
-    pub bgimage: RenderBuffer,
-}
-
-fn default_renderbuffer() -> RenderBuffer {
-    RenderBuffer::new(0, 0)
 }
 
 impl VisualDebugger {
@@ -67,7 +58,6 @@ fn draw_lane_between_two_points(
     p2: (f64, f64),
     width: f64,
     _color: Color,
-    _img: &mut RgbaImage,
 ) {
     let _rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
     let _rectangle_width: f64 = width;

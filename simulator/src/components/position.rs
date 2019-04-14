@@ -7,17 +7,15 @@ use simumo_derive::simucomponent_base;
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
-
 use crate::commons::Percentage;
+use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::NodeId;
-
-type Edge = (NodeId, NodeId);
 
 #[simucomponent_base]
 #[derive(Debug, Clone)]
 #[storage(VecStorage)]
 pub struct Position {
-    pub val: (Edge, Percentage),
+    pub val: (EdgeId, Percentage),
 }
 
 impl Default for Position {

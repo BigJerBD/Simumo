@@ -1,5 +1,6 @@
 use crate::ressources::lane_graph::EntityId;
 use crate::ressources::lane_graph::LaneData;
+use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::NodeId;
 use std::collections::HashMap;
 
@@ -15,19 +16,16 @@ use std::collections::HashMap;
 ///
 pub struct LaneEntry<'a, 'b> {
     lane: &'b mut LaneData,
-    lane_location: (NodeId, NodeId),
-    entity_locations: &'a mut HashMap<EntityId, (NodeId, NodeId)>,
+    entity_locations: &'a mut HashMap<EntityId, EdgeId>,
 }
 
 impl<'a, 'b> LaneEntry<'a, 'b> {
     pub fn new(
         lane: &'b mut LaneData,
-        lane_location: (NodeId, NodeId),
-        entity_locations: &'a mut HashMap<EntityId, (NodeId, NodeId)>,
+        entity_locations: &'a mut HashMap<EntityId, EdgeId>,
     ) -> Self {
         Self {
             lane,
-            lane_location,
             entity_locations,
         }
     }
@@ -37,9 +35,10 @@ impl<'a, 'b> LaneEntry<'a, 'b> {
     }
 
     pub fn push_back(&mut self, entity: EntityId) {
-        self.entity_locations.insert(entity, self.lane_location);
+        self.entity_locations.insert(entity, self.lane.location());
         self.lane.push_back(entity);
     }
+
     pub fn pop_front(&mut self) -> EntityId {
         let entity = self.lane.pop_front();
         self.entity_locations.remove(&entity);

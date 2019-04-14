@@ -81,6 +81,7 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
                 let (x_from, y_from) = osm_nodes[from];
                 let (x_to, y_to) = osm_nodes[to];
                 LaneData::new(
+                    (*from, *to),
                     None,
                     None,
                     Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
@@ -100,6 +101,7 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
                 let (x_to, y_to) = osm_nodes[from];
                 let (x_from, y_from) = osm_nodes[to];
                 LaneData::new(
+                    (*from, *to),
                     None,
                     None,
                     Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
@@ -133,6 +135,7 @@ fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, 
                 let (x_from, y_from) = nodes[from];
                 let (x_to, y_to) = nodes[to];
                 LaneData::new(
+                    (*from, *to),
                     None,
                     None,
                     Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
@@ -150,6 +153,7 @@ fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, 
                 let (x_to, y_to) = nodes[from];
                 let (x_from, y_from) = nodes[to];
                 LaneData::new(
+                    (*to, *from),
                     None,
                     None,
                     Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
