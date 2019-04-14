@@ -79,14 +79,13 @@ impl<'a> System<'a> for DrawTrafficLights {
         (debugger, map_bbox, positions, lights, drawers, mut g_handle, args, lane_graph): Self::SystemData,
     ) {
         for (position, light, drawer) in (&positions, &lights, &drawers).join() {
-            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
-
-            debug!("light rendering: x={} y={}", x, y);
-            g_handle.draw(args.viewport(), |c, gl| {
-                drawer
-                    .figure
-                    .draw(x, y, light.color.get_rendering_color(), c, gl);
-            });
+            if let Some((x, y)) = pos_to_window(position, &debugger, &map_bbox, &lane_graph) {
+                g_handle.draw(args.viewport(), |c, gl| {
+                    drawer
+                        .figure
+                        .draw(x, y, light.color.get_rendering_color(), c, gl);
+                });
+            }
         }
     }
 }
@@ -110,12 +109,12 @@ impl<'a> System<'a> for DrawVehicles {
         (debugger, map_bbox, positions, cars, drawers, mut g_handle, args, lane_graph): Self::SystemData,
     ) {
         for (position, _car, drawer) in (&positions, &cars, &drawers).join() {
-            let (x, y): (f64, f64) = pos_to_window(position, &debugger, &map_bbox, &lane_graph);
-
-            debug!("vehicule rendering: x={} y={}", x, y);
-            g_handle.draw(args.viewport(), |c, gl| {
-                drawer.figure.draw(x, y, Color::BLACK, c, gl);
-            });
+            if let Some((x, y)) = pos_to_window(position, &debugger, &map_bbox, &lane_graph) {
+                debug!("vehicule rendering: x={} y={}", x, y);
+                g_handle.draw(args.viewport(), |c, gl| {
+                    drawer.figure.draw(x, y, Color::BLACK, c, gl);
+                });
+            }
         }
     }
 }
@@ -145,8 +144,12 @@ fn pos_to_window(
     debugger: &VisualDebugger,
     map_bbox: &MapBbox,
     lane_graph: &LaneGraph,
-) -> (f64, f64) {
-    let data = lane_graph.lane_between(pos.val.0);
-    let cpoint = data.curve.get_location_at_percentage(pos.val.1);
-    point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
+) -> Option<(f64, f64)> {
+    if let Some(lane) = lane_graph.lane_between(pos.val.0) {
+        let cpoint = lane.curve().get_location_at_percentage(pos.val.1);
+        return Some(
+            point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
+        );
+    }
+    None
 }

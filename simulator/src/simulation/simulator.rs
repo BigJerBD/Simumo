@@ -15,6 +15,7 @@ use piston::event_loop::{EventSettings, Events};
 use piston_window::OpenGL;
 use piston_window::RenderEvent;
 use piston_window::WindowSettings;
+use rts_logger::LogWriterManager;
 use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use std::collections::HashMap;
@@ -33,12 +34,18 @@ pub struct Simulation<'a, 'b> {
     base_dispatcher: Dispatcher<'a, 'b>,
     rendering: (bool, Dispatcher<'a, 'b>),
     window: Option<Window>,
+    loggers: Option<LogWriterManager>,
 }
 
 impl<'a, 'b> Simulation<'a, 'b> {
     const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
     pub fn from_config(config: Configuration) -> Self {
+        let loggers = match &config.generals.logging {
+            Some(logging) => Some(logging.get_manager()),
+            None => None,
+        };
+
         let mut base_dispatcher_builder = DispatcherBuilder::new();
         let mut world = World::new();
         let mut system_mapping = HashMap::<String, Vec<String>>::new();
@@ -80,8 +87,9 @@ impl<'a, 'b> Simulation<'a, 'b> {
         Self {
             world,
             base_dispatcher,
-            rendering,
             window,
+            rendering,
+            loggers,
         }
     }
 
@@ -116,6 +124,7 @@ impl<'a, 'b> Simulation<'a, 'b> {
         WindowSettings::new("Simumo - Visual debugger", [width, height])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
+            .automatic_close(true)
             .build()
             .unwrap()
     }

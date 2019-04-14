@@ -76,9 +76,14 @@ let lastFeaturesSelected = [];
 function updateMapSize(){
     if(olMap)
     {
-        $('#map').height(0.6 * $(this).height());
-        $('#map').width($(this).width());
+        let height = document.getElementById("visualizations").clientHeight;
+        let width = document.getElementById("visualizations").clientWidth;
+        document.getElementById('map').style.height = height + "px";
+        document.getElementById('map').style.width = width + "px";
         olMap.updateSize();
+        //legendBox top and left are in pixels so resizing cause problems
+        document.getElementById('legendBox').style.top = "6%";
+        document.getElementById('legendBox').style.left = "72%";
     }
 }
 $(window).resize( updateMapSize);

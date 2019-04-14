@@ -1,6 +1,7 @@
 use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
 use crate::ressources::lane_graph::EntityId;
+use crate::ressources::lane_graph::EdgeId;
 use dim::si::{Meter, MeterPerSecond};
 use std::collections::VecDeque;
 
@@ -29,27 +30,37 @@ use std::collections::VecDeque;
 ///     are not garrenteed yet to have it for everylane
 #[derive(Clone, Debug)]
 pub struct LaneData {
+    location: EdgeId,
     entity_queue: VecDeque<EntityId>,
     //todo :: consider if all the specific data  (width,max_speed,etc)
     // should be wrapped in a generic this way we could  abstract street info
     // from the graph w
-    pub width: Option<Meter<Fdim>>,
-    pub max_speed: Option<MeterPerSecond<Fdim>>,
-    pub curve: Curve,
+    width: Option<Meter<Fdim>>,
+    max_speed: Option<MeterPerSecond<Fdim>>,
+    curve: Curve,
 }
 
 impl LaneData {
     pub fn new(
+        location: EdgeId,
         width: Option<Meter<Fdim>>,
         max_speed: Option<MeterPerSecond<Fdim>>,
         curve: Curve,
     ) -> Self {
         Self {
+            location,
             entity_queue: VecDeque::new(),
             width,
             max_speed,
             curve,
         }
+    }
+
+    pub fn location(&self) -> EdgeId {
+        self.location
+    }
+    pub fn curve(&self) -> &Curve {
+        &self.curve
     }
 
     /// get a reference of the queue
@@ -91,5 +102,14 @@ impl LaneData {
         let pos = self.entity_queue.iter().position(|x| x == &entity).unwrap();
 
         self.entity_queue[pos + 1]
+    }
+
+    // An index that is used for the A* algorithm in order to estimate the
+    // cost of a lane.
+    // The higher the index, the higher the cost of the lane
+    pub fn get_cost_index(&self) -> f64 {
+        let _nb_entities: usize = self.entity_queue.len();
+        let lane_length = self.curve.length().value_unsafe;
+        lane_length
     }
 }

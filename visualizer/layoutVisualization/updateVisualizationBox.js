@@ -26,7 +26,7 @@ function getMinMaxLogInfo(log, metric) {
     }
 }
 
-function parseLog(log, unitToSelect, max) {
+function parseLog(log, unitToSelect, min, max) {
     let logJson = JSON.parse(log);
     let parsedLog = []
     logJson.forEach(function (entry) {
@@ -39,7 +39,7 @@ function parseLog(log, unitToSelect, max) {
                     dataType: data["type"],
                     unit: data["resolution"],
                     value: data["value"],
-                    interpolation: data["value"] / max //normalised value
+                    interpolation: (data["value"] - min) / max //normalised value
                 }
                 parsedLog.push(logEntry);
             }
@@ -52,28 +52,33 @@ function secToTimestamp(sec) {
     let nbrHours = parseInt(sec / 3600.0);
     let nbrMinutes = parseInt((sec - (nbrHours * 3600.0)) / 60.0);
     let nbrSeconds = (sec - (nbrHours * 3600.0)) - (nbrMinutes * 60.0)
-    return ("0" + nbrHours).slice(-2) + ":" + ("0" + nbrMinutes).slice(-2) + ":" + ("0" + nbrSeconds).slice(-2);
+    let nbrMiliseconds =  (sec - Math.floor(sec)) * 100;
+    return ("0" + nbrHours).slice(-2) + ":"
+            + ("0" + nbrMinutes).slice(-2) + ":"
+            + ("0" + nbrSeconds).slice(-2) + ":"
+            + ("00" + nbrMiliseconds).slice(-3);
 }
 
 function timestampToSec(timestamp) {
     let split = timestamp.split(':');
-    return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]);
+    return parseInt(split[0]) * 60 * 60 + parseInt(split[1]) * 60 + parseInt(split[2]) + parseInt(split[3]) / 60;
 }
 
-function updateVisualizationBox() {
-    $("body").css("cursor", "wait");
-    let metrics = document.getElementsByName('metricSelection');
-    let selectedMetric;
-    for (var i = 0, length = metrics.length; i < length; i++) {
-        if (metrics[i].checked) {
-            selectedMetric = metrics[i];
-            break;
-        }
-    }
+function updateVisualizationBox(selectedMetric) {
     if (!selectedMetric) {
-        $("body").css("cursor", "default");
         return;
     }
+
+    let selectedMetrics = document.getElementsByClassName("submenu-link");
+    for(let i = 0, length = selectedMetrics.length; i < length; i++) //remove previous selected Metric
+    {
+        selectedMetrics[i].classList.remove("submenu-linkSelected");
+    }
+    selectedMetric.classList.add("submenu-linkSelected");
+
+    $("body").css("cursor", "wait");
+    let metrics = document.getElementsByName('metricSelection');
+
     let logPath = selectedMetric.getAttribute('data-logPath');
     let logUnit = selectedMetric.getAttribute('data-unit');
 
@@ -112,8 +117,9 @@ function updateVisualizationBox() {
         $.ajax({
             url: urlLog,
             cache: false,
+            complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let minMaxLogInfo = getMinMaxLogInfo(log, selectedMetric.innerText);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
                 let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
                 let logMinTimestamp = minMaxLogInfo.timestamp[0];
@@ -122,7 +128,7 @@ function updateVisualizationBox() {
                     updateTimeline(logMinTimestamp, logMaxTimestamp);
                 }
                 loadColorGradient(logMinValue, logMaxValue, gradient);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
+                let parsedLog = parseLog(log, logUnit, logMinValue, logMaxValue);
                 updateVisualizationLayer(parsedLog, "coloredPoints", gradient);
             }
         });
@@ -131,8 +137,9 @@ function updateVisualizationBox() {
         $.ajax({
             url: urlLog,
             cache: false,
+            complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let minMaxLogInfo = getMinMaxLogInfo(log, selectedMetric.innerText);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
                 let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
                 let logMinTimestamp = minMaxLogInfo.timestamp[0];
@@ -141,25 +148,7 @@ function updateVisualizationBox() {
                     updateTimeline(logMinTimestamp, logMaxTimestamp);
                 }
                 loadColorGradient(logMinValue, logMaxValue, gradient);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
-                updateVisualizationLayer(parsedLog, "heatMap", gradient);
-            }
-        });
-    } else if (heatMapTab.className == "selected") {
-        $.ajax({
-            url: urlLog,
-            cache: false,
-            success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
-                let logMinValue = parseInt(minMaxLogInfo.value[0]);
-                let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
-                let logMinTimestamp = minMaxLogInfo.timestamp[0];
-                let logMaxTimestamp = minMaxLogInfo.timestamp[1];
-                if (!existTimeline) {
-                    updateTimeline(logMinTimestamp, logMaxTimestamp);
-                }
-                loadColorGradient(logMinValue, logMaxValue, gradient);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
+                let parsedLog = parseLog(log, logUnit, logMinValue, logMaxValue);
                 updateVisualizationLayer(parsedLog, "heatMap", gradient);
             }
         });
@@ -167,8 +156,9 @@ function updateVisualizationBox() {
         $.ajax({
             url: urlLog,
             cache: false,
+            complete: function() {$("body").css("cursor", "default");},
             success: function (log) {
-                let minMaxLogInfo = getMinMaxLogInfo(log, coloredPointsTab);
+                let minMaxLogInfo = getMinMaxLogInfo(log, selectedMetric.innerText);
                 let logMinValue = parseInt(minMaxLogInfo.value[0]);
                 let logMaxValue = Math.ceil(minMaxLogInfo.value[1]);
                 let logMinTimestamp = minMaxLogInfo.timestamp[0];
@@ -186,11 +176,10 @@ function updateVisualizationBox() {
                     a: parseInt(colorPointDiv.getAttribute('data-alpha'))
                 };
                 loadScalablePointsLegend(logMinValue, logMaxValue, pointMinSize, pointMaxSize, colorPoint);
-                let parsedLog = parseLog(log, logUnit, logMaxValue);
+                let parsedLog = parseLog(log, logUnit, logMinValue, logMaxValue);
                 updateVisualizationLayer(parsedLog, "scalablePoints", gradient);
             }
         });
     }
 
-    $("body").css("cursor", "default");
 }

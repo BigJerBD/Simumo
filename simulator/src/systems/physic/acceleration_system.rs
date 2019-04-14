@@ -17,7 +17,7 @@ impl<'a> System<'a> for AccelerationSystem {
 
     fn run(&mut self, (mut vel, acc, clock): Self::SystemData) {
         for (vel, acc) in (&mut vel, &acc).join() {
-            vel.val += acc.val * clock.dt;
+            vel.speed += acc.val * clock.dt;
         }
     }
 }

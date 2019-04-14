@@ -9,12 +9,6 @@ generals:
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-#map:
-#  type: OsmGraph
-#  latitude: 45.40008
-#  longitude: -71.89908
-#  zoom: 1200
-
 map:
   type: PolarFileMap
   path: etc/sherbrooke_graph.json
@@ -50,18 +44,22 @@ systems:
       - 81474235
       - 4291399599
       - 4738061547
-      - 81591074
+      - 110285445
       - 64010518
       - 3646823269
       - 110285457
       - 255785981
       - 2004727123
       - 3728506124
-      - 115677165
+      - 110285459
       - 120943775
     end_locations:
-      - 1038872991
+      - 115710646
       - 4272197702
+      - 2280297025
+      - 4267279730
+      - 4291399625
+      - 1897554048
 
 entities:
   - id: trafficlight01

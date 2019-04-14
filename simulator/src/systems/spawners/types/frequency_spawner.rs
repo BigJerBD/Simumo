@@ -35,27 +35,20 @@ impl<'a> System<'a> for FrequencySpawner {
         &mut self,
         (_clock, mut random, entities, lane_graph, updater, use_debugger): Self::SystemData,
     ) {
-        let normal_dist = Normal::new(0.015, 0.003);
+        let normal_dist = Normal::new(5., 10.);
         let num_cars_to_spawn = random.get_rng().gen_range(self.min, self.max);
         for _ in 1..num_cars_to_spawn {
-            let position = self.get_random_start_location(&mut random, &lane_graph);
-            let destination = self.get_random_end_location(&mut random, &lane_graph);
+            let start_node = self.get_random_start_location(&mut random);
+            let end_node = self.get_random_end_location(&mut random);
             let speed = normal_dist.sample(random.get_rng());
-            /*let path = astar(
-                lane_graph.lanes(),
-                position,
-                |finish| finish == destination,
-                |e| *e.weight(),
-                |_| 0
-            );
-            println!("{:#?}", path);*/
-            let new_car: CarEntity = CarEntity {
-                id: "randomid".to_string(),
-                position,
-                destination,
+
+            let new_car: CarEntity = CarEntity::new(
+                start_node,
+                end_node,
                 speed,
-                acceleration: 0.0,
-            };
+                0.0,
+                &lane_graph,
+            );
             new_car.spawn(&entities, &updater, use_debugger.0);
         }
     }
@@ -65,27 +58,16 @@ impl FrequencySpawner {
     pub fn get_random_start_location(
         &self,
         random: &mut Random,
-        lane_graph: &LaneGraph,
-    ) -> ((NodeId, NodeId), f64) {
-        let mut pos_n: usize = random.get_rng().gen_range(0, self.start_locations.len());
-        let mut from = self.start_locations[pos_n];
-        let mut to = lane_graph.graph.edges(from).last();
-        while to.is_none() {
-            pos_n = random.get_rng().gen_range(0, self.start_locations.len());
-            from = self.start_locations[pos_n];
-            to = lane_graph.graph.edges(from).last();
-        }
-        ((from, to.unwrap().1), 0.0)
+    ) -> NodeId {
+        let pos_n: usize = random.get_rng().gen_range(0, self.start_locations.len());
+        self.start_locations[pos_n]
     }
 
     pub fn get_random_end_location(
         &self,
         random: &mut Random,
-        lane_graph: &LaneGraph,
-    ) -> (f64, f64) {
+    ) -> NodeId {
         let pos_n: usize = random.get_rng().gen_range(0, self.end_locations.len());
-        lane_graph
-            .intersection(self.end_locations[pos_n])
-            .position()
+        self.end_locations[pos_n]
     }
 }
