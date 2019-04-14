@@ -15,12 +15,6 @@ generals:
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-#map:
-#  type: OsmGraph
-#  latitude:  35.466710
-#  longitude: 139.849194
-#  zoom: 8000
-
 
 map:
   type: PolarFileMap
@@ -43,9 +37,9 @@ systems:
 
   recorders:
     - type : CarPositionRecorder
-      capture_freq: 1.0
+      capture_freq: 50.0
     - type: CarSpeedRecorder
-      capture_freq: 1.0
+      capture_freq: 50.0
 
 
 
@@ -53,26 +47,32 @@ entities:
   - id: car1
     type: vehicle
     position: [[36600118, 36600120], 0.50]
+    destination: [[1501152602, 3753227376], 1]
     speed: 8
   - id: car1
     type: vehicle
     position: [[36600120, 36600125], 0.50]
+    destination: [[1501152602, 3753227376], 1]
     speed: 8
   - id: car1
     type: vehicle
     position: [[36600118, 36600120], 0.50]
+    destination: [[1501152602, 3753227376], 1]
     speed: 16
   - id: car1
     type: vehicle
     position: [[36600120, 36600125], 0.50]
+    destination: [[1501152602, 3753227376], 1]
     speed: 16
   - id: car1
     type: vehicle
     position: [[36600118, 36600120], 0.50]
+    destination: [[1501152602, 3753227376], 1]
     speed: 24
   - id: car1
     type: vehicle
     position: [[36600120, 36600125], 0.50]
+    destination: [[1501152602, 3753227376], 1]
     speed: 24
 
 

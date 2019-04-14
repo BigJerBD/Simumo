@@ -64,5 +64,5 @@ entities:
     speed: 5
   - id: car4267279738500854414
     type: vehicle
-    position: [[1448225068, 5287124826], 0.50]
+    position: [[36600129, 36600164],, 0.50]
     speed: 2
