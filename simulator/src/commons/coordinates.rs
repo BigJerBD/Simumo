@@ -99,16 +99,16 @@ mod test {
         let pcoord = PolarCoord::from_float(45.0, 90.0);
         let ccoord = CartesianCoord::from_polar(&pcoord);
 
-        assert_eq!(10007.557221017962 * M, ccoord.x);
-        assert_eq!(5003.778610508981 * M, ccoord.y);
+        assert_eq!(10007557.221017962 * M, ccoord.x);
+        assert_eq!(5003778.610508981 * M, ccoord.y);
     }
 
     #[test]
     fn cartesian_to_polar() {
-        let ccoord = CartesianCoord::from_float(10007.557221017962, 5003.778610508981);
+        let ccoord = CartesianCoord::from_float(10007557.221017962, 5003778.610508981);
         let pcoord = PolarCoord::from_cartesian(&ccoord);
-        assert_eq!(45., pcoord.0.ceil());
-        assert_eq!(90., pcoord.1.ceil());
+        assert_eq!(45., pcoord.0.floor());
+        assert_eq!(90., pcoord.1.floor());
     }
 
     #[test]
@@ -116,7 +116,7 @@ mod test {
         let pcoord = PolarCoord(30.0, 90.0);
         let ccoord = CartesianCoord::from_polar(&pcoord);
 
-        assert_eq!(10007.557221017962 * M, ccoord.x);
-        assert_eq!(3335.8524070059866 * M, ccoord.y);
+        assert_eq!(10007557.221017962 * M, ccoord.x);
+        assert_eq!(3335852.407005987 * M, ccoord.y);
     }
 }

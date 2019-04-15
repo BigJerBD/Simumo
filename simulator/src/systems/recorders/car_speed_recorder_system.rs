@@ -1,10 +1,10 @@
-use crate::components::constant::CarType;
-use crate::components::log_record::LogRecord;
-use crate::components::Position;
-use crate::ressources;
 use crate::commons::CartesianCoord;
 use crate::commons::PolarCoord;
+use crate::components::constant::CarType;
+use crate::components::log_record::LogRecord;
 use crate::components::types::dynamic::Speed;
+use crate::components::Position;
+use crate::ressources;
 use crate::ressources::lane_graph::LaneGraph;
 use rts_logger::LogSender;
 use simumo_derive::simusystem;
@@ -45,7 +45,7 @@ impl<'a> System<'a> for CarSpeedRecorderSystem {
                     let _record = LogRecord::new(
                         clock.get_time(),
                         entity.id(),
-                        (pcoord.0.clone(), pcoord.1.clone()),
+                        (pcoord.0, pcoord.1),
                         String::from("CarSpeed"),
                         Box::new(speed.clone()),
                     );

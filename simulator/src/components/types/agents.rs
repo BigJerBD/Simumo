@@ -1,4 +1,3 @@
-use crate::commons::CartesianCoord;
 use crate::commons::LogDataEntry;
 use crate::commons::Percentage;
 use crate::ressources::lane_graph::EdgeId;
@@ -45,7 +44,6 @@ impl Default for Destination {
     }
 }
 
-
 // I could not use an iterator here as it doesnt have constant-size at
 // compile-time. path and currentIndex are used to do some kind of a cheap
 // iterator
@@ -61,7 +59,7 @@ impl Itinerary {
     pub fn new(path: Vec<NodeId>) -> Self {
         Self {
             path,
-            current_index: 0
+            current_index: 0,
         }
     }
 
@@ -73,6 +71,6 @@ impl Itinerary {
             self.current_index += 1;
             return Some((from, to));
         }
-        None        
+        None
     }
 }
