@@ -40,8 +40,7 @@ impl<'a> System<'a> for DrawMap {
     );
 
     fn run(&mut self, (debugger, map_bbox, lane_graph, mut g_handle, args): Self::SystemData) {
-        let mut edges = lane_graph.lanes().all_edges();
-        while let Some(edge) = edges.next() {
+        for edge in lane_graph.lanes().all_edges() {
             let node1 = lane_graph.intersection(edge.0);
             let node2 = lane_graph.intersection(edge.1);
             let pos_node1: (f64, f64) = point_to_window(node1.position(), &debugger, &map_bbox);
@@ -147,9 +146,11 @@ fn pos_to_window(
 ) -> Option<(f64, f64)> {
     if let Some(lane) = lane_graph.lane_between(pos.val.0) {
         let cpoint = lane.curve().get_location_at_percentage(pos.val.1);
-        return Some(
-            point_to_window((cpoint.point().x, cpoint.point().y), debugger, map_bbox)
-        );
+        return Some(point_to_window(
+            (cpoint.point().x, cpoint.point().y),
+            debugger,
+            map_bbox,
+        ));
     }
     None
 }

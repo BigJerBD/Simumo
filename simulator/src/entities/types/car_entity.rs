@@ -1,5 +1,3 @@
-use std::sync::atomic::AtomicUsize;
-use std::sync::atomic::Ordering;
 use crate::commons::CartesianCoord;
 use crate::commons::Percentage;
 use crate::commons::PolarCoord;
@@ -18,6 +16,8 @@ use crate::systems::renderer::drawableshape::Rectangle;
 use dim::si::MPS;
 use specs::prelude::{Builder, Entities, LazyUpdate, Read, World};
 use specs::EntityBuilder;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 
 static ID: AtomicUsize = AtomicUsize::new(0);
 
@@ -53,7 +53,7 @@ impl CarEntity {
             .get_optimal_path_between_nodes(start_node, end_node)
             .unwrap();
         let num_nodes = path.len();
-        
+
         Self {
             id: ID.load(Ordering::SeqCst).to_string(),
             position: ((path[0], path[1]), 0.0),
@@ -92,7 +92,10 @@ impl<'a> Instantiable<'a> for CarEntity {
             })
             .with(itinerary)
             .with(Destination {
-                val: (self.destination.0, Percentage::new_clamp(self.destination.1)),
+                val: (
+                    self.destination.0,
+                    Percentage::new_clamp(self.destination.1),
+                ),
             })
             .with(CarType)
             .with(Speed {
@@ -126,7 +129,10 @@ impl<'a> Instantiable<'a> for CarEntity {
         updater.insert(
             entity,
             Destination {
-                val: (self.destination.0, Percentage::new_clamp(self.destination.1)),
+                val: (
+                    self.destination.0,
+                    Percentage::new_clamp(self.destination.1),
+                ),
             },
         );
         updater.insert(entity, CarType);
