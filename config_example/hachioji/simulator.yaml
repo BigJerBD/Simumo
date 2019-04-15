@@ -1,7 +1,7 @@
 generals:
-  clock_dt: 0.25
+  clock_dt: 1
   end_time:
-    val: 300
+    val: 1000
   debugger:
     use: true
     width: 720
@@ -15,22 +15,20 @@ generals:
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
-map:
-  type: OsmGraph
-  latitude: 35.673852
-  longitude: 139.319478
-  zoom: 1200
-
-
 #map:
-#  type: PolarFileMap
-#  path: etc/hachioji_graph.json
-#
+#  type: OsmGraph
+#  latitude: 35.673852
+#  longitude: 139.319478
+#  zoom: 1200
+
+
+map:
+  type: PolarFileMap
+  path: etc/hachioji_graph.json
+
 
 systems:
-  agents:
-    - type: Accelerating
-
+  agents: []
   clock:
     type: StandardClock
 
@@ -41,28 +39,68 @@ systems:
   physic:
     type: Acceleration
 
+  spawner:
+      type: Frequency
+      min: 2
+      max: 3
+      start_locations:
+        - 3963826554
+        - 1524500357
+        - 3224395177
+        - 1529484195
+        - 4417518907
+        - 1457059473
+        - 1744448450
+        - 3856309612
+        - 4417518906
+        - 1529484195
+        - 4135434185
+        - 1457087709
+        - 3963826551
+        - 6141684259
+      end_locations:
+        - 3934261489
+        - 299361155
+        - 313759244
+        - 299361190
+        - 298711226
+        - 268022018
+        - 3224433646
+        - 2686683655
+        - 6296821684
+        - 6296821686
+        - 3224433656
+        - 1457193257
+        - 1457187697
+
+
+
   recorders:
     - type : CarPositionRecorder
-      capture_freq: 1.0
+      capture_freq: 50.0
     - type: CarSpeedRecorder
-      capture_freq: 1.0
+      capture_freq: 50.0
 
 
 
-entities:
-  - id: car1
-    type: vehicle
-    position: [[1448177523, 1529484139], 0.50]
-    speed: 3
-  - id: car2
-    type: vehicle
-    position: [[299361128, 1980563339], 0.50]
-    speed: 5
-  - id: car3
-    type: vehicle
-    position: [[1744448427, 692802443], 0.50]
-    speed: 5
-  - id: car4267279738500854414
-    type: vehicle
-    position: [[36600129, 36600164],, 0.50]
-    speed: 2
+entities: []
+  #- id: car1
+  #  type: vehicle
+  #  position: [[1448177523, 1529484139], 0.50]
+  #  destination: [[299361128, 1980563339], 1]
+  #  speed: 3
+  #- id: car2
+  #  type: vehicle
+  #  position: [[299361128, 1980563339], 0.50]
+  #  destination: [[299361128, 1980563339], 1]
+  #  speed: 5
+#  - id: car3
+#    type: vehicle
+#    position: [[4085801035, 4085801036], 0.50]
+#    destination: [[4085801035, 4085801036], 0.50]
+#    speed: 5
+#  - id: car4267279738500854414
+#    type: vehicle
+#    position: [[36600129, 36600164], 0.50]
+#    destination: [[4085801035, 4085801036], 0.50]
+#    speed: 2
