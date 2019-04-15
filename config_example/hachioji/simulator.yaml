@@ -1,7 +1,7 @@
 generals:
   clock_dt: 1
   end_time:
-    val: 1000
+    val: 750
   debugger:
     use: true
     width: 720
@@ -77,9 +77,9 @@ systems:
 
   recorders:
     - type : CarPositionRecorder
-      capture_freq: 50.0
+      capture_freq: 10.0
     - type: CarSpeedRecorder
-      capture_freq: 50.0
+      capture_freq: 10.0
 
 
 
