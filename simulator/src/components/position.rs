@@ -1,3 +1,6 @@
+use crate::commons::Percentage;
+use crate::ressources::lane_graph::EdgeId;
+use crate::ressources::lane_graph::NodeId;
 use serde::ser::Serialize;
 use serde::ser::SerializeStruct;
 use serde::ser::Serializer;
@@ -7,9 +10,6 @@ use simumo_derive::simucomponent_base;
 use specs::prelude::{Component, VecStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
-use crate::commons::Percentage;
-use crate::ressources::lane_graph::EdgeId;
-use crate::ressources::lane_graph::NodeId;
 
 #[simucomponent_base]
 #[derive(Debug, Clone)]

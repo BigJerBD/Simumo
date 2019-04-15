@@ -1,11 +1,17 @@
 generals:
   clock_dt: 0.25
   end_time:
-    val: 12.5
+    val: 30
   debugger:
     use: true
     width: 720
     height: 720
+
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
 
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
@@ -33,7 +39,12 @@ systems:
   physic:
     type: Acceleration
 
-  recorders: []
+  # recorders: []
+  recorders:
+    - type : CarPositionRecorder
+      capture_freq: 1.0
+    - type: CarSpeedRecorder
+      capture_freq: 1.0
 
   spawner:
     type: Frequency

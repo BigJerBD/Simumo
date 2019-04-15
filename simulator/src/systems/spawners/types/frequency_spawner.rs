@@ -42,31 +42,19 @@ impl<'a> System<'a> for FrequencySpawner {
             let end_node = self.get_random_end_location(&mut random);
             let speed = normal_dist.sample(random.get_rng());
 
-            let new_car: CarEntity = CarEntity::new(
-                start_node,
-                end_node,
-                speed,
-                0.0,
-                &lane_graph,
-            );
+            let new_car: CarEntity = CarEntity::new(start_node, end_node, speed, 0.0, &lane_graph);
             new_car.spawn(&entities, &updater, use_debugger.0);
         }
     }
 }
 
 impl FrequencySpawner {
-    pub fn get_random_start_location(
-        &self,
-        random: &mut Random,
-    ) -> NodeId {
+    pub fn get_random_start_location(&self, random: &mut Random) -> NodeId {
         let pos_n: usize = random.get_rng().gen_range(0, self.start_locations.len());
         self.start_locations[pos_n]
     }
 
-    pub fn get_random_end_location(
-        &self,
-        random: &mut Random,
-    ) -> NodeId {
+    pub fn get_random_end_location(&self, random: &mut Random) -> NodeId {
         let pos_n: usize = random.get_rng().gen_range(0, self.end_locations.len());
         self.end_locations[pos_n]
     }
