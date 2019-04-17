@@ -1,7 +1,7 @@
 generals:
-  clock_dt: 0.25
+  clock_dt: 1.0
   end_time:
-    val: 30
+    val: 1000
   debugger:
     use: true
     width: 720
@@ -16,8 +16,14 @@ generals:
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
 map:
-  type: PolarFileMap
-  path: etc/sherbrooke_graph.json
+  type: OsmGraph
+  latitude: 45.40008
+  longitude: -71.89908
+  zoom: 1200
+#
+#map:
+#  type: PolarFileMap
+#  path: etc/sherbrooke_graph.json
 
 systems:
   agents:
@@ -28,28 +34,16 @@ systems:
 
   controls: []
 
-  logger:
-    type: CsvLogger
-    directory: "log_results" #This directory should be the same in the visualizer 
-    files: []
-
   mobility:
     type: StandardMobility
 
   physic:
     type: Acceleration
 
-  # recorders: []
-  recorders:
-    - type : CarPositionRecorder
-      capture_freq: 1.0
-    - type: CarSpeedRecorder
-      capture_freq: 1.0
-
   spawner:
     type: Frequency
-    min: 10
-    max: 20
+    min: 1
+    max: 3
     start_locations:
       - 5872015933
       - 81474235
@@ -72,22 +66,4 @@ systems:
       - 4291399625
       - 1897554048
 
-entities:
-  - id: trafficlight01
-    type: trafficlight
-    light:
-      initial_color: GREEN
-      max_green_time: 5
-      max_yellow_time: 1.5
-      time: 3.5
-    position: [[81474235, 81474556], 0.0]
-    observable: trafficlight02
-  - id: trafficlight02
-    type: trafficlight
-    light:
-      initial_color: RED
-      max_green_time: 3
-      max_yellow_time: 1
-      time: 0
-    position: [[81474235, 81475573], 0.0]
-    observable: trafficlight01
+entities: []

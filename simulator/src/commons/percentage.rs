@@ -43,7 +43,7 @@ impl Percentage {
     }
 
     pub fn half() -> Self {
-        Percentage(UPPER/LOWER)
+        Percentage(UPPER / LOWER)
     }
 
     pub fn lower() -> Self {
