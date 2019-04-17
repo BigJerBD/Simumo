@@ -1,11 +1,13 @@
 # Manuel d'installation #
 Ce manuel explique comment installer le simulateur ainsi que le visualisateur de **Simumo**.
 
+IMPORTANT: fonctionne seulement avec un système exploitation linux.
 
 ## Prérequis ##
 * Python 3.6.7 https://www.python.org/downloads/release/python-367/
 * make
 * Rustup
+* linux
 
 ## Installation ##
 
