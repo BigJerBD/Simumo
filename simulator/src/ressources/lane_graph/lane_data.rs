@@ -3,8 +3,8 @@ use crate::commons::Curve;
 use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::EntityId;
 use dim::si::{Meter, MeterPerSecond, MPS};
-use std::collections::VecDeque;
 use rand::prelude::*;
+use std::collections::VecDeque;
 
 /// Contains all the information of a lane in the map
 ///

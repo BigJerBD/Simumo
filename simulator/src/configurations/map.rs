@@ -63,11 +63,11 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
     let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
     let osm_nodes = osmgraph.get_nodes().unwrap();
 
-    let nodes: Vec<(_, _)> = osm_nodes
+    let nodes: HashMap<_, _> = osm_nodes.clone()
         .iter()
         .map(|(id, (lon, lat))| {
             let pos = polarfloat_to_cartesiantuple((*lat, *lon));
-            (*id, IntersectionData::new(pos.0, pos.1))
+            (*id, (pos.0, pos.1))
         })
         .collect();
 
@@ -78,8 +78,8 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .map(|(from, to)| {
             (*from, *to, {
                 // TODO: Init actual curves, between intersections
-                let (x_from, y_from) = osm_nodes[from];
-                let (x_to, y_to) = osm_nodes[to];
+                let (x_from, y_from) = nodes[from];
+                let (x_to, y_to) = nodes[to];
                 LaneData::new(
                     (*from, *to),
                     None,
@@ -98,8 +98,8 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .map(|(from, to)| {
             (*to, *from, {
                 // TODO: Init actual curves, between intersections
-                let (x_to, y_to) = osm_nodes[from];
-                let (x_from, y_from) = osm_nodes[to];
+                let (x_to, y_to) = nodes[from];
+                let (x_from, y_from) = nodes[to];
                 LaneData::new(
                     (*from, *to),
                     None,
@@ -111,7 +111,12 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
         .collect();
 
     edges.append(&mut opposite_edges);
-    LaneGraph::new(nodes.into_iter(), edges.into_iter())
+    LaneGraph::new(
+        nodes
+            .into_iter()
+            .map(|(id, pt)| (id, IntersectionData::new(pt.0, pt.1))),
+        edges.into_iter(),
+    )
 }
 
 fn lanegraph_from_filemap(path: String, pt_conversion: &Fn((f64, f64)) -> (f64, f64)) -> LaneGraph {

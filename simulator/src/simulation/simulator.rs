@@ -124,7 +124,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         WindowSettings::new("Simumo - Visual debugger", [width, height])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
-            .automatic_close(true)
             .build()
             .unwrap()
     }
@@ -143,7 +142,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         if config.generals.debugger.on {
             let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
             let debugger = config.generals.debugger.clone();
-            debugger.create_background_image(&lane_graph, &bbox);
             world.add_resource(graphics_handle);
             world.add_resource(debugger);
             world.add_resource(bbox);
@@ -157,9 +155,12 @@ impl<'a, 'b> Simulation<'a, 'b> {
 }
 
 fn should_keep_going(is_render_on: bool, is_simulation_running: bool) -> bool {
-    if is_render_on {
-        return true;
-    }
+    // note :: this is commented because of the python bug
+    //  basically we cant Ctrl+C the process while OpenGL + python is running in the same time
+    //  todo :: find a fix for the problem above
+    //if is_render_on {
+    //    return true;
+    //}
     is_simulation_running
 }
 

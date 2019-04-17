@@ -42,7 +42,6 @@ impl LoggingConfiguration {
                 }
             })
             .collect();
-        print!("ALLO");
         LogWriterManager::from_loggers(loggers.into_iter()).unwrap()
     }
 }
