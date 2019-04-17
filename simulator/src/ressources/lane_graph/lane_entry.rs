@@ -1,7 +1,6 @@
+use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::EntityId;
 use crate::ressources::lane_graph::LaneData;
-use crate::ressources::lane_graph::EdgeId;
-use crate::ressources::lane_graph::NodeId;
 use std::collections::HashMap;
 
 /// Access Entry that allows to modify the LaneMap while keeping its integrity

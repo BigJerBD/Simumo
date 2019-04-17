@@ -39,7 +39,7 @@ function parseLog(log, unitToSelect, min, max) {
                     dataType: data["type"],
                     unit: data["resolution"],
                     value: data["value"],
-                    interpolation: (data["value"] - min) / max //normalised value
+                    interpolation: (data["value"] - min) / (max -min) //normalised value
                 }
                 parsedLog.push(logEntry);
             }

@@ -53,12 +53,7 @@ pub fn point_to_window(
     (xpx, ypx)
 }
 
-fn draw_lane_between_two_points(
-    p1: (f64, f64),
-    p2: (f64, f64),
-    width: f64,
-    _color: Color,
-) {
+fn draw_lane_between_two_points(p1: (f64, f64), p2: (f64, f64), width: f64, _color: Color) {
     let _rectangle_length: f64 = (p2.0 - p1.0).hypot(p2.1 - p1.1);
     let _rectangle_width: f64 = width;
     let _rectangle_angle: f64 = (p2.1 - p1.1).atan2(p2.0 - p1.0);
