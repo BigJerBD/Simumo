@@ -44,7 +44,7 @@ Il y a deux types de map.
  longitude: -71.89908
  zoom: 1200
 ```
-1. type: Indique le type de le map. Dans ce cas **PolarFileMap**. Les données du graphe sont spécifiées à partir d'un fichier json au lieu d'utiliser **OSM**.
+1. type: Indique le type de carte ("map"). Dans le cas ci-dessous, il s'agit d'un **PolarFileMap**. Les données du graphe sont spécifiées à partir d'un fichier json au lieu d'utiliser l'API **OSMGraph**.
 2. path: Indique le chemin vers le fichier json.
 ```
   type: PolarFileMap
@@ -64,13 +64,13 @@ Le fichier de *sherbrooke_graph.json* doit ressembler à ceci:
 ```
 ### Systems ### 
 Actuellement, il existe plusieurs types de systèmes. Voici les plus importants.
-Dans ce fichier, on indique quels types de systèmes sont fournis au simulation.
+Dans ce fichier, on indique quels types de système sont fournis au simulation.
 1. clock: Actuellement, il y a seulement un type de *StandardClock*.
 2. mobility: Actuellement, il y a seulement un type de *StandardMobility*.
 3. physic: Actuellement, le seul système physique de supporter est: *Acceleration*.
 4. Il peut y avoir plusieurs *recorder* selon quelles métriques vous avez de besoin.
     1. type: *CarPositionRecorder* ou CarSpeedRecorder.
-    2. capture_freq: Indique la fréquence de capture en seconde.
+    2. capture_freq: Indique la fréquence de capture en secondes.
 ```
   clock:
     type: StandardClock
@@ -89,13 +89,13 @@ Dans ce fichier, on indique quels types de systèmes sont fournis au simulation.
 ```
 
 ### Spawner ###
-Actuellement, les *spawner* font partis des systèmes. 
-Le *Spawner* va générer des entités à partir d'une liste de position données et vont se aller jusqu'aux positions de fin.
-1. type: Indique quel type de spawner. Dans ce cas si, c'est un *spawner* de fréquence.
-2. min: indique le nombre minimum d'entité à générer.
-3. max: indique le nombre maximum d'entité à générer.
-4. start_locations: Constitut la liste des positions de départ.
-5. end_locations: Constitut la liste des positions de fin.
+Actuellement, les *spawners* font partie des systèmes. 
+Le *Spawner* va générer des entités à partir d'une liste de positions données et qui vont aller jusqu'aux positions de fin.
+1. type: Indique quel type de spawner. Dans ce cas-ci, c'est un *spawner* de fréquence.
+2. min: indique le nombre minimum d'entités à générer.
+3. max: indique le nombre maximum d'entités à générer.
+4. start_locations: Constitue la liste des positions de départ.
+5. end_locations: Constitue la liste des positions de fin.
 ```
 type: Frequency
     min: 1
@@ -113,10 +113,10 @@ Cette configuration permet d'instancier les entités souhaités. Présentement, 
 Pour une lumière, vous allez retrouver ces champs:dd
 1. id Indique l'identifiant unique de l'entité.
 2. type: Indique le type de l'entité en question.
-3. light.initial_color: Indique la couleur de la lumière.
-4. light.max_green_time: Indique le temps de la lumière verte en seconde.
-5. light.max_yellow_time: Indique le temps de la lumière jaune en seconde.
-6. light.time: Indique le temps cyclique en seconde.
+3. light.initial_color: Indique la couleur actuellede la lumière.
+4. light.max_green_time: Indique la durée maximale de la lumière verte en secondes.
+5. light.max_yellow_time: Indique la durée maximale de la lumière jaune en secondes.
+6. light.time: Indique le temps cyclique en secondes.
 ```
 id: trafficlight
   type: trafficlight
@@ -143,27 +143,27 @@ speed: 2
 Pour lancer le visualiseur web, vous devez spécifier un fichier de configuration en entré.
 
 Le fichier de configuration doit avoir ces champs:
-1. city: Indique la ville que vous voulez voir la simulation.
+1. city: Indique la ville dans laquelle se produit la simulation.
 2. logs: 
-    1. directory: Indique le chemin du répertoire où les données calculées par le simulateur. En générale, ce répertoire sera le même que celui indiqué dans le fichier de configuration du simulateur.
+    1. directory: Indique le chemin du répertoire où les données calculées par le simulateur. En général, ce répertoire sera le même que celui indiqué dans le fichier de configuration du simulateur.
     2. metrics
-        1. name: Indique le affiché dans le visualiseur web.
-        2. logName: Indique l'identifiant utilisé dans le fichier de log. Il doit correspondre au même identifiant que celui calculées par le simulateur.
-        3. unit: Indique l'identifiant des unités de cette métrique. Il doit correspondre au même unité que celles calculées par le simulateur.
+        1. name: Indique le nom affiché dans le visualiseur web.
+        2. logName: Indique l'identifiant utilisé dans le fichier de log. Il doit correspondre au même identifiant que celui calculés par le simulateur.
+        3. unit: Indique l'identifiant des unités de cette métrique. Il doit correspondre aux mêmes unités que celles calculées par le simulateur.
         4. unitLabel: Indique l'identifiant affiché au visualiseur web.
 3. legends: Indique le dégradé de la légende. Il doit y avoir au moins deux couleurs.
     1. Première couleur dans le dégradé
-    2. deuxième couleur ...
-    3. Vous pouvez mettre autant de couleur que vous pouvez.
+    2. Deuxième couleur ...
+    3. Vous pouvez mettre autant de couleurs que vous pouvez.
 ```
 city: "sherbrooke"
 logs:
     directory: "./tmp_logs"
     metrics:
-        - name: "Vitesse Automobiles"
+        - name: "Vitesse moy. Automobiles"
           logName: "car_speed.ndjson"
           unit: "MeterPerSecond"
-          unitLabel: "Mêtre par secondes"
+          unitLabel: "Metres par seconde"
 legends:
     - red: 0
       green: 255
