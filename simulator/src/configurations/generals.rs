@@ -18,6 +18,7 @@ pub struct GeneralConfigurations {
     pub debugger: VisualDebugger,
     pub logging: Option<LoggingConfiguration>,
     pub seed: String,
+    pub random_speed: Option<bool>
 }
 
 ///
@@ -42,7 +43,6 @@ impl LoggingConfiguration {
                 }
             })
             .collect();
-        print!("ALLO");
         LogWriterManager::from_loggers(loggers.into_iter()).unwrap()
     }
 }

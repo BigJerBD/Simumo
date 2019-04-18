@@ -17,7 +17,7 @@ pub struct Configuration {
     pub generals: GeneralConfigurations,
     pub map: Map,
     pub systems: SystemsConfiguration,
-    pub entities: Vec<EntityType>,
+    pub entities: Option<Vec<EntityType>>,
 }
 
 impl Configuration {

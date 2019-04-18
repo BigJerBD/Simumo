@@ -75,7 +75,6 @@ impl<'a> Instantiable<'a> for CarEntity {
             let lane_graph = world.read_resource::<LaneGraph>();
             let start_node = (self.position.0).0;
             let end_node = (self.destination.0).1;
-            println!("{} {}", start_node, end_node);
             let (_cost, path) = lane_graph
                 .get_optimal_path_between_nodes(start_node, end_node)
                 .unwrap();

@@ -20,6 +20,7 @@ use specs::prelude::{DispatcherBuilder, World};
 use specs::Dispatcher;
 use std::collections::HashMap;
 use uuid::Uuid;
+use crate::ressources::random_speed::RandomSpeed;
 //use std::process::Command;
 
 pub struct UseDebugger(pub bool);
@@ -80,8 +81,10 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(UseDebugger(is_rendering_on));
 
         //entities
-        for entity in config.entities.iter() {
-            entity.create(&mut world, is_rendering_on);
+        if let Some(entities) = config.entities {
+            for entity in entities.iter() {
+                entity.create(&mut world, is_rendering_on);
+            }
         }
 
         Self {
@@ -124,7 +127,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         WindowSettings::new("Simumo - Visual debugger", [width, height])
             .opengl(Self::OPENGL_VERSION)
             .exit_on_esc(true)
-            .automatic_close(true)
             .build()
             .unwrap()
     }
@@ -143,7 +145,6 @@ impl<'a, 'b> Simulation<'a, 'b> {
         if config.generals.debugger.on {
             let graphics_handle = GlGraphics::new(Self::OPENGL_VERSION);
             let debugger = config.generals.debugger.clone();
-            debugger.create_background_image(&lane_graph, &bbox);
             world.add_resource(graphics_handle);
             world.add_resource(debugger);
             world.add_resource(bbox);
@@ -153,13 +154,23 @@ impl<'a, 'b> Simulation<'a, 'b> {
         world.add_resource(clock::Clock::new(config.generals.clock_dt));
         world.add_resource(EventsManager::new());
         world.add_resource(random);
+        if let Some(random_speed) = config.generals.random_speed{
+            world.add_resource(RandomSpeed(random_speed) );
+        }
+        else {
+            world.add_resource(RandomSpeed(false) );
+        }
+
     }
 }
 
-fn should_keep_going(is_render_on: bool, is_simulation_running: bool) -> bool {
-    if is_render_on {
-        return true;
-    }
+fn should_keep_going(_is_render_on: bool, is_simulation_running: bool) -> bool {
+    // note :: this is commented because of the python bug
+    //  basically we cant Ctrl+C the process while OpenGL + python is running in the same time
+    //  todo :: find a fix for the problem above
+    //if is_render_on {
+    //    return true;
+    //}
     is_simulation_running
 }
 

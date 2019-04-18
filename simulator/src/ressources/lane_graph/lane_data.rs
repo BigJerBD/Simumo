@@ -2,9 +2,8 @@ use crate::commons::metrics::Fdim;
 use crate::commons::Curve;
 use crate::ressources::lane_graph::EdgeId;
 use crate::ressources::lane_graph::EntityId;
-use dim::si::{Meter, MeterPerSecond, MPS};
+use dim::si::{Meter, MeterPerSecond};
 use std::collections::VecDeque;
-use rand::prelude::*;
 
 /// Contains all the information of a lane in the map
 ///
@@ -48,10 +47,6 @@ impl LaneData {
         max_speed: Option<MeterPerSecond<Fdim>>,
         curve: Curve,
     ) -> Self {
-        let max_speed = match max_speed {
-            None => Some(rand::thread_rng().gen_range(13.0, 30.0) * MPS),
-            speed => speed,
-        };
         Self {
             location,
             entity_queue: VecDeque::new(),
@@ -110,7 +105,6 @@ impl LaneData {
     ///
     pub fn in_front_of(&self, entity: EntityId) -> EntityId {
         let pos = self.entity_queue.iter().position(|x| x == &entity).unwrap();
-
         self.entity_queue[pos + 1]
     }
 
