@@ -89,7 +89,7 @@ Dans ce fichier, on indique quels types de systèmes sont fournis au simulation.
 ```
 
 ### Spawner ###
-Actuellement, les spawner font partis des systèmes. 
+Actuellement, les *spawner* font partis des systèmes. 
 Le *Spawner* va générer des entités à partir d'une liste de position données et vont se aller jusqu'aux positions de fin.
 1. type: Indique quel type de spawner. Dans ce cas si, c'est un *spawner* de fréquence.
 2. min: indique le nombre minimum d'entité à générer.

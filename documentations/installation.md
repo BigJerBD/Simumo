@@ -1,7 +1,7 @@
 # Manuel d'installation #
-Ce manuel explique comment installer le simulateur ainsi que le visualisateur de **Simumo**.
+Ce manuel explique comment installer le simulateur ainsi que le visualiseur de **Simumo**.
 
-IMPORTANT: fonctionne seulement avec un système exploitation linux.
+IMPORTANT: Le simuateur fonctionne seulement avec un système exploitation linux.
 
 ## Prérequis ##
 * Python 3.6.7 https://www.python.org/downloads/release/python-367/
@@ -12,7 +12,7 @@ IMPORTANT: fonctionne seulement avec un système exploitation linux.
 ## Installation ##
 
 ### développement ##
-Afin de créer votre environnement virtuel de développement, exécuter la commande à partir de la racine du dossier dans le terminal:
+Afin de créer votre environnement virtuel de développement, exécuter la commande suivante à partir de la racine du dossier dans le terminal:
 ```
 make dev_venv
 ```
@@ -21,18 +21,18 @@ ensuite pour entrer dans l'environnement virtuel, exécuter:
 source venv/Scripts/activate
 ```
 
-Pour sortir de l'envrionnement, exécuter:
+Pour sortir de l'environnement virtuel, exécuter:
 ```
 deactivate
 ```
 #### Simulateur ####
-Pour éxecuter le simulateur,  exécuter la commande à partir de la racine du dossier **simulator** dans le terminal:
+Pour éxecuter le simulateur, exécuter la commande suivante à partir de la racine du dossier **simulator** dans le terminal:
 ```
 cargo run -- -c <pathOfSimulatorConfigFile>
 ```
-Explorer le dossier *simulator/etc* pour avoir quelques exemples.
-#### Visualisateur ####
-Pour éxecuter le simulateur,  exécuter la commande à partir de la racine du dossier **visualizer** dans le terminal:
+Explorer le dossier *./simulator/etc* pour avoir quelques exemples.
+#### Visualiseur ####
+Pour éxecuter le simulateur,  exécuter la commande suivante à partir de la racine du dossier **visualizer** dans le terminal:
 ```
 python Server.py <pathOfVisualizerConfigFile>
 ```

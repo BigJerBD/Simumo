@@ -41,19 +41,21 @@ Ce dossier contient le code source du simulateur. Les sous-dossiers ont été cr
     Ce dossier contient les systèmes définies pour l'architecture **ECS**.
 ### target
 Ce dossier contient les exécutables de débug et de production.
+
 ## simumap ##
 Ce dossier contient le "package" afin d'utiliser l'API **osmGraph**. Il a été conçu en python. Puis il est ensuite utilisé par le simulateur.
+
 ## visualizer ##
-Ce dossier contient le visualisateur web.
+Ce dossier contient le visualiseur web.
 ### layoutVisualization
 Ce dossier contient tout le contenu autour de la carte. Le header, footer etc.
 ### logs
 Ce dossier est seulement un exemple pour le chemin des *logs* (données calculées par le simulatleur). 
 ### ol-geocoder
-Ce dossier contient l'outil permettant de générer la carte et de zoomer au bon emplacement. C'est la carte qu'on peut voir dans le visualisateur. Il contient l'information à propos des différents types de carte.
+Ce dossier contient l'outil permettant de générer la carte et de zoomer au bon emplacement. C'est la carte qu'on peut voir dans le visualiseur. Il contient l'information à propos des différents types de carte.
 ### visualizationConfigExample.yaml ###
-Ce fichier est essentiellement un exemple de configuration pour le visualisateur.
-Il est important de spécifier le même chemin de *log* que celui pour le visualisateur.
+Ce fichier est essentiellement un exemple de configuration pour le visualiseur.
+Il est important de spécifier le même chemin de *log* que celui pour le visualiseur.
 
 ## venv ##
 Ce dossier contient tout ce qu'il faut à propos de l'environnement virtuel. Il a été créé à partir du makefile.
