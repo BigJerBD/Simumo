@@ -31,21 +31,33 @@ impl SystemsConfiguration {
         system_mapping.insert(ClockSystem::typename(), vec![self.clock.system_name()]);
         if let Some(agents) = &self.agents {
             system_mapping.insert(AgentSystem::typename(), as_sysname_vec(agents));
+        } else {
+            system_mapping.insert(AgentSystem::typename(), vec![]);
         }
         if let Some(controls) = &self.controls {
             system_mapping.insert(ControlSystem::typename(), as_sysname_vec(controls));
+        } else {
+            system_mapping.insert(ControlSystem::typename(), vec![]);
         }
         if let Some(mobility) = &self.mobility {
             system_mapping.insert(MobilitySystem::typename(), vec![mobility.system_name()]);
+        } else {
+            system_mapping.insert(MobilitySystem::typename(), vec![]);
         }
         if let Some(physic) = &self.physic {
             system_mapping.insert(PhysicSystem::typename(), vec![physic.system_name()]);
+        } else {
+            system_mapping.insert(PhysicSystem::typename(), vec![]);
         }
         if let Some(recorders) = &self.recorders {
             system_mapping.insert(RecorderSystem::typename(), as_sysname_vec(recorders));
+        } else {
+            system_mapping.insert(RecorderSystem::typename(), vec![]);
         }
         if let Some(spawner) = &self.spawner {
             system_mapping.insert(SpawnerSystem::typename(), vec![spawner.system_name()]);
+        } else {
+            system_mapping.insert(SpawnerSystem::typename(), vec![]);
         }
     }
 

@@ -63,7 +63,8 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
     let osmgraph = *PythonOsmGraphApi::query_graph(lon, lat, zoom).unwrap();
     let osm_nodes = osmgraph.get_nodes().unwrap();
 
-    let nodes: HashMap<_, _> = osm_nodes.clone()
+    let nodes: HashMap<_, _> = osm_nodes
+        .clone()
         .iter()
         .map(|(id, (lon, lat))| {
             let pos = polarfloat_to_cartesiantuple((*lat, *lon));
@@ -84,7 +85,8 @@ pub fn lanegraph_from_pyosmgraph(lat: f64, lon: f64, zoom: i64) -> LaneGraph {
                     (*from, *to),
                     None,
                     None,
-                    Curve::new(vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
+                    Curve::new(
+                        vec![Point2D::new(x_from, y_from), Point2D::new(x_to, y_to)]),
                 )
             })
         })
@@ -199,3 +201,5 @@ fn polarfloat_to_cartesiantuple((lat, lon): (f64, f64)) -> (f64, f64) {
     let cart = CartesianCoord::from_polar(&polar);
     (cart.x.value_unsafe, cart.y.value_unsafe)
 }
+
+

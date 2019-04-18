@@ -7,6 +7,7 @@ generals:
     width: 720
     height: 720
 
+  random_speed: true
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
 #map:
@@ -20,26 +21,15 @@ map:
   path: etc/sherbrooke_graph.json
 
 systems:
-  agents:
-    - type: Accelerating
 
   clock:
     type: StandardClock
-
-  controls: []
-
-  logger:
-    type: CsvLogger
-    directory: "log_results" #This directory should be the same in the visualizer 
-    files: []
 
   mobility:
     type: StandardMobility
 
   physic:
     type: Acceleration
-
-  recorders: []
 
 
 entities:

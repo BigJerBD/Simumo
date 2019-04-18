@@ -7,6 +7,7 @@ generals:
     width: 720
     height: 720
 
+  random_speed: true
   logging:
     path: "./tmp_logs"
     filenames:
@@ -20,13 +21,10 @@ map:
   path: etc/montreal_graph.json
 
 systems:
-  agents:
-    - type: Accelerating
 
   clock:
     type: StandardClock
 
-  controls: []
   mobility:
     type: StandardMobility
 
@@ -62,5 +60,3 @@ systems:
         - 217718264
         - 217681798
 
-
-entities: []

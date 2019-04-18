@@ -7,6 +7,7 @@ generals:
     width: 720
     height: 720
 
+  random_speed: true
   seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
 
 map:
@@ -33,7 +34,7 @@ systems:
   physic:
     type: Acceleration
 
-  recorders: []
+
 
   #spawner:
   #  type: Frequency
@@ -50,8 +51,16 @@ entities:
   - id: car01
     type: vehicle
     position: [[5175583094, 5175583093], 0.5]
+    destination: [[2669891200, 1032271065], 0.25]
     speed: 2
   - id: car02
     type: vehicle
     position: [[2643972537, 2643972535], 0.5]
+    destination: [[1733695007, 1733695009], 0.25]
     speed: 2
+  - id: car02
+    type: vehicle
+    position: [[1733695007, 1733695009], 0.5]
+    destination: [[31300478, 569035381], 0.25]
+    speed: 3
+

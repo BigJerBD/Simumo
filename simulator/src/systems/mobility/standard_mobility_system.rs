@@ -10,6 +10,7 @@ use simumo_derive::simusystem;
 use specs::prelude::{Join, Read, ReadExpect, ReadStorage, System, WriteStorage};
 use typeinfo::TypeInfo;
 use typeinfo_derive::TypeInfo;
+use crate::ressources::random_speed::RandomSpeed;
 
 #[simusystem]
 pub struct StandardMobilitySystem;
@@ -20,12 +21,13 @@ impl<'a> System<'a> for StandardMobilitySystem {
         ReadStorage<'a, Destination>,
         WriteStorage<'a, Speed>,
         Read<'a, Clock>,
+        ReadExpect<'a, RandomSpeed>,
         ReadExpect<'a, LaneGraph>,
     );
 
     fn run(
         &mut self,
-        (mut pos, mut itineraries, destinations, mut vel, clock, lane_graph): Self::SystemData,
+        (mut pos, mut itineraries, destinations, mut vel, clock,random_speed, lane_graph): Self::SystemData,
     ) {
         for (pos, itinerary, _destination, vel) in
             (&mut pos, &mut itineraries, &destinations, &mut vel).join()
@@ -35,9 +37,12 @@ impl<'a> System<'a> for StandardMobilitySystem {
             let lane = &lane_graph.lane_between((from, to)).unwrap();
             let curve = lane.curve();
             let mut progress = curve.percentage_to_progress(percentage);
-            if let Some(max_speed) = lane.max_speed() {
-                vel.speed = max_speed;
+            if random_speed.0 {
+                if  let Some(max_speed) = lane.max_speed() {
+                    vel.speed = max_speed;
+                }
             }
+
             progress += vel.speed * clock.dt;
             pos.val.1 = progress.percentage();
             if progress.percentage() == Percentage::upper() {
